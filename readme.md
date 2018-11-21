@@ -17,3 +17,9 @@ pip install comet_ml
 ```
 Comet.ml python SDK is compatible with: __Python 2.7-3.6__.
 
+
+## Feature Spotlight
+Check out new product features and updates through our [![Release Notes](https://www.notion.so/cometml/Comet-ml-Release-Notes-93d864bcac584360943a73ae9507bcaa)
+
+
+

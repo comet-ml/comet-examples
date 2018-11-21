@@ -32,6 +32,9 @@ Have questions? We have answers -
 - Email us at <info@comet.ml>
 - For the fastest response, ping us on [Slack](https://join.slack.com/t/cometml/shared_invite/enQtMzM0OTMwNTQ0Mjc5LTM4ZDViODkyYTlmMTVlNWY0NzFjNGQ5Y2Q1Y2EwMjQ5MzQ4YmI2YjhmZTY3YmYxYTYxYTNkYzM4NjgxZmJjMDI)
 
+**Want to request a feature?** 
+We take feature requests through github at: https://github.com/comet-ml/issue-tracking/issues
+
 
 ## Feature Spotlight
 Check out new product features and updates through our [Release Notes](https://www.notion.so/cometml/Comet-ml-Release-Notes-93d864bcac584360943a73ae9507bcaa)

@@ -5,10 +5,6 @@
 
 We all strive to be data driven and yet every day valuable experiments results are just lost and forgotten. Comet.ml provides a dead simple way of fixing that. Works with any workflow, any ML task, any machine and any piece of code.
 
-
-## Tutorials + Examples
-
-
 ## Documentation
 [![PyPI version](https://badge.fury.io/py/comet-ml.svg)](https://badge.fury.io/py/comet-ml)
 
@@ -24,6 +20,10 @@ Full documentation and additional training examples are available on http://www.
 pip install comet_ml
 ```
 Comet.ml python SDK is compatible with: __Python 2.7-3.6__.
+
+## Tutorials + Examples
+
+
 
 
 ## Support 

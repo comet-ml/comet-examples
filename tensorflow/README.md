@@ -1,6 +1,4 @@
 # comet-tensorflow-example
-
-#### Commet is still in beta version with new features adding up each day
    * update your Comet installation
 ```
 pip install --no-cache-dir --upgrade comet_ml
@@ -52,6 +50,6 @@ experiment.log_dataset_hash(mnist)
             experiment.log_loss(loss)
 ```
 
-   * run your code as usual an view results on https://www.comet.ml/view/yourApiKey
+   * run your code as usual and view results 
 
    * see full code example at: [link](https://github.com/comet-ml/comet-quickstart-guide/blob/master/tensorflow/comet_tensorflow_example.py)

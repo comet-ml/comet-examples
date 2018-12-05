@@ -247,7 +247,7 @@ def train(epochs, ctx):
         train_loss /= batch_size * num_batch
         name, acc = train_metric.get()
         name, val_acc = test(ctx=ctx, val_data=val_data)
-        experiment.log_multiple_metrics({"acc": acc, "val_acc": val_acc})
+        experiment.log_metrics({"acc": acc, "val_acc": val_acc})
 
         if val_acc > best_val_score:
             best_val_score = val_acc

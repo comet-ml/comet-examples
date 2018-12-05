@@ -30,7 +30,7 @@ params = {"num_nodes": 128,
           "batch_size": 32,
           "epochs": 15
           }
-exp.log_multiple_params(params)
+exp.log_parameters(params)
 
 
 print('Loading data...')

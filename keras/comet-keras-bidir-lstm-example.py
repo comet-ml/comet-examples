@@ -44,7 +44,7 @@ params = {"num_nodes": num_nodes,
           }
 
 # log params to Comet.ml
-exp.log_multiple_params(params)
+exp.log_parameters(params)
 
 print('Loading data...')
 (x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_features,

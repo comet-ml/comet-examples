@@ -170,7 +170,7 @@ class CometSessionHook(tf.train.SessionRunHook):
             self._log_at_end = at_end
 
     def begin(self):
-        self.experiment.log_multiple_params(self.parameters)
+        self.experiment.log_parameters(self.parameters)
         self._timer.reset()
         self._iter_count = 0
         # Convert names to tensors if given
@@ -191,7 +191,7 @@ class CometSessionHook(tf.train.SessionRunHook):
 
     def _log_tensors(self, tensor_values):
         self.experiment.set_step(self._iter_count)
-        self.experiment.log_multiple_metrics(tensor_values)
+        self.experiment.log_metrics(tensor_values)
         # log comet metrics
         original = np.get_printoptions()
         np.set_printoptions(suppress=True)

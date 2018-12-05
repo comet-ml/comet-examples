@@ -51,7 +51,7 @@ params = {"layer1_kernel_size": kernel_size,
           "batch_size": batch_size
           }
 # log params to Comet.ml
-exp.log_multiple_params(params)
+exp.log_parameters(params)
 
 print('Loading data...')
 (x_train, y_train), (x_test, y_test) = imdb.load_data(

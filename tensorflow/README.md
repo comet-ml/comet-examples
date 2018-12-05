@@ -27,7 +27,7 @@ experiment = Experiment(api_key="YOUR-API-KEY", project_name='my project')
 + report hyper params: [code](https://github.com/comet-ml/comet-quickstart-guide/blob/master/tensorflow/comet_tensorflow_example.py#L46)
 ```
 hyper_params = {"learning_rate": 0.5, "steps": 100000, "batch_size": 50}
-experiment.log_multiple_params(hyper_params)
+experiment.log_parameters(hyper_params)
 ```
 + report dataset hash: [code](https://github.com/comet-ml/comet-quickstart-guide/blob/master/tensorflow/comet_tensorflow_example.py#L47)
 ```

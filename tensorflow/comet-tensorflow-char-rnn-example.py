@@ -104,7 +104,7 @@ params = {"len(chars)": len(chars),
           "seq_length": seq_length
           }
 
-experiment.log_multiple_params(params)
+experiment.log_parameters(params)
 
 inputs = tf.placeholder(shape=[None, vocab_size],
                         dtype=tf.float32, name="inputs")

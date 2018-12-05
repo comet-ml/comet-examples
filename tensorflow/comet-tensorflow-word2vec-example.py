@@ -60,7 +60,7 @@ exp = Experiment(
     api_key=os.environ.get("COMET_API_KEY"),
     project_name='comet-examples')
 
-exp.log_multiple_params(params)
+exp.log_parameters(params)
 
 
 def read_data(file_path):

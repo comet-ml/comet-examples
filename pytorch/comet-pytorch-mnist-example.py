@@ -19,7 +19,7 @@ hyper_params = {
 
 
 experiment = Experiment(project_name="pytorch")
-experiment.log_multiple_params(hyper_params)
+experiment.log_parameters(hyper_params)
 
 
 # MNIST Dataset

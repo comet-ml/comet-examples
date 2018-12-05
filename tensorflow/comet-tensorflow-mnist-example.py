@@ -55,7 +55,7 @@ def train(hyper_params):
         # or
         api_key=os.environ.get("COMET_API_KEY"),
         project_name='comet-examples')
-    exp.log_multiple_params(hyper_params)
+    exp.log_parameters(hyper_params)
     exp.log_dataset_hash(mnist)
 
     with tf.Session() as sess:

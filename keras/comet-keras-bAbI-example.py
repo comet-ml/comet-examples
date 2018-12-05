@@ -172,7 +172,7 @@ params = {"EMBED_HIDDEN_SIZE": EMBED_HIDDEN_SIZE,
           "BATCH_SIZE": BATCH_SIZE,
           "EPOCHS": EPOCHS
           }
-exp.log_multiple_params(params)
+exp.log_parameters(params)
 
 
 print('RNN / Embed / Sent / Query = {}, {}, {}, {}'.format(RNN,

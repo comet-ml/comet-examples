@@ -5,6 +5,12 @@
 
 We all strive to be data driven and yet every day valuable experiments results are just lost and forgotten. Comet.ml provides a dead simple way of fixing that. Works with any workflow, any ML task, any machine and any piece of code.
 
+## Examples Repository
+
+This repository contains examples in many Machine Learning Python libraries, including fastai, torch, sklearn, chainer, caffe, keras, tensorflow, mxnet, Jupyter notebooks, and with just pre Python.
+
+If you don't see something you need, kust let us know! See contact methods below.
+
 ## Documentation
 [![PyPI version](https://badge.fury.io/py/comet-ml.svg)](https://badge.fury.io/py/comet-ml)
 
@@ -22,9 +28,6 @@ pip install comet_ml
 Comet.ml python SDK is compatible with: __Python 2.7-3.6__.
 
 ## Tutorials + Examples
-
-
-
 
 ## Support 
 Have questions? We have answers - 

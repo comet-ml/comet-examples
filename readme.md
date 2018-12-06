@@ -28,6 +28,16 @@ pip install comet_ml
 Comet.ml python SDK is compatible with: __Python 2.7-3.6__.
 
 ## Tutorials + Examples
+- [caffe](https://github.com/comet-ml/comet-examples/tree/master/caffe)
+- [chainer](https://github.com/comet-ml/comet-examples/tree/master/chainer)	
+- [fastai](https://github.com/comet-ml/comet-examples/tree/master/fastai)	
+- [keras](https://github.com/comet-ml/comet-examples/tree/master/keras)
+- [mxnet](https://github.com/comet-ml/comet-examples/tree/master/mxnet)
+- [pytorch](https://github.com/comet-ml/comet-examples/tree/master/pytorch)
+- [scikit](https://github.com/comet-ml/comet-examples/tree/master/scikit)
+- [tensorflow](https://github.com/comet-ml/comet-examples/tree/master/tensorflow)
+
+We also offer [Jupyter notebook examples for fastai and keras](https://github.com/comet-ml/comet-examples/tree/master/notebooks)
 
 ## Support 
 Have questions? We have answers - 

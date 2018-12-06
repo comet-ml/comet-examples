@@ -7,7 +7,7 @@ We all strive to be data driven and yet every day valuable experiments results a
 
 ## Examples Repository
 
-This repository contains examples in many Machine Learning Python libraries, including fastai, torch, sklearn, chainer, caffe, keras, tensorflow, mxnet, Jupyter notebooks, and with just pre Python.
+This repository contains examples of using Comet.ml in many Machine Learning Python libraries, including fastai, torch, sklearn, chainer, caffe, keras, tensorflow, mxnet, Jupyter notebooks, and with just pre Python.
 
 If you don't see something you need, kust let us know! See contact methods below.
 

@@ -37,7 +37,7 @@ We take feature requests through github at: https://github.com/comet-ml/issue-tr
 
 
 ## Feature Spotlight
-Check out new product features and updates through our [Release Notes](https://www.notion.so/cometml/Comet-ml-Release-Notes-93d864bcac584360943a73ae9507bcaa)
+Check out new product features and updates through our [Release Notes](https://www.notion.so/cometml/Comet-ml-Release-Notes-93d864bcac584360943a73ae9507bcaa). Also checkout our atricles on [Medium](https://medium.com/comet-ml).
 
 
 

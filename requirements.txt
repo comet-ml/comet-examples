@@ -1,0 +1,10 @@
+comet_ml
+tensorflow<1.12.0
+numpy
+matplotlib
+keras
+scikit-learn
+torch>=1
+fastai==1.0.38
+dataclasses
+chainer

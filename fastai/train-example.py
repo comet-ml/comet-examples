@@ -1,5 +1,8 @@
 ## MNIST Example in fastai
 
+## Note: this uses fastai version 1.0.38
+## pip install fastai==1.0.38
+
 from comet_ml import Experiment
 
 import fastai
@@ -15,7 +18,7 @@ model = fastai.vision.models.WideResNet(num_groups=3,
                                         drop_p=0.)
 
 ## Get the MNIST_TINY dataset:
-path = fastai.untar_data(fastai.URLs.MNIST_TINY)
+path = fastai.datasets.untar_data(fastai.datasets.URLs.MNIST_TINY)
 print("data path:", path)
 
 ## Still too many for a CPU, so we trim it down to 10 in each category:
@@ -33,9 +36,9 @@ experiment = Experiment(project_name="fastai")
 data = fastai.vision.ImageDataBunch.from_folder(path, bs=10) # bs: batch size
 
 if data.device.type == 'cpu':
-    learn = fastai.Learner(data, model, metrics=fastai.accuracy)
+    learn = fastai.basic_train.Learner(data, model, metrics=fastai.metrics.accuracy)
 else: # GPU:
-    learn = fastai.Learner(data, model, metrics=fastai.accuracy).to_fp16()
+    learn = fastai.basic_train.Learner(data, model, metrics=fastai.metrics.accuracy).to_fp16()
 
 with experiment.train():
     learn.fit_one_cycle(10, 3e-3, wd=0.4, div_factor=10, pct_start=0.5)

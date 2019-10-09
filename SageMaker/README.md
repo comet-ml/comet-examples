@@ -26,29 +26,45 @@ The SageMaker integration is following the [Comet.ml Python SDK configuration](h
 
 Below find three different ways you can log your SageMaker jobs to Comet: with an existing regressor/estimator object, with a SageMaker Job Name, or with the last SageMaker job. 
 
-### comet_ml_sagemaker.log_sagemaker_job(estimator/regressor, api_key, workspace, project_name)
+***
+
+### comet_ml_sagemaker.log_sagemaker_job
+
+`log_sagemaker_job(sagemaker_object, api_key, workspace, project_name)`
+
 Logs a Sagemaker job based on an estimator/regressor object 
 
-* estimator/regressor = Sagemaker estimator/regressor object
-* api_key = your Comet REST API key
-* workspace = your Comet workspace
-* project_name = your Comet project_name
+* **estimator/regressor** = Sagemaker estimator/regressor object
+* **api_key** = your Comet REST API key
+* **workspace** = your Comet workspace
+* **project_name** = your Comet project_name
 
-### comet_ml_sagemaker.log_sagemaker_job_by_name(job_name, api_key, workspace, project_name)
+***
+
+### comet_ml_sagemaker.log_sagemaker_job_by_name
+
+`log_sagemaker_job_by_name(job_name, api_key, workspace, project_name)`
+
 Logs a specific Sagemaker training job based on the jobname from the Sagemaker SDK.
 
-* job_name = Cloudwatch/Sagemaker training job name
-* api_key = your Comet REST API key
-* workspace = your Comet workspace
-* project_name = your Comet project_name
+* **job_name** = Cloudwatch/Sagemaker training job name
+* **api_key** = your Comet REST API key
+* **workspace** = your Comet workspace
+* **project_name** = your Comet project_name
 
-### comet_ml_sagemaker.log_last_sagemaker_job(api_key, workspace, project_name)
+***
+
+### comet_ml_sagemaker.log_last_sagemaker_job
+
+`log_last_sagemaker_job(api_key, workspace, project_name)`
+
 Will log the last *started* Sagemaker training job based on the current config.
 
-* api_key = your Comet REST API key
-* workspace = your Comet workspace
-* project_name = your Comet project_name
+* **api_key** = your Comet REST API key
+* **workspace** = your Comet workspace
+* **project_name** = your Comet project_name
 
+***
 
 ## Tutorials + Examples
 - [Linear Learner](Linear_example.ipynb)

@@ -101,7 +101,7 @@ with experiment.train():
             correct += float((predicted == labels.data).sum())
 
             # Log accuracy to Comet.ml
-            experiment.log_metric("accuracy", correct / total, step=step)
+            experiment.log_metric("accuracy", 100 * correct / total, step=step)
             step += 1
 
             if (i + 1) % 100 == 0:

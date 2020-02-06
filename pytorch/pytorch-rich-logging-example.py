@@ -21,8 +21,8 @@ hyper_params = {
     "learning_rate": 0.02
 }
 
-experiment = Experiment(api_key="ERPBfa6mmwJzQnk61oiqLOCie",
-                        project_name="rich-logging", workspace="demo")
+experiment = Experiment(api_key="YOUR_API_KEY",
+                        project_name="YOUR PROJECT", workspace="YOUR WORKSPACE")
 
 experiment.add_tag('pytorch')
 

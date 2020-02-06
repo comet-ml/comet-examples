@@ -1,25 +1,35 @@
-"""Trains a simple deep NN on the MNIST dataset.
+# -*- coding: utf-8 -*-
+# *******************************************************
+#   ____                     _               _
+#  / ___|___  _ __ ___   ___| |_   _ __ ___ | |
+# | |   / _ \| '_ ` _ \ / _ \ __| | '_ ` _ \| |
+# | |__| (_) | | | | | |  __/ |_ _| | | | | | |
+#  \____\___/|_| |_| |_|\___|\__(_)_| |_| |_|_|
+#
+#  Sign up for free at http://www.comet.ml
+#  Copyright (C) 2019 Comet ML INC
+#  This file can not be copied and/or distributed without
+#   the express permission of Comet ML Inc.
+# *******************************************************
+
+"""
+Trains a simple deep NN on the MNIST dataset.
 
 Gets to 98.40% test accuracy after 20 epochs
 (there is *a lot* of margin for parameter tuning).
 2 seconds per epoch on a K520 GPU.
 """
-
 from __future__ import print_function
 
-import sys
-
-from comet_ml import (
-    Experiment,
-    Optimizer,
-    NoMoreSuggestionsAvailable,
-)
+from os.path import dirname, join
+from comet_ml import Optimizer  # isort:skip
 
 import keras
 from keras.datasets import mnist
+from keras.layers import Dense
 from keras.models import Sequential
-from keras.layers import Dense, Dropout
 from keras.optimizers import RMSprop
+
 
 def main():
 
@@ -41,26 +51,21 @@ def main():
     y_train = keras.utils.to_categorical(y_train, num_classes)
     y_test = keras.utils.to_categorical(y_test, num_classes)
 
-    ## Gets API from config or environment:
-    opt = Optimizer()
-    pcs_content = """
-first_layer_units integer [1,1000] [2]
-"""
-    # opt.set_params(pcs_content)
-    opt.set_params(pcs_content)
+    config = {
+        "algorithm": "bayes",
+        "name": "Optimize MNIST Network",
+        "spec": {"maxCombo": 10, "objective": "minimize", "metric": "loss"},
+        "parameters": {"first_layer_units": {"type": "integer", "min": 1, "max": 1000}},
+        "trials": 1,
+    }
 
-    while True:
-        try:
-            sug = opt.get_suggestion()
-        except NoMoreSuggestionsAvailable:
-            break
-        print("SUG", sug, sug.__dict__)
-        flu = sug["first_layer_units"]
-        print("FLU", repr(flu))
-        score = train(x_train, y_train, x_test, y_test, 3, 120, flu)
-        print("Score", score, sug.__dict__)
+    opt = Optimizer(config)
+
+    for experiment in opt.get_experiments():
+        flu = experiment.get_parameter("first_layer_units")
+        loss = fit(experiment, x_train, y_train, x_test, y_test, 3, 120, flu)
         # Reverse the score for minimization
-        sug.report_score("score", score)
+        experiment.log_metric("loss", loss)
 
 
 def build_model_graph(first_layer_units):
@@ -76,10 +81,14 @@ def build_model_graph(first_layer_units):
     return model
 
 
-def train(x_train, y_train, x_test, y_test, epoch, batch_size, first_layer_units):
-    ## Gets API from config or environment:
-    experiment = Experiment(project_name="opt-prod-III")
+def fit(
+    experiment, x_train, y_train, x_test, y_test, epoch, batch_size, first_layer_units
+):
+    current_dir = dirname(__file__)
+    experiment.log_image(join(current_dir, "logo_comet_dark.png"))
 
+    experiment.log_dataset_hash(x_train)
+    experiment.log_parameter("first_layer_units", first_layer_units)
 
     # Define model
     model = build_model_graph(first_layer_units)

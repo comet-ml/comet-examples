@@ -8,3 +8,4 @@ torch>=1
 fastai==1.0.38
 dataclasses
 chainer
+mlflow

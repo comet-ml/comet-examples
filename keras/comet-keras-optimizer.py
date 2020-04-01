@@ -64,7 +64,6 @@ def main():
     for experiment in opt.get_experiments():
         flu = experiment.get_parameter("first_layer_units")
         loss = fit(experiment, x_train, y_train, x_test, y_test, 3, 120, flu)
-        # Reverse the score for minimization
         experiment.log_metric("loss", loss)
 
 

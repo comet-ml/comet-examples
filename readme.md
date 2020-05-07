@@ -1,4 +1,4 @@
-<img src="https://comet.ml/images/logo_comet_light.png" width="350" alt="Drawing" style="width: 350px;"/>
+<img src="https://www.comet.ml/images/logo_comet_light.png" width="350" alt="Drawing" style="width: 350px;"/>
 
 ## Comet.ml - machine learning experiment management
 **Our Misson:** Comet is doing for ML what GitHub did for code. We allow data science teams to automagically track their datasets, code changes, experimentation history and production models creating efficiency, transparency, and reproducibility. 

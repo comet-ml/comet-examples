@@ -63,8 +63,8 @@ def main():
 
     for experiment in opt.get_experiments():
         flu = experiment.get_parameter("first_layer_units")
-        loss = fit(experiment, x_train, y_train, x_test, y_test, 3, 120, flu)
-        experiment.log_metric("loss", loss)
+        score = fit(experiment, x_train, y_train, x_test, y_test, 3, 120, flu)
+        print("test loss, test acc:", score)
 
 
 def build_model_graph(first_layer_units):
@@ -84,7 +84,6 @@ def fit(
     experiment, x_train, y_train, x_test, y_test, epoch, batch_size, first_layer_units
 ):
     current_dir = dirname(__file__)
-    experiment.log_image(join(current_dir, "logo_comet_dark.png"))
 
     experiment.log_dataset_hash(x_train)
     experiment.log_parameter("first_layer_units", first_layer_units)
@@ -99,7 +98,7 @@ def fit(
         epochs=epoch,
         validation_data=(x_test, y_test),
     )
-    score = model.evaluate(x_test, y_test, verbose=0)[1]
+    score = model.evaluate(x_test, y_test, verbose=0)
 
     return score
 

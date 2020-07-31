@@ -146,13 +146,15 @@ def get_args():
 
 
 def main():
+    # Make sure all nodes can talk to each other on the unprivileged port range
+    # (1024-65535) in addition to the master port
     os.environ["MASTER_ADDR"] = "localhost"
     os.environ["MASTER_PORT"] = "8892"
 
     args = get_args()
     world_size = args.gpus * args.nodes
 
-    mp.spawn(run, args=(world_size, args), nprocs=world_size, join=True)
+    mp.spawn(run, args=(world_size, args), nprocs=args.gpus, join=True)
 
 
 if __name__ == "__main__":

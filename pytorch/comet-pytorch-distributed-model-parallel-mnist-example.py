@@ -96,6 +96,7 @@ class ParameterServer(nn.Module):
     def __init__(self, num_gpus=0):
         super().__init__()
         model = Net(num_gpus=num_gpus)
+        self.experiment = Experiment(project_name=PROJECT_NAME)
         self.model = model
         self.input_device = torch.device(
             "cuda:0" if torch.cuda.is_available() and num_gpus > 0 else "cpu"
@@ -104,9 +105,11 @@ class ParameterServer(nn.Module):
     def forward(self, inp):
         inp = inp.to(self.input_device)
         out = self.model(inp)
+
         # This output is forwarded over RPC, which as of 1.5.0 only accepts CPU tensors.
         # Tensors must be moved in and out of GPU memory due to this.
         out = out.to("cpu")
+
         return out
 
     # Use dist autograd to retrieve gradients accumulated for this model.
@@ -122,10 +125,18 @@ class ParameterServer(nn.Module):
         return cpu_grads
 
     # Wrap local parameters in a RRef. Needed for building the
-    # DistributedOptimizer which optimizes paramters remotely.
+    # DistributedOptimizer which optimizes paramaters remotely.
     def get_param_rrefs(self):
         param_rrefs = [rpc.RRef(param) for param in self.model.parameters()]
         return param_rrefs
+
+    def log_experiment_metric(self, metric, name, step):
+        try:
+            self.experiment.log_metric(value=metric, name=name, step=step)
+        except Exception as e:
+            print(e)
+
+        return "logged"
 
 
 param_server = None
@@ -175,6 +186,7 @@ class TrainerNet(nn.Module):
         return remote_params
 
     def forward(self, x):
+        # This is the global model output
         model_output = remote_method(ParameterServer.forward, self.param_server_rref, x)
         return model_output
 
@@ -189,12 +201,24 @@ def run_training_loop(rank, num_gpus, train_loader, test_loader):
     opt = DistributedOptimizer(optim.SGD, param_rrefs, lr=0.03)
     for i, (data, target) in enumerate(train_loader):
         with dist_autograd.context() as cid:
-            model_output = net(data)
-            target = target.to(model_output.device)
-            loss = F.nll_loss(model_output, target)
+            out = net(data)
+            target = target.to(out.device)
+            loss = F.nll_loss(out, target)
             if i % 5 == 0:
                 print(f"Rank {rank} training batch {i} loss {loss.item()}")
+
+            logged = remote_method(
+                ParameterServer.log_experiment_metric,
+                net.param_server_rref,
+                loss,
+                "train_batch_loss",
+                i,
+            )
+            assert logged == "logged"
+
+            # Sends gradients back to the parameter server
             dist_autograd.backward(cid, [loss])
+
             # Ensure that dist autograd ran successfully and gradients were
             # returned.
             assert (
@@ -208,6 +232,13 @@ def run_training_loop(rank, num_gpus, train_loader, test_loader):
     print("Training complete!")
     print("Getting accuracy....")
     accuracy = get_accuracy(test_loader, net)
+    remote_method(
+        ParameterServer.log_experiment_metric,
+        net.param_server_rref,
+        accuracy,
+        "test_accuracy",
+        len(test_loader),
+    )
 
 
 def get_accuracy(test_loader, model):

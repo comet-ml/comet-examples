@@ -299,7 +299,7 @@ if __name__ == "__main__":
     processes = []
     nodes = args.nodes
     if args.rank == 0:
-        p = mp.Process(target=run_parameter_server, args=(0, world_size))
+        p = mp.Process(target=run_parameter_server, args=(0, nodes))
         p.start()
         processes.append(p)
     else:

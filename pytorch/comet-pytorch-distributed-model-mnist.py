@@ -255,7 +255,7 @@ def run_worker(rank, world_size, num_gpus, train_loader, test_loader):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Parameter-Server RPC based training")
     parser.add_argument(
-        "--world_size",
+        "--nodes",
         type=int,
         default=4,
         help="""Total number of participating processes. Should be the sum of
@@ -297,7 +297,7 @@ if __name__ == "__main__":
     os.environ["MASTER_ADDR"] = args.master_addr
     os.environ["MASTER_PORT"] = args.master_port
     processes = []
-    world_size = args.world_size
+    nodes = args.nodes
     if args.rank == 0:
         p = mp.Process(target=run_parameter_server, args=(0, world_size))
         p.start()
@@ -330,7 +330,7 @@ if __name__ == "__main__":
         # start training worker on this node
         p = mp.Process(
             target=run_worker,
-            args=(args.rank, world_size, args.num_gpus, train_loader, test_loader),
+            args=(args.rank, nodes, args.num_gpus, train_loader, test_loader),
         )
         p.start()
         processes.append(p)

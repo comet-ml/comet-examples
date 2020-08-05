@@ -76,12 +76,11 @@ def build_model_graph(exp, input_shape=(784,)):
 
 def train(x_train, y_train, x_test, y_test):
     
-    exp = Experiment(api_key="ERPBfa6mmwJzQnk61oiqLOCie", project_name="perception", workspace="development")
+    exp = Experiment(api_key="API_KEY", project_name="PROJECT", workspace="WORKSPACE")
     
     # log custom hyperparameters
     exp.log_parameters(params)
     
-    exp.log_metric('custom_metric', 0.97)
 
     
     

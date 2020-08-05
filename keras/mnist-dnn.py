@@ -56,9 +56,7 @@ def build_model_graph(input_shape=(784,)):
 
 
 def train(x_train, y_train, x_test, y_test):
-    
-    experiment = Experiment(api_key="ERPBfa6mmwJzQnk61oiqLOCie",
-                        project_name="perception", workspace="development")
+
         
     # Define model
     model = build_model_graph()

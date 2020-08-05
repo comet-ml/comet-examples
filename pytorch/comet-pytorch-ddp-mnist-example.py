@@ -133,7 +133,7 @@ def get_args():
         "-g", "--gpus", default=1, type=int, help="number of gpus per node"
     )
     parser.add_argument(
-        "-nr", "--nr", default=0, type=int, help="ranking within the nodes"
+        "-nr", "--nr", default=0, type=int, help="ranking within the nodes, starts at 0"
     )
     parser.add_argument(
         "--epochs",
@@ -142,17 +142,32 @@ def get_args():
         metavar="N",
         help="number of total epochs to run",
     )
+    parser.add_argument(
+        "--master_addr",
+        type=str,
+        default="localhost",
+        help="""Address of master, will default to localhost if not provided.
+        Master must be able to accept network traffic on the address + port.""",
+    )
+    parser.add_argument(
+        "--master_port",
+        type=str,
+        default="8892",
+        help="""Port that master is listening on, will default to 29500 if not
+        provided. Master must be able to accept network traffic on the host and port.""",
+    )
     return parser.parse_args()
 
 
 def main():
-    # Make sure all nodes can talk to each other on the unprivileged port range
-    # (1024-65535) in addition to the master port
-    os.environ["MASTER_ADDR"] = "localhost"
-    os.environ["MASTER_PORT"] = "8892"
 
     args = get_args()
     world_size = args.gpus * args.nodes
+
+    # Make sure all nodes can talk to each other on the unprivileged port range
+    # (1024-65535) in addition to the master port
+    os.environ["MASTER_ADDR"] = args.master_addr
+    os.environ["MASTER_PORT"] = args.master_port
 
     mp.spawn(run, args=(world_size, args), nprocs=args.gpus, join=True)
 

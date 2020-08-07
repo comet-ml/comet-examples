@@ -153,6 +153,8 @@ def test():
             )
         )
 
+    return test_loss, test_accuracy
+
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -164,7 +166,7 @@ if __name__ == "__main__":
 
     if hvd.rank() == 0:
         experiment = Experiment(project_name=PROJECT_NAME)
-        experiment.log_parameters(args)
+        experiment.log_parameters(vars(args))
 
     if args.cuda:
         # Horovod: pin GPU to local rank.
@@ -250,4 +252,7 @@ if __name__ == "__main__":
 
     for epoch in range(1, args.epochs + 1):
         train(epoch)
-        test()
+        test_loss, test_accuracy = test()
+        if hvd.rank() == 0:
+            with experiment.test():
+                experiment.log_metrics({"loss": test_loss, "accuracy": test_accuracy})

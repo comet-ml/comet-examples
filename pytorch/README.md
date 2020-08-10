@@ -22,3 +22,17 @@ This directory contains an example how to track an experiment when using Pytorch
 For example, with 2 machines, each having 2 gpus and the master node IP being `192.168.1.1`, to run the distributed training:
 * On the master node: `python comet-pytorch-ddp-mnist-example.py --nodes 2 --gpus 2 --nr 0 --master_addr 192.168.1.1 --master_port 8892`
 * On the other node: `python comet-pytorch-ddp-mnist-example.py --nodes 2 --gpus 2 --nr 1 --master_addr 192.168.1.1 --master_port 8892`
+
+##### Using Comet.ml with Horovod and Pytorch
+In order to run the Horovod example in a distributed manner, you will need the following
+```bash
+1. At least 2 machines 1 gpu each.
+2. Ensure that the master node has ssh access to the worker machines without requiring a password
+3. Horovod and Comet.ml installed on all machines
+4. This script must be present in the same directory on all machines.
+```
+To the run the example 
+
+```
+horovodrun --gloo -np <Number of Nodes * Number of GPUS> -H <server1_address:num_gpus>,<server2_address:num_gpus>,<server3_address:num_gpus> python comet-pytorch-horovod-example.py
+```

@@ -166,7 +166,7 @@ if __name__ == "__main__":
 
     if hvd.rank() == 0:
         experiment = Experiment(project_name=PROJECT_NAME)
-        experiment.log_parameters(vars(args))
+        experiment.log_parameters(args)
 
     if args.cuda:
         # Horovod: pin GPU to local rank.

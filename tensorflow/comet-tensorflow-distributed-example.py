@@ -42,11 +42,11 @@ def build_model():
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("worker_index", type=int)
-    parser.add_argument("run_id", type=int)
-    parser.add_argument("ps_hosts", type=str)
-    parser.add_argument("worker_hosts", type=str)
-    parser.add_argument("task_type", type=str)
+    parser.add_argument("--worker_index", type=int)
+    parser.add_argument("--run_id", type=int)
+    parser.add_argument("--ps_hosts", type=str)
+    parser.add_argument("--worker_hosts", type=str)
+    parser.add_argument("--task_type", type=str)
 
     return parser.parse_args()
 

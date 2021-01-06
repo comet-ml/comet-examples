@@ -51,7 +51,7 @@ def get_args():
     return parser.parse_args()
 
 
-def main(_):
+def main():
     args = get_args()
 
     ps_hosts = args.ps_hosts.split(",")

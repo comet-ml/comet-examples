@@ -137,7 +137,7 @@ def main(_):
     per_worker_iterator = iter(per_worker_dataset)
 
     num_epochs = args.num_epochs
-    steps_per_epoch = len(train_images) / GLOBAL_BATCH_SIZE
+    steps_per_epoch = len(train_images) / BATCH_SIZE_PER_REPLICA
 
     for i in range(num_epochs):
         train_accuracy.reset_states()

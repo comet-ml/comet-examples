@@ -3,12 +3,12 @@ import argparse
 import json
 import multiprocessing
 import random
+import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
 import tensorflow.keras.layers.experimental.preprocessing as kpl
 
 os.environ["GRPC_FAIL_FAST"] = "use_caller"
-
 
 fashion_mnist = tf.keras.datasets.fashion_mnist
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()

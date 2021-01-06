@@ -11,44 +11,32 @@ import tensorflow.keras.layers.experimental.preprocessing as kpl
 os.environ["GRPC_FAIL_FAST"] = "use_caller"
 
 
-def feature_and_label_gen(num_examples=200):
-    examples = {"features": [], "label": []}
-    for _ in range(num_examples):
-        features = random.sample(feature_vocab, 3)
-        label = ["yes"] if "avenger" in features else ["no"]
-        examples["features"].append(features)
-        examples["label"].append(label)
-    return examples
+fashion_mnist = tf.keras.datasets.fashion_mnist
+(train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
 
+train_images = train_images[..., None]
+test_images = test_images[..., None]
 
-def dataset_fn(_):
-    examples = feature_and_label_gen()
-    raw_dataset = tf.data.Dataset.from_tensor_slices(examples)
+train_images = train_images / np.float32(255)
+test_images = test_images / np.float32(255)
 
-    train_dataset = (
-        raw_dataset.map(
-            lambda x: (
-                {"features": feature_preprocess_stage(x["features"])},
-                label_preprocess_stage(x["label"]),
-            )
-        )
-        .shuffle(200)
-        .batch(32)
-        .repeat()
-    )
-    return train_dataset
+BUFFER_SIZE = len(train_images)
+
+BATCH_SIZE_PER_REPLICA = 64
 
 
 def build_model():
-    # Create the model. The input needs to be compatible with KPLs.
-    model_input = keras.layers.Input(shape=(3,), dtype=tf.int64, name="model_input")
-
-    emb_layer = keras.layers.Embedding(
-        input_dim=len(feature_lookup_layer.get_vocabulary()), output_dim=20
+    model = tf.keras.Sequential(
+        [
+            tf.keras.layers.Conv2D(32, 3, activation="relu"),
+            tf.keras.layers.MaxPooling2D(),
+            tf.keras.layers.Conv2D(64, 3, activation="relu"),
+            tf.keras.layers.MaxPooling2D(),
+            tf.keras.layers.Flatten(),
+            tf.keras.layers.Dense(64, activation="relu"),
+            tf.keras.layers.Dense(10),
+        ]
     )
-    emb_output = tf.reduce_mean(emb_layer(model_input), axis=1)
-    dense_output = keras.layers.Dense(units=1, activation="sigmoid")(emb_output)
-    model = keras.Model({"features": model_input}, dense_output)
 
     return model
 
@@ -91,34 +79,54 @@ def main(_):
         cluster_resolver, variable_partitioner=variable_partitioner
     )
 
+    GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
+    train_dataset = (
+        tf.data.Dataset.from_tensor_slices((train_images, train_labels))
+        .shuffle(BUFFER_SIZE)
+        .batch(GLOBAL_BATCH_SIZE)
+    )
+
     with strategy.scope():
         model = build_model()
 
         optimizer = keras.optimizers.RMSprop(learning_rate=0.1)
-        accuracy = keras.metrics.Accuracy()
+        checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
+
+        loss_object = tf.keras.losses.SparseCategoricalCrossentropy(
+            from_logits=True, reduction=tf.keras.losses.Reduction.NONE
+        )
+
+        def compute_loss(labels, predictions):
+            per_example_loss = loss_object(labels, predictions)
+            return tf.nn.compute_average_loss(
+                per_example_loss, global_batch_size=GLOBAL_BATCH_SIZE
+            )
+
+        train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(
+            name="train_accuracy"
+        )
+
+    def train_step(inputs):
+        images, labels = inputs
+        with tf.GradientTape() as tape:
+            predictions = model(images, training=True)
+            loss = compute_loss(labels, predictions)
+
+            gradients = tape.gradient(loss, model.trainable_variables)
+            optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+            train_accuracy.update_state(labels, predictions)
+
+        return loss
 
     @tf.function
-    def step_fn(iterator):
-        # Experiment Object here to record the worker metrics
-        def replica_fn(iterator):
-            batch_data, labels = next(iterator)
-            with tf.GradientTape() as tape:
-                pred = model(batch_data, training=True)
-                per_example_loss = keras.losses.BinaryCrossentropy(
-                    reduction=tf.keras.losses.Reduction.NONE
-                )(labels, pred)
-                loss = tf.nn.compute_average_loss(per_example_loss)
-                gradients = tape.gradient(loss, model.trainable_variables)
+    def distributed_train_step(dataset_inputs):
+        per_replica_losses = strategy.run(train_step, args=(dataset_inputs,))
+        return strategy.reduce(
+            tf.distribute.ReduceOp.SUM, per_replica_losses, axis=None
+        )
 
-            optimizer.apply_gradients(zip(gradients, model.trainable_variables))
-
-            actual_pred = tf.cast(tf.greater(pred, 0.5), tf.int64)
-            accuracy.update_state(labels, actual_pred)
-
-            return loss
-
-        losses = strategy.run(replica_fn, args=(iterator,))
-        return strategy.reduce(tf.distribute.ReduceOp.SUM, losses, axis=None)
+    def dataset_fn():
+        return train_dataset
 
     @tf.function
     def per_worker_dataset_fn():
@@ -129,11 +137,17 @@ def main(_):
     per_worker_iterator = iter(per_worker_dataset)
 
     num_epochs = args.num_epochs
-    steps_per_epoch = args.steps_per_epoch
+    steps_per_epoch = len(train_images) / GLOBAL_BATCH_SIZE
+
     for i in range(num_epochs):
-        accuracy.reset_states()
+        train_accuracy.reset_states()
+
+        total_loss = 0.0
         for _ in range(steps_per_epoch):
-            coordinator.schedule(step_fn, args=(per_worker_iterator,))
+            loss = coordinator.schedule(
+                distributed_train_step, args=(per_worker_iterator,)
+            )
+            total_loss += loss.fetch()
 
         # Wait at epoch boundaries.
         coordinator.join()

@@ -75,8 +75,9 @@ def main():
     variable_partitioner = tf.distribute.experimental.partitioners.FixedShardsPartitioner(
         num_shards=num_ps
     )
-    strategy = tf.distribute.experimental.ParameterServerStrategy(
-        cluster_resolver, variable_partitioner=variable_partitioner
+    strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy(
+        communication=tf.distribute.experimental.CollectiveCommunication.AUTO,
+        cluster_resolver=None,
     )
 
     GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
@@ -136,10 +137,9 @@ def main():
     per_worker_dataset = coordinator.create_per_worker_dataset(per_worker_dataset_fn)
     per_worker_iterator = iter(per_worker_dataset)
 
-    num_epochs = args.num_epochs
     steps_per_epoch = len(train_images) / BATCH_SIZE_PER_REPLICA
 
-    for i in range(num_epochs):
+    for i in range(EPOCHS):
         train_accuracy.reset_states()
 
         total_loss = 0.0

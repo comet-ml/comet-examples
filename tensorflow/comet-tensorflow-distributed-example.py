@@ -21,6 +21,7 @@ test_images = test_images / np.float32(255)
 
 BUFFER_SIZE = len(train_images)
 
+EPOCHS = 5
 BATCH_SIZE_PER_REPLICA = 64
 
 

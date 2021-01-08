@@ -137,6 +137,7 @@ def main():
             tf.data.Dataset.from_tensor_slices((train_images, train_labels))
             .shuffle(BUFFER_SIZE)
             .batch(GLOBAL_BATCH_SIZE)
+            .repeat()
         )
         return train_dataset
 

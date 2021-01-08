@@ -2,7 +2,7 @@
 Script to run distributed data parallel training in Tensorflow using ParameterServerStrategy
 
 """
-
+import comet_ml
 
 import os
 import argparse
@@ -97,6 +97,8 @@ def main():
     )
     print("Number of devices: {}".format(strategy.num_replicas_in_sync))
     GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
+
+    experiment = comet_ml.Experiment()
 
     with strategy.scope():
         model = build_model()

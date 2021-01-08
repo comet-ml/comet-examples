@@ -88,10 +88,8 @@ def main():
         )
         server.join()
 
-    variable_partitioner = (
-        tf.distribute.experimental.partitioners.FixedShardsPartitioner(
-            num_shards=num_ps
-        )
+    variable_partitioner = tf.distribute.experimental.partitioners.FixedShardsPartitioner(
+        num_shards=num_ps
     )
 
     strategy = tf.distribute.experimental.ParameterServerStrategy(
@@ -139,6 +137,7 @@ def main():
             .batch(GLOBAL_BATCH_SIZE)
             .repeat()
         )
+
         return train_dataset
 
     @tf.function

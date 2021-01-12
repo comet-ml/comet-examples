@@ -113,7 +113,7 @@ def main():
             cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
                 logits=logits, labels=labels
             )
-            loss = tf.reduce_sum(loss) * (1.0 / GLOBAL_BATCH_SIZE)
+            loss = tf.reduce_sum(cross_entropy) * (1.0 / GLOBAL_BATCH_SIZE)
             train_op = optimizer.minimize(loss)
             with tf.control_dependencies([train_op]):
                 return tf.identity(loss)

@@ -24,6 +24,9 @@ test_images = test_images[..., None]
 train_images = train_images / np.float32(255)
 test_images = test_images / np.float32(255)
 
+train_labels = train_labels.astype("int64")
+test_labels = test_labels.astype("int64")
+
 BUFFER_SIZE = len(train_images)
 
 EPOCHS = 10
@@ -110,14 +113,12 @@ def main():
             cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
                 logits=logits, labels=labels
             )
-            loss = tf.nn.compute_average_loss(
-                cross_entropy, global_batch_size=GLOBAL_BATCH_SIZE
-            )
+            loss = tf.reduce_sum(loss) * (1.0 / GLOBAL_BATCH_SIZE)
             train_op = optimizer.minimize(loss)
             with tf.control_dependencies([train_op]):
                 return tf.identity(loss)
 
-        per_replica_losses = strategy.run(step_fn, args=(dist_inputs,))
+        per_replica_losses = strategy.experimental_run_v2(step_fn, args=(dist_inputs,))
         mean_loss = strategy.reduce(
             tf.distribute.ReduceOp.SUM, per_replica_losses, axis=None
         )

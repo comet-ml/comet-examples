@@ -125,22 +125,23 @@ def main():
         )
         return mean_loss
 
-    train_iterator = train_ds.make_initializable_iterator()
-    iterator_init = train_iterator.initializer
-    var_init = tf.global_variables_initializer()
-    loss = train_step(next(train_iterator))
+    with strategy.scope():
+        train_iterator = train_ds.make_initializable_iterator()
+        iterator_init = train_iterator.initializer
+        var_init = tf.global_variables_initializer()
+        loss = train_step(next(train_iterator))
 
-    with tf.Session() as sess:
-        sess.run([var_init])
-        for epoch in range(EPOCHS):
-            sess.run([iterator_init])
-            for step in range(10000):
-                if step % 1000 == 0:
-                    print(
-                        "Epoch {} Step {} Loss {:.4f}".format(
-                            epoch + 1, step, sess.run(loss)
+        with tf.Session() as sess:
+            sess.run([var_init])
+            for epoch in range(EPOCHS):
+                sess.run([iterator_init])
+                for step in range(10000):
+                    if step % 1000 == 0:
+                        print(
+                            "Epoch {} Step {} Loss {:.4f}".format(
+                                epoch + 1, step, sess.run(loss)
+                            )
                         )
-                    )
 
 
 if __name__ == "__main__":

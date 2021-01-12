@@ -107,23 +107,25 @@ def main():
         model = build_model()
         optimizer = tf.train.GradientDescentOptimizer(0.001)
 
-    def train_step(dist_inputs):
-        def step_fn(inputs):
-            images, labels = inputs
-            logits = model(images)
-            cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-                logits=logits, labels=labels
-            )
-            loss = tf.reduce_sum(cross_entropy) * (1.0 / GLOBAL_BATCH_SIZE)
-            train_op = optimizer.minimize(loss)
-            with tf.control_dependencies([train_op]):
-                return tf.identity(loss)
+        def train_step(dist_inputs):
+            def step_fn(inputs):
+                images, labels = inputs
+                logits = model(images)
+                cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
+                    logits=logits, labels=labels
+                )
+                loss = tf.reduce_sum(cross_entropy) * (1.0 / GLOBAL_BATCH_SIZE)
+                train_op = optimizer.minimize(loss)
+                with tf.control_dependencies([train_op]):
+                    return tf.identity(loss)
 
-        per_replica_losses = strategy.experimental_run_v2(step_fn, args=(dist_inputs,))
-        mean_loss = strategy.reduce(
-            tf.distribute.ReduceOp.SUM, per_replica_losses, axis=None
-        )
-        return mean_loss
+            per_replica_losses = strategy.experimental_run_v2(
+                step_fn, args=(dist_inputs,)
+            )
+            mean_loss = strategy.reduce(
+                tf.distribute.ReduceOp.SUM, per_replica_losses, axis=None
+            )
+            return mean_loss
 
     with strategy.scope():
         train_iterator = train_ds.make_initializable_iterator()

@@ -84,6 +84,7 @@ def main():
             cluster_resolver.cluster_spec(),
             job_name=cluster_resolver.task_type,
             task_index=cluster_resolver.task_id,
+            config=tf.ConfigProto(allow_soft_placement=True),
             protocol=cluster_resolver.rpc_layer or "grpc",
             start=True,
         )

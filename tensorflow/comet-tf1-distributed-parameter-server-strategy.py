@@ -105,7 +105,7 @@ def main():
     experiment = comet_ml.Experiment(log_code=True)
     with strategy.scope():
         model = build_model()
-        optimizer = tf.train.RMSprop(learning_rate=0.1)
+        optimizer = tf.train.GradientDescentOptimizer(0.001)
 
     def train_step(dist_inputs):
         def step_fn(inputs):

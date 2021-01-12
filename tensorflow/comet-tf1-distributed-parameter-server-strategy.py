@@ -9,7 +9,6 @@ import argparse
 import json
 import multiprocessing
 import random
-import ipdb
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
@@ -88,13 +87,7 @@ def main():
         )
         server.join()
 
-    variable_partitioner = tf.distribute.experimental.partitioners.FixedShardsPartitioner(
-        num_shards=num_ps
-    )
-
-    strategy = tf.distribute.experimental.ParameterServerStrategy(
-        cluster_resolver, variable_partitioner=variable_partitioner
-    )
+    strategy = tf.distribute.experimental.ParameterServerStrategy(cluster_resolver)
     print("Number of devices: {}".format(strategy.num_replicas_in_sync))
     GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
 

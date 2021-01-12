@@ -127,7 +127,6 @@ def main():
             )
             return mean_loss
 
-    with strategy.scope():
         train_iterator = train_ds.make_initializable_iterator()
         iterator_init = train_iterator.initializer
         var_init = tf.global_variables_initializer()

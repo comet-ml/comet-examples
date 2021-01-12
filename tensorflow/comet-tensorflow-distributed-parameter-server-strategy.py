@@ -98,7 +98,7 @@ def main():
     print("Number of devices: {}".format(strategy.num_replicas_in_sync))
     GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
 
-    experiment = comet_ml.Experiment()
+    experiment = comet_ml.Experiment(log_code=True)
 
     with strategy.scope():
         model = build_model()

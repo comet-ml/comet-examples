@@ -7,11 +7,12 @@ import comet_ml
 import os
 import argparse
 import json
-import multiprocessing
-import random
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
+
+print(tf.__version__)
+PROJECT_NAME = "tf1-distributed"
 
 os.environ["GRPC_FAIL_FAST"] = "use_caller"
 
@@ -27,9 +28,13 @@ test_images = test_images / np.float32(255)
 train_labels = train_labels.astype("int64")
 test_labels = test_labels.astype("int64")
 
+PS_HOSTS = ["localhost:8000"]
+WORKER_HOSTS = ["localhost:8001", "localhost:8002"]
+
 BUFFER_SIZE = len(train_images)
 
 EPOCHS = 10
+STEPS_PER_EPOCH = 100
 BATCH_SIZE_PER_REPLICA = 64
 
 
@@ -53,8 +58,6 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--run_id", type=int)
     parser.add_argument("--task_index", type=int)
-    parser.add_argument("--ps_hosts", type=str)
-    parser.add_argument("--worker_hosts", type=str)
     parser.add_argument("--task_type", type=str)
 
     return parser.parse_args()
@@ -63,48 +66,46 @@ def get_args():
 def main():
     args = get_args()
 
-    ps_hosts = args.ps_hosts.split(",")
-    worker_hosts = args.worker_hosts.split(",")
-
-    num_ps = len(ps_hosts)
-    num_workers = len(worker_hosts)
-
     run_id = args.run_id
     task_index = args.task_index
 
     cluster_dict = {
-        "cluster": {"worker": worker_hosts, "ps": ps_hosts},
+        "cluster": {"worker": WORKER_HOSTS, "ps": PS_HOSTS},
         "task": {"type": args.task_type, "index": task_index},
     }
     os.environ["TF_CONFIG"] = json.dumps(cluster_dict)
 
     cluster_resolver = tf.distribute.cluster_resolver.TFConfigClusterResolver()
-    if cluster_resolver.task_type == "ps":
-        server = tf.distribute.Server(
-            cluster_resolver.cluster_spec(),
-            job_name=cluster_resolver.task_type,
-            task_index=cluster_resolver.task_id,
-            config=tf.ConfigProto(allow_soft_placement=True),
-            protocol=cluster_resolver.rpc_layer or "grpc",
-            start=True,
-        )
-        server.join()
-
     strategy = tf.distribute.experimental.ParameterServerStrategy(cluster_resolver)
+
     print("Number of devices: {}".format(strategy.num_replicas_in_sync))
     GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
 
-    train_dataset = (
-        tf.data.Dataset.from_tensor_slices((train_images, train_labels))
-        .shuffle(BUFFER_SIZE)
-        .batch(GLOBAL_BATCH_SIZE)
-        .repeat()
+    server = tf.distribute.Server(
+        cluster_resolver.cluster_spec(),
+        job_name=cluster_resolver.task_type,
+        task_index=cluster_resolver.task_id,
+        protocol=cluster_resolver.rpc_layer or "grpc",
+        start=True,
     )
-    train_ds = strategy.experimental_distribute_dataset(train_dataset)
+    if cluster_resolver.task_type == "ps":
+        server.join()
 
-    experiment = comet_ml.Experiment(log_code=True)
+    experiment = comet_ml.Experiment(log_code=True, project_name=PROJECT_NAME)
+    experiment.log_other("run_id", run_id)
+
     with strategy.scope():
+        train_dataset = (
+            tf.data.Dataset.from_tensor_slices((train_images, train_labels))
+            .shuffle(BUFFER_SIZE)
+            .batch(GLOBAL_BATCH_SIZE)
+            .repeat()
+        )
+        train_ds = strategy.experimental_distribute_dataset(train_dataset)
+
         model = build_model()
+        experiment.set_model_graph(tf.compat.v1.get_default_graph())
+
         optimizer = tf.train.GradientDescentOptimizer(0.001)
 
         def train_step(dist_inputs):
@@ -132,16 +133,20 @@ def main():
         var_init = tf.global_variables_initializer()
         loss = train_step(next(train_iterator))
 
-        with tf.Session() as sess:
+        with tf.train.MonitoredTrainingSession(server.target) as sess:
             sess.run([var_init])
             for epoch in range(EPOCHS):
                 sess.run([iterator_init])
-                for step in range(10000):
-                    if step % 1000 == 0:
+                for step in range(STEPS_PER_EPOCH):
+                    current_loss = sess.run(loss)
+                    if step % 10 == 0:
                         print(
                             "Epoch {} Step {} Loss {:.4f}".format(
-                                epoch + 1, step, sess.run(loss)
+                                epoch, step, current_loss
                             )
+                        )
+                        experiment.log_metric(
+                            "loss", current_loss, step=(STEPS_PER_EPOCH * epoch) + step
                         )
 
 

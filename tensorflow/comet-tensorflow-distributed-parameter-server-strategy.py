@@ -7,13 +7,11 @@ import comet_ml
 import os
 import argparse
 import json
-import multiprocessing
-import random
-import ipdb
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
-import tensorflow.keras.layers.experimental.preprocessing as kpl
+
+experiment = comet_ml.Experiment(log_code=True)
 
 os.environ["GRPC_FAIL_FAST"] = "use_caller"
 
@@ -30,6 +28,8 @@ BUFFER_SIZE = len(train_images)
 
 EPOCHS = 10
 BATCH_SIZE_PER_REPLICA = 64
+PS_HOSTS = ["localhost:8000"]
+WORKER_HOSTS = ["localhost:8001", "localhost:8002"]
 
 
 def build_model():
@@ -52,8 +52,6 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--run_id", type=int)
     parser.add_argument("--task_index", type=int)
-    parser.add_argument("--ps_hosts", type=str)
-    parser.add_argument("--worker_hosts", type=str)
     parser.add_argument("--task_type", type=str)
 
     return parser.parse_args()
@@ -62,17 +60,11 @@ def get_args():
 def main():
     args = get_args()
 
-    ps_hosts = args.ps_hosts.split(",")
-    worker_hosts = args.worker_hosts.split(",")
-
-    num_ps = len(ps_hosts)
-    num_workers = len(worker_hosts)
-
     run_id = args.run_id
     task_index = args.task_index
 
     cluster_dict = {
-        "cluster": {"worker": worker_hosts, "ps": ps_hosts},
+        "cluster": {"worker": WORKER_HOSTS, "ps": PS_HOSTS},
         "task": {"type": args.task_type, "index": task_index},
     }
     os.environ["TF_CONFIG"] = json.dumps(cluster_dict)
@@ -88,8 +80,10 @@ def main():
         )
         server.join()
 
-    variable_partitioner = tf.distribute.experimental.partitioners.FixedShardsPartitioner(
-        num_shards=num_ps
+    variable_partitioner = (
+        tf.distribute.experimental.partitioners.FixedShardsPartitioner(
+            num_shards=len(PS_HOSTS)
+        )
     )
 
     strategy = tf.distribute.experimental.ParameterServerStrategy(
@@ -98,7 +92,7 @@ def main():
     print("Number of devices: {}".format(strategy.num_replicas_in_sync))
     GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
 
-    experiment = comet_ml.Experiment(log_code=True)
+    experiment.log_other("run_id", run_id)
 
     with strategy.scope():
         model = build_model()
@@ -155,8 +149,12 @@ def main():
     for i in range(EPOCHS):
         train_accuracy.reset_states()
 
+        total_loss = 0
         for _ in range(steps_per_epoch):
             loss = coordinator.schedule(step_fn, args=(per_worker_iterator,))
+            total_loss += loss.fetch()
+
+        experiment.log_metric("loss", total_loss, epoch=i)
 
         # Wait at epoch boundaries.
         coordinator.join()

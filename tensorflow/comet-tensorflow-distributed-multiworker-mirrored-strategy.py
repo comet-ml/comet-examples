@@ -1,3 +1,19 @@
+# Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+# Copyright (C) 2021 Comet ML INC
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
+
 """
 Script to run distributed data parallel training in Tensorflow using MultiWorkerMirroredStrategy
 
@@ -26,10 +42,8 @@ test_images = test_images / np.float32(255)
 
 BUFFER_SIZE = len(train_images)
 
-WORKER_HOSTS = ["localhost:8001", "localhost:8002"]
 EPOCHS = 10
 BATCH_SIZE_PER_REPLICA = 64
-GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * len(WORKER_HOSTS)
 
 
 def build_model():
@@ -51,6 +65,7 @@ def build_model():
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--run_id", type=int)
+    parser.add_argument("--worker_hosts")
     parser.add_argument("--task_index", type=int)
 
     return parser.parse_args()
@@ -62,8 +77,11 @@ def main():
     run_id = args.run_id
     task_index = args.task_index
 
+    worker_hosts = args.worker_hosts.split(",")
+    num_workers = len(worker_hosts)
+
     cluster_dict = {
-        "cluster": {"worker": WORKER_HOSTS},
+        "cluster": {"worker": worker_hosts},
         "task": {"type": "worker", "index": task_index},
     }
     os.environ["TF_CONFIG"] = json.dumps(cluster_dict)

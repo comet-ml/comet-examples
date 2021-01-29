@@ -116,6 +116,7 @@ def run(gpu_id, world_size, args):
         train(ddp_model, optimizer, criterion, trainloader, epoch)
 
     cleanup()
+    experiment.end()
 
 
 def get_args():

@@ -75,10 +75,7 @@ def main():
     task_index = args.task_index
 
     ps_hosts = args.ps_hosts.split(",")
-    num_ps = len(ps_hosts)
-
     worker_hosts = args.worker_hosts.split(",")
-    num_workers = len(worker_hosts)
 
     cluster_dict = {
         "cluster": {"worker": worker_hosts, "ps": ps_hosts},

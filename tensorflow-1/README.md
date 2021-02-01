@@ -53,3 +53,29 @@ experiment.log_dataset_hash(mnist)
    * run your code as usual and view results 
 
    * see full code example at: [link](https://github.com/comet-ml/comet-quickstart-guide/blob/master/tensorflow/comet_tensorflow_example.py)
+
+#### Running Distributed Training
+The distributed training examples will require a multi-GPU machine.     
+
+Start the MirroredWorker strategy example or MultiWorkerMirrored strategy example for TF Estimator by running their respective scripts.  
+
+When running the TF1 parameter server strategy example, we recommend allocating a single GPU to each process. This can be done by setting the `CUDA_VISIBLE_DEVICES` envrionment variable to the appropriate GPU ID. For example, `export CUDA_VISIBLE_DEVICES=0` will only allow the process to access GPU ID 0.
+
+Once you have done this, the following commands will start a parameter server on `localhost:8000` and two workers on ports `localhost:8001` and `localhost:8002`
+
+Start the Parameter Server
+```
+python comet-tf1-distributed-paramter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type ps --task_index 0
+```
+Start the workers in different terminals 
+
+**Worker 0**
+```
+python comet-tf1-distributed-paramter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 0
+```
+
+**Worker 1**
+```
+python comet-tf1-distributed-paramter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 1
+```
+

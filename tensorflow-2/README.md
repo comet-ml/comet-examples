@@ -13,11 +13,18 @@ export COMET_API_KEY=<your-api-key>
 Learn more about [configuring Comet](https://www.comet.ml/docs/python-sdk/advanced/)
 
 #### Running Distributed Training
-The distributed training examples will require a multi-GPU machine.     
+The distributed training examples will require a multi-GPU machine and at least `tensorflow-gpu==2.4.0`     
 
-Start the MultiWorkerMirrored strategy by running the script.
+The following commands will start the MultiWorkerMirrored strategy with two workers on `localhost:8001` and `localhost:8002`.
+
+Start worker 1 on `localhost:8001` 
 ```
-python comet-tensorflow-distributed-multiworker-mirrored-strategy.py
+python comet-tensorflow-distributed-multiworker-mirrored-strategy.py --worker_hosts localhost:8001,localhost:8002 --task_index 0
+```
+
+In a separate terminal, Start worker 2 on `localhost:8002`
+```
+python comet-tensorflow-distributed-multiworker-mirrored-strategy.py --worker_hosts localhost:8001,localhost:8002 --task_index 1
 ```
 
 When running the parameter server strategy example, we recommend allocating a single GPU to each process. This can be done by setting the `CUDA_VISIBLE_DEVICES` envrionment variable to the appropriate GPU ID. For example, `export CUDA_VISIBLE_DEVICES=0` will only allow the process to access GPU ID 0.

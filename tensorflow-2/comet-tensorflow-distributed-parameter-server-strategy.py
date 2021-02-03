@@ -22,7 +22,6 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
 
-experiment = comet_ml.Experiment(log_code=True)
 
 os.environ["GRPC_FAIL_FAST"] = "use_caller"
 
@@ -94,6 +93,9 @@ def main():
         )
         server.join()
 
+    experiment = comet_ml.Experiment(log_code=True)
+    experiment.log_other("run_id", run_id)
+
     variable_partitioner = tf.distribute.experimental.partitioners.FixedShardsPartitioner(
         num_shards=len(ps_hosts)
     )
@@ -103,8 +105,6 @@ def main():
     )
     print("Number of devices: {}".format(strategy.num_replicas_in_sync))
     GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
-
-    experiment.log_other("run_id", run_id)
 
     with strategy.scope():
         model = build_model()

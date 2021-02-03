@@ -92,34 +92,32 @@ def main():
     with strategy.scope():
         model = build_model()
 
-        optimizer = keras.optimizers.RMSprop(learning_rate=0.1)
+        optimizer = tf.keras.optimizers.Adam()
         criterion = tf.keras.losses.SparseCategoricalCrossentropy(
             from_logits=True, reduction=tf.keras.losses.Reduction.NONE
         )
-
         train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(
             name="train_accuracy"
         )
 
+        def compute_loss(labels, predictions):
+            per_example_loss = criterion(labels, predictions)
+            return tf.nn.compute_average_loss(per_example_loss, global_batch_size=GLOBAL_BATCH_SIZE)
+        
     def step_fn(dataset_inputs):
         def train_step(inputs):
             images, labels = inputs
             with tf.GradientTape() as tape:
                 pred = model(images, training=True)
-                per_example_loss = criterion(labels, pred)
-                loss = tf.nn.compute_average_loss(per_example_loss)
-
+                loss = compute_loss(labels, pred)
                 gradients = tape.gradient(loss, model.trainable_variables)
-
             optimizer.apply_gradients(zip(gradients, model.trainable_variables))
             actual_pred = tf.cast(tf.greater(pred, 0.5), tf.int64)
             train_accuracy.update_state(labels, actual_pred)
-
             return loss
-
         losses = strategy.run(train_step, args=(dataset_inputs,))
         return strategy.reduce(tf.distribute.ReduceOp.SUM, losses, axis=None)
-
+    
     def dataset_fn(_):
         train_dataset = (
             tf.data.Dataset.from_tensor_slices((train_images, train_labels))
@@ -130,17 +128,19 @@ def main():
 
     dist_dataset = strategy.distribute_datasets_from_function(dataset_fn)
     for i in range(EPOCHS):
-        train_accuracy.reset_states()
         total_loss = 0
+        num_batches = 0
         for x in dist_dataset:
             loss = step_fn(x)
-            total_loss += loss.fetch()
+            total_loss += loss
+            num_batches += 1
 
-        experiment.log_metric("loss", total_loss.fetch(), epoch=i)
+        experiment.log_metric("train_loss", total_loss / num_batches, epoch=i)
         # Wait at epoch boundaries.
         print(
             "Finished epoch %d, accuracy is %f." % (i, train_accuracy.result().numpy())
         )
+        train_accuracy.reset_states()
 
 
 if __name__ == "__main__":

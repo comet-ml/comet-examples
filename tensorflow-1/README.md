@@ -6,7 +6,7 @@ pip3 install --no-cache-dir --upgrade comet_ml
     
 ```
 
-#### Getting started with Comet
+## Getting started with Comet
    * get an api key from https://www.comet.ml
    * install Comet:
 ```
@@ -54,28 +54,46 @@ experiment.log_dataset_hash(mnist)
 
    * see full code example at: [link](https://github.com/comet-ml/comet-quickstart-guide/blob/master/tensorflow/comet_tensorflow_example.py)
 
-#### Running Distributed Training
-The distributed training examples will require a multi-GPU machine.     
+## Running Distributed Training
 
-Start the MirroredWorker strategy example or MultiWorkerMirrored strategy example for TF Estimator by running their respective scripts.  
+The distributed training examples will require a multi-GPU machine and have been tested with `tensorflow-gpu==1.15.4` and `tensorflow-extimator=1.15.1`.
+
+### Mirrored Worker strategy example
+
+You can start the MirroredWorker strategy example with the following command, it will automatically uses all available GPU and you only need to launch the command once:
+
+```
+python comet-tf1-distributed-mirrored-strategy.py
+```
+
+### MultiWorkerMirrored strategy example
+
+You can start the MultiWorkerMirrored strategy example with the following command, it will automatically uses all available GPU and you only need to launch the command once:
+
+```
+python comet-tf1-distributed-estimator-multiworker-mirrored-strategy.py
+```
+
+### Parameter Server Strategy example
 
 When running the TF1 parameter server strategy example, we recommend allocating a single GPU to each process. This can be done by setting the `CUDA_VISIBLE_DEVICES` envrionment variable to the appropriate GPU ID. For example, `export CUDA_VISIBLE_DEVICES=0` will only allow the process to access GPU ID 0.
 
 Once you have done this, the following commands will start a parameter server on `localhost:8000` and two workers on ports `localhost:8001` and `localhost:8002`
 
-Start the Parameter Server
+**Start the Parameter Server**
 ```
-python comet-tf1-distributed-paramter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type ps --task_index 0
+python comet-tf1-distributed-parameter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type ps --task_index 0
 ```
+
 Start the workers in different terminals 
 
 **Worker 0**
 ```
-python comet-tf1-distributed-paramter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 0
+python comet-tf1-distributed-parameter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 0
 ```
 
 **Worker 1**
 ```
-python comet-tf1-distributed-paramter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 1
+python comet-tf1-distributed-parameter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 1
 ```
 

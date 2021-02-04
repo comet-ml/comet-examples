@@ -27,7 +27,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
 
-experiment = comet_ml.Experiment(project_name="tf-distributed-multiworker-mirrored")
+PROJECT_NAME = "tf-distributed-multiworker-mirrored"
 
 os.environ["GRPC_FAIL_FAST"] = "use_caller"
 
@@ -85,6 +85,10 @@ def main():
         "task": {"type": "worker", "index": task_index},
     }
     os.environ["TF_CONFIG"] = json.dumps(cluster_dict)
+    if task_index == 0:
+        experiment = comet_ml.Experiment(project_name=PROJECT_NAME)
+        experiment.log_other("run_id", run_id)
+        experiment.log_other("worker_hosts", args.worker_hosts)
 
     strategy = tf.distribute.MultiWorkerMirroredStrategy()
     GLOBAL_BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
@@ -134,8 +138,8 @@ def main():
             loss = step_fn(x)
             total_loss += loss
             num_batches += 1
-
-        experiment.log_metric("train_loss", total_loss / num_batches, epoch=i)
+        if task_index == 0:
+            experiment.log_metric("train_loss", total_loss / num_batches, epoch=i)
         # Wait at epoch boundaries.
         print(
             "Finished epoch %d, accuracy is %f." % (i, train_accuracy.result().numpy())

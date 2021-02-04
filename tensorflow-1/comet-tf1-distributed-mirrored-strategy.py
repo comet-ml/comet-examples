@@ -24,7 +24,7 @@ import numpy as np
 import os
 
 PROJECT_NAME = "tf1-mirrored"
-experiment = comet_ml.Experiment(log_code=True, project_name=PROJECT_NAME)
+experiment = comet_ml.Experiment(project_name=PROJECT_NAME)
 print(tf.__version__)
 
 fashion_mnist = tf.keras.datasets.fashion_mnist

@@ -30,7 +30,7 @@ GLOBAL_BATCH_SIZE = BATCH_SIZE * N_REPLICAS
 LEARNING_RATE = 1e-5
 EPOCHS = 10
 
-experiment = comet_ml.Experiment(log_code=True)
+experiment = comet_ml.Experiment()
 
 fashion_mnist = tf.keras.datasets.fashion_mnist
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()

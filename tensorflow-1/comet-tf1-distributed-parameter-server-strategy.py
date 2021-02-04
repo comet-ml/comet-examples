@@ -108,7 +108,7 @@ def main():
     if cluster_resolver.task_type == "ps":
         server.join()
 
-    experiment = comet_ml.Experiment(log_code=True, project_name=PROJECT_NAME)
+    experiment = comet_ml.Experiment(project_name=PROJECT_NAME)
     experiment.log_other("run_id", run_id)
 
     with strategy.scope():

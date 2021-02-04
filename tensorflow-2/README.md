@@ -44,19 +44,19 @@ Start the workers in different terminals
 
 **Worker 0**
 ```
-python comet-tf1-distributed-paramter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 0
+python comet-tensorflow-distributed-parameter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 0
 ```
 
 **Worker 1**
 ```
-python comet-tf1-distributed-paramter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 1
+python comet-tensorflow-distributed-parameter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type worker --task_index 1
 ```
 
 **Chief process**
 
 Finally, in a new terminal, start the chief process by running
 ```
-python comet-tf1-distributed-paramter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type chief --task_index 0
+python comet-tensorflow-distributed-parameter-server-strategy.py --worker_hosts localhost:8001,localhost:8002 --ps_hosts localhost:8000 --run_id 0 --task_type chief --task_index 0
 ```
 The chief process will launch the [coordinator](https://www.tensorflow.org/tutorials/distribute/parameter_server_training), that will distributed the data across workers, and synchronize the model weights in the parameter server. Find out more about distributed strategies [here](https://www.tensorflow.org/guide/distributed_training)
 

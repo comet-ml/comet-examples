@@ -106,16 +106,21 @@ def model_fn(features, labels, mode, params):
     )
 
 
-def get_experiment(run_id, exists=False):
+def get_experiment(run_id):
     experiment_id = hashlib.md5(run_id.encode('utf-8')).hexdigest()    
     os.environ['COMET_EXPERIMENT_KEY'] = experiment_id
+
+    api = comet_ml.API() # Assumes API key is set in config/env
+    try:
+        api_experiment = api.get_experiment_by_id(experiment_id)
     
-    if exists:
+    except:
+        return comet_ml.Experiment(project_name=PROJECT_NAME)
+    
+    else:
         return comet_ml.ExistingExperiment(project_name=PROJECT_NAME)
-
-    return comet_ml.Experiment(project_name=PROJECT_NAME)
-
-
+ 
+ 
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--run_id")
@@ -147,12 +152,7 @@ config = tf.estimator.RunConfig(
     protocol="grpc",
 )
 
-if args.task_type == "chief":
-    experiment = get_experiment(args.run_id)
-
-else:
-    experiment = get_experiment(args.run_id, exists=True)
-
+experiment = get_experiment(args.run_id)
 classifier = tf.estimator.Estimator(
     model_fn=model_fn, model_dir="/tmp/multiworker", config=config, params={
         "task_index": args.task_index, 

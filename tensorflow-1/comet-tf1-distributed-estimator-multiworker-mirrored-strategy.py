@@ -20,7 +20,6 @@ import hashlib
 import numpy as np
 import os, json
 
-from hooks import CometSessionHook
 
 PROJECT_NAME = 'tf-estimator-multiworker'
 BUFFER_SIZE = 60000
@@ -71,7 +70,6 @@ def input_fn(mode, input_context=None):
 def model_fn(features, labels, mode, params):
     global_batch_size = BATCH_SIZE * params["n_workers"]
   
-    experiment = get_experiment(params["run_id"], exists=True)
     model = tf.keras.Sequential(
         [
             tf.keras.layers.Conv2D(32, 3, activation="relu", input_shape=(28, 28, 1)),
@@ -92,20 +90,16 @@ def model_fn(features, labels, mode, params):
         logits=logits, labels=labels, reduction=tf.losses.Reduction.NONE
     )
     loss = tf.reduce_sum(cross_entropy) * (1.0 / (global_batch_size))
-    comet_hook = CometSessionHook(
-        experiment,
-        tensors={f"loss:{params['task_type']}/{params['task_index']}" : loss},
-        parameters=None,
-        every_n_iter=1
-    )
-    
+
+    if mode in (tf.estimator.ModeKeys.TRAIN, tf.estimator.ModeKeys.EVAL):    
+        tf.summary.scalar(f"loss_{params['task_type']}/{params['task_index']}", loss)
+        
     if mode == tf.estimator.ModeKeys.EVAL:
-        return tf.estimator.EstimatorSpec(mode, loss=loss, evaluation_hooks=[comet_hook])
+        return tf.estimator.EstimatorSpec(mode, loss=loss)
 
     return tf.estimator.EstimatorSpec(
         mode=mode,
         loss=loss,
-        training_hooks=[comet_hook],
         train_op=optimizer.minimize(
             loss, tf.compat.v1.train.get_or_create_global_step()
         ),
@@ -155,7 +149,6 @@ config = tf.estimator.RunConfig(
 
 if args.task_type == "chief":
     experiment = get_experiment(args.run_id)
-    experiment.log_code("./hooks.py")
 
 else:
     experiment = get_experiment(args.run_id, exists=True)

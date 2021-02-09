@@ -105,9 +105,9 @@ def model_fn(features, labels, mode, params):
         ),
     )
 
-
+                          
 def get_experiment(run_id):
-    experiment_id = hashlib.md5(run_id.encode('utf-8')).hexdigest()    
+    experiment_id = hashlib.sha1(run_id.encode('utf-8')).hexdigest()    
     os.environ['COMET_EXPERIMENT_KEY'] = experiment_id
 
     api = comet_ml.API() # Assumes API key is set in config/env

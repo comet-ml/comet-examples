@@ -66,12 +66,28 @@ You can start the MirroredWorker strategy example with the following command, it
 python comet-tf1-distributed-mirrored-strategy.py
 ```
 
-### MultiWorkerMirrored strategy example
+### MultiWorkerMirrored Estimator strategy example
 
-You can start the MultiWorkerMirrored strategy example with the following command, it will automatically uses all available GPU and you only need to launch the command once:
+To start the MultiWorkerMirrored strategy with TF Estimator we will need to start a chief process, an evaluator process and a worker process. We will also need to supply a `run_id` for the training run so that metrics from each process can be logged to a single experiment. The `run_id` is a string that is hashed to compute the Experiment ID. We also recommend allocating a single GPU to each process used in this example. This can be done by setting the `CUDA_VISIBLE_DEVICES` envrionment variable to the appropriate GPU ID. For example, `export CUDA_VISIBLE_DEVICES=0` will only allow the process to access GPU ID 0. 
+
+**Note:** You will need to start the evaluator process before starting the chief and worker process. 
+
+The following command will start a evaluator process on `localhost:8002` with `task_index == 0`. 
 
 ```
-python comet-tf1-distributed-estimator-multiworker-mirrored-strategy.py
+python comet-tf1-distributed-estimator-multiworker-mirrored-strategy.py --chief_host localhost:8000 --worker_hosts localhost:8001 --eval_hosts localhost:8002 --task_index 0 --task_type evaluator --run_id <your run id>
+```
+
+The following command will start a chief process on `localhost:8000` with `task_index == 0`. 
+
+```
+python comet-tf1-distributed-estimator-multiworker-mirrored-strategy.py --chief_host localhost:8000 --worker_hosts localhost:8001 --eval_hosts localhost:8003 --task_index 0 --task_type chief --run_id <your run id>
+
+```
+The following command will start a worker process on `localhost:8001` with `task_index == 0`. 
+
+```
+python comet-tf1-distributed-estimator-multiworker-mirrored-strategy.py --chief_host localhost:8000 --worker_hosts localhost:8001 --eval_hosts localhost:8003 --task_index 0 --task_type worker --run_id <your run id>
 ```
 
 ### Parameter Server Strategy example

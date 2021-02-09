@@ -66,9 +66,9 @@ You can start the MirroredWorker strategy example with the following command, it
 python comet-tf1-distributed-mirrored-strategy.py
 ```
 
-### MultiWorkerMirrored strategy example
+### MultiWorkerMirrored Estimator strategy example
 
-To start the MultiWorkerMirrored strategy with TF Estimator we will need to start a chief process, an evaluator process and a worker process. We will also need to supply a `run_id` for the training run so that metrics from each process can be logged to a single experiment. The `run_id` is a string that is hashed to compute the Experiment ID. We also recommend allocating a single GPU to each process used in this example. 
+To start the MultiWorkerMirrored strategy with TF Estimator we will need to start a chief process, an evaluator process and a worker process. We will also need to supply a `run_id` for the training run so that metrics from each process can be logged to a single experiment. The `run_id` is a string that is hashed to compute the Experiment ID. We also recommend allocating a single GPU to each process used in this example. This can be done by setting the `CUDA_VISIBLE_DEVICES` envrionment variable to the appropriate GPU ID. For example, `export CUDA_VISIBLE_DEVICES=0` will only allow the process to access GPU ID 0. 
 
 **Note:** You will need to start the evaluator process before starting the chief and worker process. 
 

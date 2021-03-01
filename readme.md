@@ -43,7 +43,7 @@ We also offer [Jupyter notebook examples for fastai and keras](https://github.co
 Have questions? We have answers - 
 - Try checking our [FAQ Page](https://www.comet.ml/faq)
 - Email us at <info@comet.ml>
-- For the fastest response, ping us on [Slack](https://join.slack.com/t/cometml/shared_invite/enQtMzM0OTMwNTQ0Mjc5LTM4ZDViODkyYTlmMTVlNWY0NzFjNGQ5Y2Q1Y2EwMjQ5MzQ4YmI2YjhmZTY3YmYxYTYxYTNkYzM4NjgxZmJjMDI)
+- For the fastest response, ping us on [Slack](https://cometml.slack.com/)
 
 **Want to request a feature?** 
 We take feature requests through github at: https://github.com/comet-ml/issue-tracking

@@ -1,5 +1,6 @@
 from comet_ml import config
 import tensorflow as tf
+from pathlib import Path
 
 exp = config.experiment
 
@@ -32,6 +33,7 @@ def finalize_model(model, x_train, y_train, x_test, y_test, exp):
                 exp.log_histogram_3d(lst, name=layer.name, step = _)
                 
     # Log Model
+    Path('models/').mkdir(exist_ok=True)
     model.save('models/mnist-nn.h5')
     exp.log_model('mnist-neural-net', 'models/mnist-nn.h5')
  

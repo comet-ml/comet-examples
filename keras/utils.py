@@ -10,6 +10,10 @@ def finalize_model(model, x_train, y_train, x_test, y_test, exp):
         img = x_test[index].reshape(28,28)
         # log the data to Comet, whether it's log_image, log_text, log_audio, ... 
         data = exp.log_image(img, name="test_%d.png" % index)
+
+        if data is None:
+            return None
+
         return {"sample": str(index), "assetId": data["imageId"]}
     
     # Add tags

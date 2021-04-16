@@ -23,6 +23,9 @@ For example, with 2 machines, each having 2 gpus and the master node IP being `1
 * On the master node: `python comet-pytorch-ddp-mnist-example.py --nodes 2 --gpus 2 --nr 0 --master_addr 192.168.1.1 --master_port 8892`
 * On the other node: `python comet-pytorch-ddp-mnist-example.py --nodes 2 --gpus 2 --nr 1 --master_addr 192.168.1.1 --master_port 8892`
 
+>If you're curious about learning more on  parallelized training in Pytorch, checkout our report [here](https://www.comet.ml/team-comet-ml/parallelism/reports/advanced-ml-parallelism
+)
+
 ##### Using Comet.ml with Horovod and Pytorch
 In order to run the Horovod example in a distributed manner, you will need the following
 ```bash

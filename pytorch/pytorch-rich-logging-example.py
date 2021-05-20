@@ -1,5 +1,4 @@
-from comet_ml import Experiment
-from comet_ml.utils import ConfusionMatrix
+from comet_ml import Experiment, ConfusionMatrix
 
 import numpy as np
 
@@ -95,12 +94,20 @@ def train_index_to_example(index):
     tmp, _ = train_dataset[index]
     img = tmp.numpy()[0]
     data = experiment.log_image(img, name="train_%d.png" % index)
+
+    if data is None:
+        return None
+
     return {"sample": str(index), "assetId": data["imageId"]}
 
 def test_index_to_example(index):
     tmp, _ = test_dataset[index]
     img = tmp.numpy()[0]
     data = experiment.log_image(img, name="test_%d.png" % index)
+
+    if data is None:
+        return None
+
     return {"sample": str(index), "assetId": data["imageId"]}
 
 def onehot(i):

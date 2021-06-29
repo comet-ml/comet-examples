@@ -49,7 +49,7 @@ python comet-pytorch-ddp-cifar10.py \
 --nodes 2 \
 --gpus 1 \
 --node_rank 1 \
---master_addr 172.31.15.59 \
+--master_addr 192.168.1.1 \
 --master_port 8892 \
 --epochs 5 \
 --replica_batch_size 32 \

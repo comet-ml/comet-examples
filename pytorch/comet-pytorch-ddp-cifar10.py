@@ -1,8 +1,6 @@
 """Pytorch Distributed Data Parallel Example with Learning Rate Scaling
 
 """
-
-
 from comet_ml import Experiment
 
 import os
@@ -25,7 +23,6 @@ from tqdm import tqdm
 torch.manual_seed(0)
 
 # This is the batch size being used per GPU
-PER_REPLICA_BATCH_SIZE = 8
 LEARNING_RATE = 0.001
 
 # Learning Rate scaling factor is computed relative to this batch size
@@ -61,7 +58,7 @@ def load_data(data_dir="./data"):
     return trainset, testset
 
 
-def train(model, optimizer, criterion, trainloader, epoch, gpu_id):
+def train(model, optimizer, criterion, trainloader, epoch, gpu_id, experiment):
     model.train()
     total_loss = 0
     epoch_steps = 0
@@ -75,6 +72,8 @@ def train(model, optimizer, criterion, trainloader, epoch, gpu_id):
         loss = criterion(pred, labels)
         loss.backward()
 
+        experiment.log_metric("train_batch_loss", loss.item())
+
         total_loss += loss.item()
         epoch_steps += 1
 
@@ -83,7 +82,7 @@ def train(model, optimizer, criterion, trainloader, epoch, gpu_id):
     return total_loss / epoch_steps
 
 
-def evaluate(model, criterion, valloader, epoch, gpu_id):
+def evaluate(model, criterion, valloader, epoch, local_rank):
     # Validation loss
     total_loss = 0.0
     epoch_steps = 0
@@ -94,7 +93,7 @@ def evaluate(model, criterion, valloader, epoch, gpu_id):
     for i, data in enumerate(valloader, 0):
         with torch.no_grad():
             inputs, labels = data
-            inputs, labels = inputs.cuda(gpu_id), labels.cuda(gpu_id)
+            inputs, labels = inputs.cuda(local_rank), labels.cuda(local_rank)
             outputs = model(inputs)
 
             _, predicted = torch.max(outputs.data, 1)
@@ -131,39 +130,38 @@ def test_accuracy(net, testset, device="cpu"):
     return correct / total
 
 
-def run(gpu_id, world_size, args):
+def run(local_rank, world_size, args):
     """
     This is a single process that is linked to a single GPU
 
-    :param gpu_id: The id of the GPU on the current node
+    :param local_rank: The id of the GPU on the current node
     :param world_size: Total number of processes across nodes
     :param args:
     :return:
     """
-    torch.cuda.set_device(gpu_id)
+    torch.cuda.set_device(local_rank)
 
     # The overall rank of this GPU process across multiple nodes
-    global_process_rank = args.nr * args.gpus + gpu_id
+    global_process_rank = args.node_rank * args.gpus + local_rank
 
     experiment = Experiment(auto_output_logging="simple")
-    experiment.set_name("ddp-lr-scaled")
-    experiment.log_other("run_id", args.run_id)
-    experiment.log_other("global_process_rank", global_process_rank)
-    experiment.log_parameter("replica_batch_size", PER_REPLICA_BATCH_SIZE)
-    experiment.log_parameter("batch_size", PER_REPLICA_BATCH_SIZE * world_size)
+    experiment.log_parameter("run_id", args.run_id)
+    experiment.log_parameter("global_process_rank", global_process_rank)
+    experiment.log_parameter("replica_batch_size", args.replica_batch_size)
+    experiment.log_parameter("batch_size", args.replica_batch_size * world_size)
 
-    learning_rate = scale_lr(PER_REPLICA_BATCH_SIZE * world_size, LEARNING_RATE)
+    learning_rate = scale_lr(args.replica_batch_size * world_size, LEARNING_RATE)
     experiment.log_parameter("learning_rate", learning_rate)
 
     print(f"Running DDP model on Global Process with Rank: {global_process_rank }.")
     setup(global_process_rank, world_size, args.backend)
 
     model = Net()
-    model.cuda(gpu_id)
-    ddp_model = DDP(model, device_ids=[gpu_id])
+    model.cuda(local_rank)
+    ddp_model = DDP(model, device_ids=[local_rank])
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
+    optimizer = optim.SGD(ddp_model.parameters(), lr=learning_rate, momentum=0.9)
 
     # Load training data
     trainset, testset = load_data()
@@ -178,23 +176,25 @@ def run(gpu_id, world_size, args):
 
     trainloader = torch.utils.data.DataLoader(
         train_subset,
-        batch_size=PER_REPLICA_BATCH_SIZE,
+        batch_size=args.replica_batch_size,
         sampler=train_sampler,
         num_workers=8,
     )
     valloader = torch.utils.data.DataLoader(
-        val_subset, batch_size=PER_REPLICA_BATCH_SIZE, shuffle=True, num_workers=8
+        val_subset, batch_size=args.replica_batch_size, shuffle=True, num_workers=8
     )
 
     for epoch in range(args.epochs):
-        train_loss = train(ddp_model, optimizer, criterion, trainloader, epoch, gpu_id)
+        train_loss = train(
+            ddp_model, optimizer, criterion, trainloader, epoch, local_rank, experiment
+        )
         experiment.log_metric("train_loss", train_loss)
 
-        val_loss, val_acc = evaluate(ddp_model, criterion, valloader, epoch, gpu_id)
+        val_loss, val_acc = evaluate(ddp_model, criterion, valloader, epoch, local_rank)
         experiment.log_metric("val_loss", val_loss, epoch=epoch)
         experiment.log_metric("val_acc", val_acc, epoch=epoch)
 
-    test_acc = test_accuracy(model, testset, f"cuda:{gpu_id}")
+    test_acc = test_accuracy(model, testset, f"cuda:{local_rank}")
     experiment.log_metric("test_acc", test_acc, epoch=args.epochs)
 
     cleanup()
@@ -222,7 +222,7 @@ class Net(nn.Module):
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run_id", type=int)
+    parser.add_argument("--run_id", type=str)
     parser.add_argument("-b", "--backend", type=str, default="nccl")
     parser.add_argument(
         "-n",
@@ -236,11 +236,22 @@ def get_args():
         "-g", "--gpus", default=1, type=int, help="number of gpus per node"
     )
     parser.add_argument(
-        "-nr", "--nr", default=0, type=int, help="ranking within the nodes, starts at 0"
+        "-nr",
+        "--node_rank",
+        default=0,
+        type=int,
+        help="ranking within the nodes, starts at 0",
     )
     parser.add_argument(
         "--epochs",
         default=2,
+        type=int,
+        metavar="N",
+        help="number of total epochs to run",
+    )
+    parser.add_argument(
+        "--replica_batch_size",
+        default=32,
         type=int,
         metavar="N",
         help="number of total epochs to run",

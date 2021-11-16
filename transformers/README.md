@@ -24,3 +24,5 @@ python transformers_example.py
 For more information on using Comet's built-in, core support for Transformers, please see:
 
 https://www.comet.ml/docs/python-sdk/huggingface/
+
+Link to example project: https://www.comet.ml/comet-integrations/comet-transformers-example/view/new/panels

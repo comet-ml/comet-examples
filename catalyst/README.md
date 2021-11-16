@@ -11,3 +11,5 @@ python comet_catalyst_example.py
 ```
 
 And insert your API Key to the textbox.
+
+Link to example project: https://www.comet.ml/comet-integrations/comet-catalyst-example/view/new/panels

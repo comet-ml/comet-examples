@@ -27,7 +27,6 @@ python comet-scikit-nlp-example.py
 ```
 
 ## Example Experiment
-You can find an examples of a completed runs in these [Experiment]: 
+You can find an example of a completed run for the classification model in this [Experiment] (https://www.comet.ml/team-comet-ml/scikit-learn-classification/3f482b8afe694315a07680b4fcd6c678?experiment-tab=chart&showOutliers=true&smoothing=0&transformY=smoothing&xAxis=wall)
 
-1) (https://www.comet.ml/team-comet-ml/scikit-learn-classification/3f482b8afe694315a07680b4fcd6c678?experiment-tab=chart&showOutliers=true&smoothing=0&transformY=smoothing&xAxis=wall)
-2) (https://www.comet.ml/team-comet-ml/scikit-learn-nlp/169f62f21c04418d9a11dee9886fd83c?experiment-tab=chart&showOutliers=true&smoothing=0&transformY=smoothing&xAxis=wall)
+You can find an example of a completed run for the NLP model in this [Experiment] (https://www.comet.ml/team-comet-ml/scikit-learn-nlp/169f62f21c04418d9a11dee9886fd83c?experiment-tab=chart&showOutliers=true&smoothing=0&transformY=smoothing&xAxis=wall)

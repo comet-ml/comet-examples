@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: optimizer-demo
+spec:
+  parallelism: 4
+  template:
+    spec:
+      containers:
+      - name: optimizer-demo
+        image: comet-optimizer
+        command: ['python', 'run_optimizer.py']
+        env:
+        - name: COMET_API_KEY
+          value: "REPLACE_WITH_YOUR_API_KEY"
+        - name: COMET_WORKSPACE
+          value: "REPLACE_WITH_YOUR_WORKSPACE"
+        - name: COMET_PROJECT_NAME
+          value: "REPLACE_WITH_YOUR_PROJECT_NAME"
+        - name: COMET_OPTIMIZER_ID
+          value: ""
+        imagePullPolicy: Never
+      restartPolicy: Never
+  backoffLimit: 4

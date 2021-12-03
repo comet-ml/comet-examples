@@ -1,3 +1,0 @@
-comet_ml
-scikit-learn
-numpy

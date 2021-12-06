@@ -26,4 +26,4 @@ python keras-mnist.py
 ```
 
 ## Example Experiment
-You can find an example of a completed run in this [Experiment](https://www.comet.ml/team-comet-ml/chainer/)
+You can find an example of a completed run in this [Experiment](https://www.comet.ml/team-comet-ml/keras-mnist/)

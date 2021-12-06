@@ -18,6 +18,7 @@ from keras.datasets import reuters
 from keras.layers import Activation, Dense, Dropout
 from keras.models import Sequential
 from keras.preprocessing.text import Tokenizer
+from keras import utils as np_utils
 
 # The sqlite store is needed for the model registry
 mlflow.set_tracking_uri("sqlite:///db.sqlite")
@@ -53,8 +54,8 @@ print(
     "Convert class vector to binary class matrix "
     "(for use with categorical_crossentropy)"
 )
-y_train = keras.utils.to_categorical(y_train, num_classes)
-y_test = keras.utils.to_categorical(y_test, num_classes)
+y_train = keras.utils.np_utils.to_categorical(y_train, num_classes)
+y_test = keras.utils.np_utils.to_categorical(y_test, num_classes)
 print("y_train shape:", y_train.shape)
 print("y_test shape:", y_test.shape)
 
@@ -68,7 +69,7 @@ model.add(Activation("softmax"))
 
 model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 
-history = model.fit(
+model.fit(
     x_train,
     y_train,
     batch_size=batch_size,
@@ -79,5 +80,6 @@ history = model.fit(
 score = model.evaluate(x_test, y_test, batch_size=batch_size, verbose=1)
 print("Test score:", score[0])
 print("Test accuracy:", score[1])
+mlflow.log_metric("Score", score)
 
-mlflow.keras.log_model(model, "model", registered_model_name="Test Model")
+mlflow.keras.log_model(model, "model")

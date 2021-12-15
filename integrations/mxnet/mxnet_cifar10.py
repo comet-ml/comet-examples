@@ -21,6 +21,10 @@ from sklearn.metrics import confusion_matrix
 import itertools
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
+import os
+
+COMET_API_KEY = os.environ.get('COMET_API_KEY')
+COMET_WORKSPACE = os.environ.get('COMET_WORKSPACE')
 
 # CLI
 parser = argparse.ArgumentParser(
@@ -29,7 +33,7 @@ parser.add_argument('--batch-size', type=int, default=32,
                     help='training batch size per device (CPU/GPU).')
 parser.add_argument('--num-gpus', type=int, default=0,
                     help='number of gpus to use.')
-parser.add_argument('--model', type=str, default='resnet',
+parser.add_argument('--model', type=str, default='resnet101_v1',
                     help='model to use. options are resnet and wrn. default is resnet.')
 parser.add_argument('-j', '--num-data-workers', dest='num_workers', default=4, type=int,
                     help='number of preprocessing workers')
@@ -111,10 +115,10 @@ transform_test = transforms.Compose([
 ])
 
 experiment = Experiment(
-    api_key="<YOUR API KEY>",
+    api_key=COMET_API_KEY,
     project_name="mxnet-comet-tutorial",
-    workspace="<YOUR WORKSPACE>")
-
+    workspace=COMET_WORKSPACE
+)
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,

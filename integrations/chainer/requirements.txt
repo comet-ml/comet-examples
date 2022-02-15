@@ -1,0 +1,6 @@
+comet_ml
+chainer
+dot
+pydot
+matplotlib
+numpy

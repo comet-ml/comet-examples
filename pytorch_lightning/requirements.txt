@@ -1,6 +1,0 @@
-# python3.7
-torch
-torchvision
-pillow
-pytorch_lightning
-comet_ml

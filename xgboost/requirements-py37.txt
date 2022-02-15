@@ -1,4 +1,0 @@
-# python3.7
-sklearn
-xgboost
-pandas

@@ -6,7 +6,7 @@ Annoy ([Approximate Nearest Neighbors](http://en.wikipedia.org/wiki/Nearest_neig
 
 ## Documentation
 
-For more information on using and configuring Annoy integration, please see: https://staging.comet.ml/docs/v2/integrations/third-party-tools/annoy/
+For more information on using and configuring Annoy integration, please see: https://www.comet.ml/docs/v2/integrations/third-party-tools/annoy/
 
 ## Setup
 

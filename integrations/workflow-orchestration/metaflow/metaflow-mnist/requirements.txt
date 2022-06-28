@@ -1,4 +1,4 @@
-comet_ml>=3.31.4
+comet_ml>=3.31.5
 metaflow
 pandas
 scikit-learn

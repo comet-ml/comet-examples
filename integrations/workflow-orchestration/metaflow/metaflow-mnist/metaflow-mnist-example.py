@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from comet_ml import API, init
+from comet_ml import init
 from comet_ml.integration.metaflow import comet_flow
 
 from metaflow import FlowSpec, Parameter, step
@@ -134,6 +134,7 @@ class MnistFlow(FlowSpec):
         """
         Evaluate the score of the models
         """
+        from comet_ml import API
 
         from sklearn.metrics import accuracy_score
 

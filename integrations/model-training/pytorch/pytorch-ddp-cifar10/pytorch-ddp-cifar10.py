@@ -1,23 +1,20 @@
+# coding: utf-8
 """Pytorch Distributed Data Parallel Example with Learning Rate Scaling
 
 """
-from comet_ml import Experiment
-
-import os
 import argparse
+import os
+
+from comet_ml import Experiment, init
 
 import torch
-import torchvision
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 import torch.distributed as dist
 import torch.multiprocessing as mp
-
+import torch.nn.functional as F
+from torch import nn, optim
+from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import random_split
 from torchvision import datasets, transforms
-from torch.nn.parallel import DistributedDataParallel as DDP
-from torch import nn, optim
 from tqdm import tqdm
 
 torch.manual_seed(0)
@@ -47,11 +44,11 @@ def load_data(data_dir="./data"):
         [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
     )
 
-    trainset = torchvision.datasets.CIFAR10(
+    trainset = datasets.CIFAR10(
         root=data_dir, train=True, download=True, transform=transform
     )
 
-    testset = torchvision.datasets.CIFAR10(
+    testset = datasets.CIFAR10(
         root=data_dir, train=False, download=True, transform=transform
     )
 
@@ -144,7 +141,9 @@ def run(local_rank, world_size, args):
     # The overall rank of this GPU process across multiple nodes
     global_process_rank = args.node_rank * args.gpus + local_rank
 
-    experiment = Experiment(auto_output_logging="simple")
+    experiment = Experiment(
+        auto_output_logging="simple", project_name="comet-example-pytorch-ddp-cifar10"
+    )
     experiment.log_parameter("run_id", args.run_id)
     experiment.log_parameter("global_process_rank", global_process_rank)
     experiment.log_parameter("replica_batch_size", args.replica_batch_size)
@@ -268,7 +267,8 @@ def get_args():
         type=str,
         default="8892",
         help="""Port that master is listening on, will default to 29500 if not
-        provided. Master must be able to accept network traffic on the host and port.""",
+           provided. Master must be able to accept network traffic on the
+           host and port.""",
     )
     return parser.parse_args()
 
@@ -277,13 +277,22 @@ def main():
     args = get_args()
     world_size = args.gpus * args.nodes
 
+    # Login to Comet if needed
+    init()
+
     # Make sure all nodes can talk to each other on the unprivileged port range
     # (1024-65535) in addition to the master port
     os.environ["MASTER_ADDR"] = args.master_addr
     os.environ["MASTER_PORT"] = args.master_port
 
     mp.spawn(
-        run, args=(world_size, args,), nprocs=args.gpus, join=True,
+        run,
+        args=(
+            world_size,
+            args,
+        ),
+        nprocs=args.gpus,
+        join=True,
     )
 
 

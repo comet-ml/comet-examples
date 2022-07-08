@@ -1,16 +1,16 @@
+# -*- coding: utf-8 -*-
+import argparse
+import os
+from collections import OrderedDict
+
 from comet_ml import Experiment
 
-import os
-import argparse
-
 import torch
-import torchvision
 import torch.distributed as dist
 import torch.multiprocessing as mp
-from torchvision import datasets, transforms
-from torch.nn.parallel import DistributedDataParallel as DDP
 from torch import nn, optim
-from collections import OrderedDict
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torchvision import datasets, transforms
 from tqdm import tqdm
 
 torch.manual_seed(0)
@@ -81,7 +81,9 @@ def run(gpu_id, world_size, args):
     # The overall rank of this GPU process across multiple nodes
     global_process_rank = args.nr * args.gpus + gpu_id
     if global_process_rank == 0:
-        experiment = Experiment(auto_output_logging="simple")
+        experiment = Experiment(
+            auto_output_logging="simple", project_name="comet-example-ddp-mnist"
+        )
 
     else:
         experiment = Experiment(disabled=True)
@@ -97,7 +99,7 @@ def run(gpu_id, world_size, args):
     optimizer = optim.Adam(model.parameters())
 
     # Load training data
-    train_dataset = torchvision.datasets.MNIST(
+    train_dataset = datasets.MNIST(
         root="./data", train=True, transform=transforms.ToTensor(), download=True
     )
     train_sampler = torch.utils.data.distributed.DistributedSampler(
@@ -155,7 +157,8 @@ def get_args():
         type=str,
         default="8892",
         help="""Port that master is listening on, will default to 29500 if not
-        provided. Master must be able to accept network traffic on the host and port.""",
+           provided. Master must be able to accept network traffic on the
+           host and port.""",
     )
     return parser.parse_args()
 

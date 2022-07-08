@@ -1,15 +1,17 @@
-from comet_ml import Experiment
-
+# coding: utf-8
 import argparse
+
+from comet_ml import Experiment, init
+
+import horovod.torch as hvd
 import torch.multiprocessing as mp
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torchvision import datasets, transforms
 import torch.utils.data.distributed
-import horovod.torch as hvd
+from torchvision import datasets, transforms
 
-PROJECT_NAME = "pytorch-horovod"
+PROJECT_NAME = "comet-example-pytorch-horovod-mnist"
 
 # Training settings
 parser = argparse.ArgumentParser(description="PyTorch MNIST Example")
@@ -160,6 +162,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
+    # Login to Comet if needed
+    init()
+
     # Horovod: initialize library.
     hvd.init()
     torch.manual_seed(args.seed)
@@ -177,8 +182,9 @@ if __name__ == "__main__":
     torch.set_num_threads(1)
 
     kwargs = {"num_workers": 1, "pin_memory": True} if args.cuda else {}
-    # When supported, use 'forkserver' to spawn dataloader workers instead of 'fork' to prevent
-    # issues with Infiniband implementations that are not fork-safe
+    # When supported, use 'forkserver' to spawn dataloader workers instead
+    # of 'fork' to prevent issues with Infiniband implementations that are
+    # not fork-safe
     if (
         kwargs.get("num_workers", 0) > 0
         and hasattr(mp, "_supports_context")

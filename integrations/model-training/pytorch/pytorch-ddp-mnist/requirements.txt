@@ -1,0 +1,4 @@
+comet_ml>=3.24.1
+torch
+torchvision
+tqdm

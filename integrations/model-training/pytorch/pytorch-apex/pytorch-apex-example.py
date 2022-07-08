@@ -2,14 +2,14 @@
 # Copyright (C) 2018-2020 Nvidia
 # Released under BSD-3 license https://github.com/NVIDIA/apex/blob/master/LICENSE
 
-from comet_ml import Experiment
+from comet_ml import Experiment, init
 
 import torch
 from apex import amp
 
 
 def run():
-    experiment = Experiment()
+    experiment = Experiment(project_name="comet-example-pytorch-apex-example")
 
     torch.cuda.set_device("cuda:0")
 
@@ -17,10 +17,12 @@ def run():
 
     N, D_in, D_out = 64, 1024, 16
 
-    # Each process receives its own batch of "fake input data" and "fake target data."
-    # The "training loop" in each process just uses this fake batch over and over.
-    # https://github.com/NVIDIA/apex/tree/master/examples/imagenet provides a more realistic
-    # example of distributed data sampling for both training and validation.
+    # Each process receives its own batch of "fake input data" and "fake
+    # target data." The "training loop" in each process just uses this fake
+    # batch over and over.
+    # https://github.com/NVIDIA/apex/tree/master/examples/imagenet provides a
+    # more realistic example of distributed data sampling for both training
+    # and validation.
     x = torch.randn(N, D_in, device="cuda")
     y = torch.randn(N, D_out, device="cuda")
 
@@ -44,4 +46,7 @@ def run():
 
 
 if __name__ == "__main__":
+    # Login to Comet if needed
+    init()
+
     run()

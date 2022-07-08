@@ -1,17 +1,16 @@
-import comet_ml
-
-import os
+# -*- coding: utf-8 -*-
 import argparse
 import hashlib
+import os
+from collections import OrderedDict
+
+import comet_ml
 
 import torch
-import torchvision
 import torch.distributed as dist
-import torch.multiprocessing as mp
-from torchvision import datasets, transforms
-from torch.nn.parallel import DistributedDataParallel as DDP
 from torch import nn, optim
-from collections import OrderedDict
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torchvision import datasets, transforms
 from tqdm import tqdm
 
 torch.manual_seed(0)
@@ -19,7 +18,7 @@ transform = transforms.Compose(
     [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
 )
 
-PROJECT_NAME = os.environ.get("COMET_PROJECT_NAME", "pytorch-ddp-mnist-single")
+PROJECT_NAME = "comet-example-ddp-mnist-single"
 INPUT_SIZE = 784
 HIDDEN_SIZES = [128, 64]
 OUTPUT_SIZE = 10
@@ -112,7 +111,7 @@ def run(local_rank, args):
     optimizer = optim.Adam(ddp_model.parameters())
 
     # Load training data
-    train_dataset = torchvision.datasets.MNIST(
+    train_dataset = datasets.MNIST(
         root="./data", train=True, transform=transforms.ToTensor(), download=True
     )
     train_sampler = torch.utils.data.distributed.DistributedSampler(
@@ -158,7 +157,8 @@ def get_args():
         type=str,
         default="8892",
         help="""Port that master is listening on, will default to 29500 if not
-        provided. Master must be able to accept network traffic on the host and port.""",
+           provided. Master must be able to accept network traffic on the
+           host and port.""",
     )
     parser.add_argument(
         "-n",

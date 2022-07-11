@@ -10,9 +10,9 @@ PyTorch enables fast, flexible experimentation and efficient production through 
 
 For more information on using and configuring Metaflow integration, please see: https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch/
 
-## See it live
+## See it
 
-You can see how this example looks like by taking a look at this [public Comet Project](https://www.comet.com/examples/comet-example-pytorch-rich-logging/).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-pytorch-rich-logging/).
 
 ## Setup
 

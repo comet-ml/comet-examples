@@ -20,7 +20,7 @@ python -m pip install -r requirements.txt
 
 ## Run the example
 
-This example is a XXX TODO
+This example is a synthetic example how to uses Comet with [NVIDIA Apex](https://nvidia.github.io/apex/) for easy-training with mixed precision training.
 
 
 ```bash

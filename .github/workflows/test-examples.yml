@@ -1,0 +1,73 @@
+name: test-examples
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  test-notebooks:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest]
+        python-version: [3.9]
+        notebooks:
+          - integrations/model-training/pytorch/notebooks/Comet_and_Pytorch.ipynb
+    env:
+      NOTEBOOK_TO_TEST: ${{ matrix.notebooks }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ matrix.os }}-${{ matrix.python-version }}-pip
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.python-version }}-pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U ipython
+      - name: Test notebook
+        run: ipython ${NOTEBOOK_TO_TEST}
+  test-scripts:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.9]
+        scripts:
+          - integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py
+          - integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ matrix.os }}-${{ matrix.python-version }}-pip
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.python-version }}-pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r "$(dirname integrations/pytorch/pytorch-mnist/pytorch-mnist-example.py)/requirements.txt"
+      - name: Test examples
+        working-directory: ${{ matrix.scripts }}
+        run: bash ./run_examples.sh

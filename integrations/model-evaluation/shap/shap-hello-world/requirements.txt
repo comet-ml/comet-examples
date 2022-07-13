@@ -1,0 +1,6 @@
+comet_ml
+ipython
+matplotlib
+protobuf<3.20
+shap
+tensorflow==1.15.3

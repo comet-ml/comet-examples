@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -U ipython
+          pip install -U ipython nbconvert
       - name: Test notebook
         run: ipython ${NOTEBOOK_TO_TEST}
   test-scripts:

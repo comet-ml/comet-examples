@@ -2,7 +2,7 @@ name: test-examples
 on:
   pull_request:
     branches:
-      - main
+      - master
   workflow_dispatch:
 jobs:
   test-notebooks:

@@ -3,4 +3,4 @@ ipython
 matplotlib
 protobuf<3.20
 shap
-tensorflow==1.15.3
+tensorflow==2.7.2

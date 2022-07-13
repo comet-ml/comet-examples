@@ -67,7 +67,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r "$(dirname integrations/pytorch/pytorch-mnist/pytorch-mnist-example.py)/requirements.txt"
+          pip install -r "$(dirname ${{ matrix.scripts }})/requirements.txt"
       - name: Test examples
         working-directory: ${{ matrix.scripts }}
         run: bash ./run_examples.sh

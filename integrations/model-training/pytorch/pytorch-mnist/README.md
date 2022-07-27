@@ -8,7 +8,7 @@ PyTorch enables fast, flexible experimentation and efficient production through 
 
 ## Documentation
 
-For more information on using and configuring Metaflow integration, please see: https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch/
+For more information on using and configuring the PyTorch integration, see: https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch/
 
 ## See it
 
@@ -24,7 +24,7 @@ python -m pip install -r requirements.txt
 
 ## Run the example
 
-This example is based on the tutorial from [Yunjey](https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/01-basics/feedforward_neural_network/main.py) this code trains an RNN to detect hand writted digits from the MNIST dataset.
+This example is based on the tutorial from [Yunjey](https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/01-basics/feedforward_neural_network/main.py). The code trains an RNN to detect hand-written digits from the MNIST dataset.
 
 
 ```bash

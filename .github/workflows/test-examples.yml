@@ -1,0 +1,78 @@
+name: test-examples
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  test-notebooks:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest]
+        python-version: [3.9]
+        notebooks:
+          - integrations/model-training/pytorch/notebooks/Comet_and_Pytorch.ipynb
+    env:
+      NOTEBOOK_TO_TEST: ${{ matrix.notebooks }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ matrix.os }}-${{ matrix.python-version }}-pip
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.python-version }}-pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U ipython nbconvert
+      - name: Test notebook
+        run: ipython ${NOTEBOOK_TO_TEST}
+        env:
+          COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
+          COMET_WORKSPACE: cometexamples-tests
+  test-scripts:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.9]
+        scripts:
+          - integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py
+          - integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ matrix.os }}-${{ matrix.python-version }}-pip
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.python-version }}-pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r "$(dirname ${{ matrix.scripts }})/requirements.txt"
+      - name: Test examples
+        run: python ${{ matrix.scripts }}
+        env:
+          COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
+          COMET_WORKSPACE: cometexamples-tests

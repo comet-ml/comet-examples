@@ -40,6 +40,7 @@ jobs:
         run: ipython ${NOTEBOOK_TO_TEST}
         env:
           COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
+          COMET_WORKSPACE: cometexamples-tests
   test-scripts:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -74,3 +75,4 @@ jobs:
         run: python ${{ matrix.scripts }}
         env:
           COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
+          COMET_WORKSPACE: cometexamples-tests

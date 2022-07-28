@@ -13,6 +13,8 @@ jobs:
         os: [ ubuntu-latest]
         python-version: [3.9]
         notebooks:
+          - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb
+          - integrations/model-training/pytorch-lightning/notebooks/Comet_and_Pytorch_Lightning.ipynb
           - integrations/model-training/pytorch/notebooks/Comet_and_Pytorch.ipynb
     env:
       NOTEBOOK_TO_TEST: ${{ matrix.notebooks }}

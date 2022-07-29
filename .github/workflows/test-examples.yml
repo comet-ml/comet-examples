@@ -42,7 +42,6 @@ jobs:
         run: |
           python -m pip list
       - name: Test notebook
-        working-directory: ./app
         run: |
           directory=$(dirname -- ${NOTEBOOK_TO_TEST})
           notebook=$(basename -- ${NOTEBOOK_TO_TEST})

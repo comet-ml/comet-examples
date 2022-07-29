@@ -42,7 +42,12 @@ jobs:
         run: |
           python -m pip list
       - name: Test notebook
-        run: ipython ${NOTEBOOK_TO_TEST}
+        working-directory: ./app
+        run: |
+          directory=$(dirname -- ${NOTEBOOK_TO_TEST})
+          notebook=$(basename -- ${NOTEBOOK_TO_TEST})
+          cd "$directory"
+          ipython "$notebook"
         env:
           COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
           COMET_WORKSPACE: cometexamples-tests

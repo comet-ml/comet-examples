@@ -1,0 +1,11 @@
+name: Pull Request title validation
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+jobs:
+  branch-naming-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: deepakputhraya/action-pr-title@master
+        with:
+          regex: '(^\[[A-Z]{2,3}-[0-9]{1,10}]|^\[NA])' # PR title should start with [CM-1234] OR [NA] (if you dont have a ticket, you should avoid this)

@@ -22,7 +22,7 @@ python -m pip install -r requirements.txt
 
 ## Run the example
 
-The following example demonstrates how to use the Comet pipelines integration to track the state of pipelines run on Vertex. Before running, make sure that you are correctly authentified against your Google Cloud Platform account and project, the easiest way to do so is by using the [Google Cloud CLI](https://cloud.google.com/sdk/docs/).
+The following example demonstrates how to use the Comet pipelines integration to track the state of pipelines run on Vertex. Before running, make sure that you are correctly authenticated against your Google Cloud Platform account and project, the easiest way to do so is by using the [Google Cloud CLI](https://cloud.google.com/sdk/docs/).
 
 ```bash
 python demo_pipeline.py

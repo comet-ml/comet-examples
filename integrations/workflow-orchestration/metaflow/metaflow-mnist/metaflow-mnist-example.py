@@ -84,6 +84,7 @@ class MnistFlow(FlowSpec):
         Fit a gaussian naive bayes model to the data
         """
         # Import model
+        from sklearn.metrics import accuracy_score
         from sklearn.naive_bayes import GaussianNB
 
         modelA = GaussianNB()
@@ -96,6 +97,10 @@ class MnistFlow(FlowSpec):
 
         self.comet_experiment.log_confusion_matrix(self.Y_test, self.predictionA)
 
+        self.accuracy_gaussian = accuracy_score(self.predictionA, self.Y_test)
+
+        self.comet_experiment.log_metric("accuracy", self.accuracy_gaussian)
+
         self.next(self.join)
 
     @step
@@ -105,8 +110,9 @@ class MnistFlow(FlowSpec):
         """
         # Import model
         from sklearn.ensemble import RandomForestClassifier
+        from sklearn.metrics import accuracy_score
 
-        modelB = RandomForestClassifier(random_state=1, verbose=1, n_jobs=-1)
+        modelB = RandomForestClassifier(random_state=1, n_jobs=-1)
 
         # Fit the model
         modelB.fit(self.X_train, self.Y_train)
@@ -115,6 +121,10 @@ class MnistFlow(FlowSpec):
         self.predictionB = modelB.predict(self.X_test)
 
         self.comet_experiment.log_confusion_matrix(self.Y_test, self.predictionB)
+
+        self.accuracy_random_forest = accuracy_score(self.predictionB, self.Y_test)
+
+        self.comet_experiment.log_metric("accuracy", self.accuracy_random_forest)
 
         self.next(self.join)
 
@@ -136,18 +146,18 @@ class MnistFlow(FlowSpec):
         """
         from comet_ml import API
 
-        from sklearn.metrics import accuracy_score
-
         # Measure accuracy
-        accuracy_gaussian = accuracy_score(self.predictionA, self.Y_test)
-        print("Accuracy score for GaussianNB {}".format(accuracy_gaussian))
+        self.comet_experiment.log_metric("accuracy_gaussian", self.accuracy_gaussian)
+        print("Accuracy score for GaussianNB {}".format(self.accuracy_gaussian))
 
-        accuracy_random_forest = accuracy_score(self.predictionB, self.Y_test)
-        print("Accuracy score for RandomForest {}".format(accuracy_random_forest))
+        self.comet_experiment.log_metric(
+            "accuracy_random_forest", self.accuracy_random_forest
+        )
+        print("Accuracy score for RandomForest {}".format(self.accuracy_random_forest))
 
         # Logs which model was the best to the Run Experiment to easily
         # compare between different Runs
-        if accuracy_gaussian > accuracy_random_forest:
+        if self.accuracy_gaussian > self.accuracy_random_forest:
             best_model = "GaussianNB"
         else:
             best_model = "RandomForest"

@@ -1,4 +1,5 @@
 from comet_ml import Experiment
+from comet_ml.utils import tag_experiment_with_transport_layer_identifier
 
 import os
 import argparse
@@ -86,6 +87,7 @@ def run(gpu_id, world_size, args):
     else:
         experiment = Experiment(disabled=True)
 
+    tag_experiment_with_transport_layer_identifier(experiment)
     print(f"Running DDP model on Global Process with Rank: {global_process_rank }.")
     setup(global_process_rank, world_size, args.backend)
 
@@ -103,7 +105,7 @@ def run(gpu_id, world_size, args):
     train_sampler = torch.utils.data.distributed.DistributedSampler(
         train_dataset, num_replicas=world_size, rank=global_process_rank
     )
-    trainloader = torch.utils.data.DataLoader(
+    train_loader = torch.utils.data.DataLoader(
         dataset=train_dataset,
         batch_size=BATCH_SIZE,
         shuffle=False,
@@ -113,7 +115,7 @@ def run(gpu_id, world_size, args):
     )
 
     for epoch in range(1, args.epochs + 1):
-        train(ddp_model, optimizer, criterion, trainloader, epoch)
+        train(ddp_model, optimizer, criterion, train_loader, epoch)
 
     cleanup()
     experiment.end()

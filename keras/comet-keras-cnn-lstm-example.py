@@ -10,13 +10,13 @@ exp = Experiment()
 tag_experiment_with_transport_layer_identifier(exp)
 
 
-from keras.preprocessing import sequence
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
 from keras.layers import Embedding
 from keras.layers import LSTM
 from keras.layers import Conv1D, MaxPooling1D
 from keras.datasets import imdb
+from keras.utils import pad_sequences
 
 # Embedding
 max_features = 20000
@@ -58,8 +58,8 @@ print(len(x_train), 'train sequences')
 print(len(x_test), 'test sequences')
 
 print('Pad sequences (samples x time)')
-x_train = sequence.pad_sequences(x_train, maxlen=maxlen)
-x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
+x_train = pad_sequences(x_train, maxlen=maxlen)
+x_test = pad_sequences(x_test, maxlen=maxlen)
 print('x_train shape:', x_train.shape)
 print('x_test shape:', x_test.shape)
 

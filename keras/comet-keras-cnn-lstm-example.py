@@ -2,14 +2,12 @@
 # import comet_ml in the top of your file(before all other Machine learning libs)
 '''Example adapted from https://github.com/keras-team/keras/tree/master/examples'''
 from comet_ml import Experiment
+from comet_ml.utils import tag_experiment_with_transport_layer_identifier
 
 import os
 # Setting the API key (saved as environment variable)
-exp = Experiment(
-    #api_key="YOUR API KEY",
-    # or
-    api_key=os.environ.get("COMET_API_KEY"),
-    project_name='comet-examples')
+exp = Experiment()
+tag_experiment_with_transport_layer_identifier(exp)
 
 
 from keras.preprocessing import sequence

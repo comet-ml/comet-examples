@@ -1,4 +1,5 @@
 import comet_ml
+from comet_ml.utils import tag_experiment_with_transport_layer_identifier
 import warnings
 from transformers import AutoTokenizer
 from transformers import BertForSequenceClassification, Trainer, TrainingArguments
@@ -38,6 +39,7 @@ def preprocess(texts, labels):
 
 def compute_metrics(pred):    
     experiment = comet_ml.get_global_experiment()
+    tag_experiment_with_transport_layer_identifier(experiment)
     
     labels = pred.label_ids
     preds = pred.predictions.argmax(-1)

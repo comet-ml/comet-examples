@@ -3,6 +3,7 @@
 # Released under BSD-3 license https://github.com/NVIDIA/apex/blob/master/LICENSE
 
 from comet_ml import Experiment
+from comet_ml.utils import tag_experiment_with_transport_layer_identifier
 
 import torch
 from apex import amp
@@ -10,6 +11,7 @@ from apex import amp
 
 def run():
     experiment = Experiment()
+    tag_experiment_with_transport_layer_identifier(experiment)
 
     torch.cuda.set_device("cuda:0")
 

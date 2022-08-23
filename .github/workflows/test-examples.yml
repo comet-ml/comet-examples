@@ -14,6 +14,8 @@ jobs:
         python-version: [3.9]
         notebooks:
           - guides/get-started/Comet_Quickstart.ipynb
+          - guides/manage_data/A_Guide_to_Remote_Artifacts.ipynb
+          - guides/manage_data/Introduction_to_Artifacts.ipynb
           - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb
           - integrations/model-training/pytorch-lightning/notebooks/Comet_and_Pytorch_Lightning.ipynb
           - integrations/model-training/pytorch/notebooks/Comet_and_Pytorch.ipynb

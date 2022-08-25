@@ -60,6 +60,7 @@ jobs:
         os: [ubuntu-latest]
         python-version: [3.9]
         scripts:
+          - integrations/model-training/keras/keras-cnn-lstm/comet-keras-cnn-lstm-example.py
           - integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py
           - integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py
     env:

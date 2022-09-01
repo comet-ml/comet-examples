@@ -111,7 +111,7 @@ class RegressionFlow(FlowSpec):
         # Logs which model was the best to the Run Experiment to easily
         # compare between different Runs
         run_experiment = API().get_experiment_by_key(self.run_comet_experiment_key)
-        run_experiment.log_other("Best Model", best_model)
+        run_experiment.log_parameter("Best Model", best_model)
 
         self.next(self.end)
 

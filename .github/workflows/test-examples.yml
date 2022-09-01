@@ -19,6 +19,7 @@ jobs:
           - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb
           - integrations/model-training/pytorch-lightning/notebooks/Comet_and_Pytorch_Lightning.ipynb
           - integrations/model-training/pytorch/notebooks/Comet_and_Pytorch.ipynb
+          - integrations/workflow-orchestration/metaflow/notebooks/metaflow_hello_world.ipynb
     env:
       NOTEBOOK_TO_TEST: ${{ matrix.notebooks }}
     steps:
@@ -63,6 +64,8 @@ jobs:
         scripts:
           - integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py
           - integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py
+          - integrations/workflow-orchestration/metaflow/metaflow-hello-world/helloworld.py
+          - integrations/workflow-orchestration/metaflow/metaflow-regression/metaflow-regression-example.py
     env:
       SCRIPT_TO_TEST: ${{ matrix.scripts }}
     steps:

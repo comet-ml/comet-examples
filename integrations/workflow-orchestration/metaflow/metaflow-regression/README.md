@@ -18,10 +18,8 @@ python -m pip install -r requirements.txt
 
 ## Run the example
 
-This example is a Metaflow example training two models on the MNIST database of handwritten digits. It fits two Scikit-Learn estimators, a [GaussianNB](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html) one and a [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) one. For each estimator, a confusion matrix is generated with the test dataset.
+This example is a Metaflow example training three Regression models on the same toy dataset. The models prediction is then logged as an interactive Plotly chart and saved as a Metaflow card.
 
 ```bash
-python helloworld.py run
+python metaflow-regression-example.py run
 ```
-
-> This example uses a small version of the MNist dataset [available on Kaggle](https://www.kaggle.com/datasets/oddrationale/mnist-in-csv). If you want to train with the full dataset, connect to Kaggle and download the full file from there.

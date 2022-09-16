@@ -61,13 +61,13 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python-version: [3.9]
-        scripts:
-          - integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py
-          - integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py
-          - integrations/workflow-orchestration/metaflow/metaflow-hello-world/helloworld.py
-          - integrations/workflow-orchestration/metaflow/metaflow-regression/metaflow-regression-example.py
+        example:
+          - {script: "integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py", args: []}
+          - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", args: []}
+          - {script: "integrations/workflow-orchestration/metaflow/metaflow-hello-world/helloworld.py", args: ["run"]}
+          - {script: "integrations/workflow-orchestration/metaflow/metaflow-regression/metaflow-regression-example.py", args: ["run"]}
     env:
-      SCRIPT_TO_TEST: ${{ matrix.scripts }}
+      SCRIPT_TO_TEST: ${{ matrix.example.script }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -94,7 +94,7 @@ jobs:
           directory=$(dirname -- "${SCRIPT_TO_TEST}")
           script=$(basename -- "${SCRIPT_TO_TEST}")
           cd "$directory" || exit
-          python "$script"
+          python "$script" ${{ matrix.example.args }}
         env:
           COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
           COMET_WORKSPACE: cometexamples-tests

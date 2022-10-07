@@ -65,6 +65,7 @@ jobs:
         example:
           - {script: "integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", arg: ""}
+          - {script: "integrations/model-training/pytorch/pytorch-tensorboard/pytorch-tensorboard-example.py", arg: ""}
           - {script: "integrations/workflow-orchestration/metaflow/metaflow-hello-world/helloworld.py", arg: "run"}
           - {script: "integrations/workflow-orchestration/metaflow/metaflow-regression/metaflow-regression-example.py", arg: "run"}
     env:

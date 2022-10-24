@@ -1,0 +1,6 @@
+comet_ml>=3.31.15
+metaflow
+metaflow-card-html
+pandas
+plotly
+scikit-learn

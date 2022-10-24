@@ -4,3 +4,8 @@ metaflow-card-html
 pandas
 plotly
 scikit-learn
+timm
+datasets
+transformers
+torch
+torchvision

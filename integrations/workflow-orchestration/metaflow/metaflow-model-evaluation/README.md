@@ -25,7 +25,7 @@ python -m pip install -r requirements.txt
 In this guide, we will demonstrate how to use Comet's Metaflow integration to build a simple model evaluation flow.
 
 ```shell
-python metaflow_model_evaluation.py --no-pylint run --max-workers 1 --n_samples 100
+python metaflow_model_evaluation.py run --max-workers 1 --n_samples 100
 ```
 
 Our flow consists of two steps.

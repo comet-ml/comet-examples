@@ -1,23 +1,21 @@
-import json
+# coding: utf-8
 
-import PIL
-import timm
-import torch
-import torchvision.transforms as transforms
 from comet_ml.integration.metaflow import comet_flow
 from comet_ml.integration.pytorch import log_model
-from datasets import load_dataset
-from metaflow import FlowSpec, JSONType, Parameter, card, step
-from sklearn.metrics import accuracy_score, classification_report
-from torch.utils.data import DataLoader
 
-# define custom transform function
-transform = transforms.Compose(
-    [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
-)
+from metaflow import FlowSpec, Parameter, step
 
 
 def collate_fn(examples):
+    import PIL
+    import torch
+    import torchvision.transforms as transforms
+
+    # define custom transform function
+    transform = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
+    )
+
     images = []
     labels = []
 
@@ -74,6 +72,8 @@ class ModelEvaluationFlow(FlowSpec):
         """
         Load the data
         """
+        import json
+
         with open("imagenet_labels.json", "rb") as f:
             metadata = json.load(f)
             self.label_names = metadata["labels"]
@@ -82,6 +82,12 @@ class ModelEvaluationFlow(FlowSpec):
 
     @step
     def evaluate_classification_metrics(self):
+        import timm
+        import torch
+        from datasets import load_dataset
+        from sklearn.metrics import accuracy_score, classification_report
+        from torch.utils.data import DataLoader
+
         device = "cuda" if torch.cuda.is_available() else "cpu"
         dataset = load_dataset(
             self.dataset_name, split=self.dataset_split, streaming=True

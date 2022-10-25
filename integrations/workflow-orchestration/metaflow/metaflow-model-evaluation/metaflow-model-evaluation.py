@@ -1,4 +1,5 @@
 import json
+import os
 
 import PIL
 import timm
@@ -34,6 +35,29 @@ def collate_fn(examples):
     labels = torch.tensor(labels, dtype=torch.int)
 
     return images, labels
+
+
+def register_model(best_model, registry_name):
+    from comet_ml import API
+
+    api = API()
+
+    try:
+        existing_models = api.get_registry_model_versions(
+            workspace=os.environ["COMET_WORKSPACE"], registry_name=registry_name
+        )
+        max_model_version = max(existing_models)
+
+        new_model_version = max_model_version.split(".")
+        new_model_version[0] = str(int(new_model_version[0]) + 1)
+        new_model_version = ".".join(new_model_version)
+    except:
+        new_model_version = "1.0.0"
+
+    api_experiment = api.get_experiment_by_key(best_model["experiment_id"])
+    api_experiment.register_model(
+        best_model["model_name"], registry_name=registry_name, version=new_model_version
+    )
 
 
 @comet_flow(project_name="comet-example-metaflow-model-evaluation")
@@ -133,20 +157,12 @@ class ModelEvaluationFlow(FlowSpec):
 
     @step
     def join(self, inputs):
-        from comet_ml import API
-
         self.results = [input.results for input in inputs]
 
         # Find best model based on macro averaged recall
         best_model = max(self.results, key=lambda x: x["macro avg"]["recall"])
 
-        run_experiment = API().get_experiment_by_key(best_model["experiment_id"])
-        run_experiment.register_model(
-            best_model["model_name"],
-            registry_name="sketch-model",
-            description="Image Classification Model for Sketch Recognition",
-        )
-
+        register_model(best_model, "sketch-model")
         self.next(self.end)
 
     @step

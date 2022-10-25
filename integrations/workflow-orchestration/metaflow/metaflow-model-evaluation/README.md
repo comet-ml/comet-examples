@@ -20,6 +20,13 @@ Install dependencies
 python -m pip install -r requirements.txt
 ```
 
+Set Comet Credentials
+
+```shell
+export COMET_API_KEY=<Your Comet API Key>
+export COMET_WORKSPACE=<Your Comet Workspace>
+```
+
 ## Run the example
 
 In this guide, we will demonstrate how to use Comet's Metaflow integration to build a simple model evaluation flow.

@@ -1,7 +1,10 @@
+# coding: utf-8
+
 import os
 
 from comet_ml.integration.metaflow import comet_flow
 from comet_ml.integration.pytorch import log_model
+
 from metaflow import FlowSpec, Parameter, step
 
 
@@ -47,7 +50,7 @@ def register_model(best_model, registry_name):
         new_model_version = max_model_version.split(".")
         new_model_version[0] = str(int(new_model_version[0]) + 1)
         new_model_version = ".".join(new_model_version)
-    except:
+    except Exception:
         new_model_version = "1.0.0"
 
     api_experiment = api.get_experiment_by_key(best_model["experiment_id"])

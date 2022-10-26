@@ -22,6 +22,7 @@ hyper_params = {
 comet_ml.init()
 
 experiment = comet_ml.Experiment(project_name="comet-example-pytorch-tensorboard")
+experiment.log_parameters(hyper_params)
 
 # transforms
 transform = transforms.Compose(
@@ -60,6 +61,8 @@ classes = (
     "Ankle Boot",
 )
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class Net(nn.Module):
     def __init__(self):
@@ -81,7 +84,7 @@ class Net(nn.Module):
         return x
 
 
-net = Net()
+net = Net().to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(

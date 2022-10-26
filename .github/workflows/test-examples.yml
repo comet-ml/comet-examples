@@ -19,6 +19,9 @@ jobs:
           - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb
           - integrations/model-training/pytorch-lightning/notebooks/Comet_and_Pytorch_Lightning.ipynb
           - integrations/model-training/pytorch/notebooks/Comet_and_Pytorch.ipynb
+          - integrations/model-training/pytorch/notebooks/Comet_Pytorch_Tensorboard.ipynb
+          - integrations/model-training/pytorch/notebooks/Comet_Pytorch_TensorboardX.ipynb
+          - integrations/model-training/tensorflow/notebooks/Comet_and_Tensorflow.ipynb
           - integrations/model-training/yolov5/notebooks/Comet_and_YOLOv5.ipynb
           - integrations/workflow-orchestration/metaflow/notebooks/metaflow_hello_world.ipynb
     env:

@@ -10,7 +10,7 @@ For more information on using and configuring Metaflow integration, please see: 
 
 ## See it
 
-[Here is an example project](https://www.comet.com/team-comet-ml/comet-example-metaflow-model-evaluation/view/oq9fv1aJFAzkJJXhqQHcmS62D/panels) with the results of a Metaflow run.
+[Here is an example project](https://www.comet.com/examples/comet-example-metaflow-model-evaluation/view/Erns9fTvjSvl7nLabBJoydPxg/panels) with the results of a Metaflow run.
 
 ## Setup
 

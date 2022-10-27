@@ -4,7 +4,6 @@ import os
 
 from comet_ml.integration.metaflow import comet_flow
 from comet_ml.integration.pytorch import log_model
-
 from metaflow import FlowSpec, Parameter, step
 
 
@@ -34,6 +33,61 @@ def collate_fn(examples):
     labels = torch.tensor(labels, dtype=torch.int)
 
     return images, labels
+
+
+def fetch_latest_model_metrics(registry_name, max_model_version):
+    from comet_ml import API
+
+    api = API()
+
+    try:
+        model_assets = api.get_model_registry_version_assets(
+            workspace=os.environ["COMET_WORKSPACE"],
+            registry_name=registry_name,
+            version=max_model_version,
+        )
+        model_experiment_key = model_assets["experimentModel"]["experimentKey"]
+        experiment = api.get_experiment_by_key(model_experiment_key)
+
+        metrics_summary = experiment.get_metrics_summary()
+        metrics_summary_map = {
+            x["name"]: float(x["valueCurrent"]) for x in metrics_summary
+        }
+
+        return metrics_summary_map
+
+    except Exception:
+        return None
+
+
+def update_model(candidate_model_score, metric_name, registry_name):
+    import comet_ml
+
+    api = comet_ml.API()
+
+    try:
+        existing_models = api.get_registry_model_names(os.getenv("COMET_WORKSPACE"))
+        if registry_name not in existing_models:
+            # Register the model if it doesn't exist
+            return True
+
+        model_versions = api.get_registry_model_versions(
+            workspace=os.environ["COMET_WORKSPACE"], registry_name=registry_name
+        )
+        max_model_version = max(model_versions)
+
+        latest_model_metrics = fetch_latest_model_metrics(
+            registry_name, max_model_version
+        )
+
+        current_model_score = latest_model_metrics[metric_name]
+        if candidate_model_score > current_model_score:
+            return True
+        else:
+            return False
+
+    except Exception:
+        return False
 
 
 def register_model(best_model, registry_name):
@@ -169,7 +223,10 @@ class ModelEvaluationFlow(FlowSpec):
         # Find best model based on macro averaged recall
         best_model = max(self.results, key=lambda x: x["macro avg"]["recall"])
 
-        register_model(best_model, "sketch-model")
+        candidate_score = best_model["macro avg"]["recall"]
+        if update_model(candidate_score, "macro_avg_recall", "sketch-model"):
+            register_model(best_model, "sketch-model")
+
         self.next(self.end)
 
     @step

@@ -225,6 +225,7 @@ class ModelEvaluationFlow(FlowSpec):
 
         candidate_score = best_model["macro avg"]["recall"]
         if update_model(candidate_score, "macro_avg_recall", "sketch-model"):
+            print("Updating Registry Model")
             register_model(best_model, "sketch-model")
 
         self.next(self.end)

@@ -5,9 +5,6 @@ from comet_ml.integration.metaflow import comet_flow
 
 from metaflow import FlowSpec, step
 
-# Login to Comet if needed
-init()
-
 
 @comet_flow(project_name="comet-example-metaflow-hello-world")
 class HelloFlow(FlowSpec):
@@ -48,4 +45,7 @@ class HelloFlow(FlowSpec):
 
 
 if __name__ == "__main__":
+    # Login to Comet if needed
+    init()
+
     HelloFlow()

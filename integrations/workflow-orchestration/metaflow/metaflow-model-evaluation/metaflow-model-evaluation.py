@@ -2,8 +2,10 @@
 
 import os
 
+import comet_ml
 from comet_ml.integration.metaflow import comet_flow
 from comet_ml.integration.pytorch import log_model
+
 from metaflow import FlowSpec, Parameter, step
 
 
@@ -227,6 +229,8 @@ class ModelEvaluationFlow(FlowSpec):
         if update_model(candidate_score, "macro_avg_recall", "sketch-model"):
             print("Updating Registry Model")
             register_model(best_model, "sketch-model")
+        else:
+            print("Not Updating Registry Model")
 
         self.next(self.end)
 
@@ -236,4 +240,6 @@ class ModelEvaluationFlow(FlowSpec):
 
 
 if __name__ == "__main__":
+    comet_ml.init()
+
     ModelEvaluationFlow()

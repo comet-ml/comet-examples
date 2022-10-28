@@ -5,8 +5,7 @@ import os
 import comet_ml
 from comet_ml.integration.metaflow import comet_flow
 from comet_ml.integration.pytorch import log_model
-
-from metaflow import FlowSpec, Parameter, step
+from metaflow import FlowSpec, JSONType, Parameter, step
 
 
 def collate_fn(examples):
@@ -120,7 +119,8 @@ class ModelEvaluationFlow(FlowSpec):
     models = Parameter(
         "models",
         help=("Models to evaluate"),
-        default=["resnet18", "efficientnet_b0"],
+        type=JSONType,
+        default='["resnet18", "efficientnet_b0"]',
     )
     dataset_name = Parameter(
         "dataset_name",

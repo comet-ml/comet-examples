@@ -69,6 +69,7 @@ jobs:
           - {script: "integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-tensorboard/pytorch-tensorboard-example.py", arg: ""}
+          - {script: "integrations/model-training/scikit-learn/sklearn-nlp-example/comet-scikit-nlp-example.py", args: ""}
           - {script: "integrations/workflow-orchestration/metaflow/metaflow-hello-world/helloworld.py", arg: "run"}
           - {script: "integrations/workflow-orchestration/metaflow/metaflow-model-evaluation/metaflow-model-evaluation.py", arg: "run --max-workers 1 --n_samples 100"}
           - {script: "integrations/workflow-orchestration/metaflow/metaflow-regression/metaflow-regression-example.py", arg: "run"}

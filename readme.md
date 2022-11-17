@@ -25,7 +25,7 @@ Full documentation and additional training examples are available on http://www.
 ```sh
 pip install comet_ml
 ```
-Comet.ml python SDK is compatible with: __Python 2.7-3.6__.
+Comet.ml python SDK is compatible with: __Python 3.5-3.9__.
 
 ## Tutorials + Examples
 - [caffe](https://github.com/comet-ml/comet-examples/tree/master/caffe)

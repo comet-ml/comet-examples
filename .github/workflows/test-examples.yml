@@ -27,8 +27,8 @@ jobs:
     env:
       NOTEBOOK_TO_TEST: ${{ matrix.notebooks }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Get pip cache dir
@@ -36,7 +36,7 @@ jobs:
         run: |
           echo "::set-output name=dir::$(pip cache dir)"
       - name: pip cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ matrix.os }}-${{ matrix.python-version }}-pip
@@ -76,8 +76,8 @@ jobs:
     env:
       SCRIPT_TO_TEST: ${{ matrix.example.script }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Get pip cache dir
@@ -85,7 +85,7 @@ jobs:
         run: |
           echo "::set-output name=dir::$(pip cache dir)"
       - name: pip cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ matrix.os }}-${{ matrix.python-version }}-pip

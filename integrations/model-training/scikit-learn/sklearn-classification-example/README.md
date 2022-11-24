@@ -9,7 +9,7 @@ For more information on using and configuring the Scikit-Learn integration, see:
 
 ## See it
 
-Take a look at this [public Comet Project]().
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-scikit-learn-classification/).
 
 ## Setup
 

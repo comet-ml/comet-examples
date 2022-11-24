@@ -9,7 +9,7 @@ For more information on using and configuring the Scikit-Learn integration, see:
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-scikit-learn-nlp/).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-scikit-learn-classification/).
 
 ## Setup
 
@@ -21,8 +21,8 @@ python -m pip install -r requirements.txt
 
 ## Run the example
 
-This example is based on the [Scikit-Learn tutorial](https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html).
+This example uses the Cancer dataset and highlight Scikit-Learn LogisticRegression and GridSearchCV.
 
 ```bash
-python comet-scikit-nlp-example.py
+python comet-scikit-classification-example.py
 ```

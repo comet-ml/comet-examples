@@ -8,7 +8,7 @@ For more information on using and configuring the MLflow integration, see: https
 
 ## See it
 
-Take a look at this [public Comet Project]().
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-mlflow-hello-world/).
 
 ## Setup
 

@@ -66,6 +66,7 @@ jobs:
         os: [ubuntu-latest]
         python-version: [3.9]
         example:
+          - {script: "integrations/model-training/mlflow/mlflow-hello-world/mlflow-hello-world.py", arg: "run"}
           - {script: "integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-tensorboard/pytorch-tensorboard-example.py", arg: ""}

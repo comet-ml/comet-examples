@@ -26,6 +26,7 @@ mlflow.set_tracking_uri("sqlite:///db.sqlite")
 
 # We need to create a run before calling keras or MLFlow will end the run by itself
 mlflow.set_experiment("comet-example-mlflow-hello-world")
+mlflow.start_run()
 
 mlflow.keras.autolog()
 

@@ -19,8 +19,8 @@ repos:
       args: [--safe]
     - id: black-jupyter
       args: [--safe]
--   repo: https://gitlab.com/pycqa/flake8
-    rev: 4.0.1
+-   repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
     hooks:
     -   id: flake8
         additional_dependencies: ['flake8-coding==1.3.2']

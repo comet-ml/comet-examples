@@ -29,5 +29,5 @@ This example is based on the tutorial from [Yunjey](https://github.com/yunjey/py
 
 
 ```bash
-python pytorch-mnist-example.py run
+python pytorch-mnist-example.py
 ```

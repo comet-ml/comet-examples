@@ -1,0 +1,6 @@
+comet_ml
+pandas
+pip
+scikit-learn
+seldon_core
+xgboost

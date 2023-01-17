@@ -1,0 +1,5 @@
+.s2i/
+MyModel.py
+model/
+output/
+requirements.txt

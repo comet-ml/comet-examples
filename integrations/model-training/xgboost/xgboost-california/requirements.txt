@@ -1,4 +1,5 @@
 comet_ml>=3.24.1
+graphviz
 pandas
 scikit-learn
 xgboost

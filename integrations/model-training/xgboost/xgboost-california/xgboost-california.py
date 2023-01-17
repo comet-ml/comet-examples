@@ -38,12 +38,11 @@ param = {
 }
 
 # Initialize XGBoost Regressor
-xg_reg = xgb.XGBRegressor(**param)
+xg_reg = xgb.XGBRegressor(eval_metric="rmse", **param)
 
 # Train model
 xg_reg.fit(
     X_train,
     y_train,
     eval_set=[(X_train, y_train), (X_test, y_test)],
-    eval_metric="rmse",
 )

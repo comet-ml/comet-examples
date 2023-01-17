@@ -11,7 +11,7 @@ For more information on using and configuring the xgboost integration, see: http
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-xgboost-california).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-xgboost-california/).
 
 ## Setup
 
@@ -27,5 +27,5 @@ This example showcase a simple regression on the California Housing dataset.
 
 
 ```bash
-python xgboost-mnist-example.py
+python xgboost-california.py
 ```

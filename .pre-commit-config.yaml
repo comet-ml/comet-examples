@@ -19,7 +19,7 @@ repos:
       args: [--safe]
     - id: black-jupyter
       args: [--safe]
--   repo: https://github.com/PyCQA/flake8
+-   repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
     -   id: flake8

@@ -12,7 +12,7 @@ Instrument PyTorch's Tensorboard with Comet to start managing experiments, creat
 
 ## Documentation
 
-For more information on using and configuring the PyTorch integration, see: https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch/
+For more information on using and configuring the PyTorch integration, see: [https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch/](https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=pytorch)
 
 ## See it
 

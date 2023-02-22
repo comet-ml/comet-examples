@@ -2,15 +2,15 @@
 
 Comet integrates with Google Vertex AI.
 
-[Google Vertex AI](https://cloud.google.com/vertex-ai/?utm_source=google&utm_medium=cpc&utm_campaign=emea-il-all-en-dr-skws-all-all-trial-e-gcp-1011340&utm_content=text-ad-none-any-DEV_c-CRE_574561340133-ADGP_Hybrid%20%7C%20SKWS%20-%20EXA%20%7C%20Txt%20~%20%20AI%20%26%20ML%20~%20Vertex%20AI-KWID_43700066526085804-kwd-553582750299-userloc_1007973&utm_term=KW_vertex%20ai-NET_g-PLAC_&gclid=CjwKCAjwoduRBhA4EiwACL5RP84_0P9FaDWoXsVlA3FOCozwNkqqNaZZFIjaWgadRde-KbCnfZRduRoCCzwQAvD_BwE&gclsrc=aw.ds) lets you build, deploy, and scale ML models faster, with pre-trained and custom tooling within a unified artificial intelligence platform.
+[Google Vertex AI](https://cloud.google.com/vertex-ai/) lets you build, deploy, and scale ML models faster, with pre-trained and custom tooling within a unified artificial intelligence platform.
 
 ## Documentation
 
-For more information on using and configuring the Vertex integration, see: https://www.comet.com/docs/v2/integrations/third-party-tools/vertex-ai/
+For more information on using and configuring the Vertex integration, see: [https://www.comet.com/docs/v2/integrations/third-party-tools/vertex-ai/](https://www.comet.com/docs/v2/integrations/third-party-tools/vertex-ai/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex)
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-vertex-hello-world/).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-vertex-hello-world/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex).
 
 ## Setup
 

@@ -6,11 +6,11 @@ Metaflow is a human-friendly Python/R library that helps scientists and engineer
 
 ## Documentation
 
-For more information on using and configuring Metaflow integration, please see: https://www.comet.ml/docs/v2/integrations/third-party-tools/metaflow/
+For more information on using and configuring Metaflow integration, please see: [https://www.comet.com/docs/v2/integrations/third-party-tools/metaflow/](https://www.comet.com/docs/v2/integrations/third-party-tools/metaflow/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=metaflow)
 
 ## See it
 
-[Here is an example project](https://www.comet.com/examples/comet-example-metaflow-model-evaluation/view/Erns9fTvjSvl7nLabBJoydPxg/panels) with the results of a Metaflow run.
+[Here is an example project](https://www.comet.com/examples/comet-example-metaflow-model-evaluation/view/Erns9fTvjSvl7nLabBJoydPxg/panels?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=metaflow) with the results of a Metaflow run.
 
 ## Setup
 
@@ -51,5 +51,5 @@ This data includes:
 
 ### 2. A model registration step
 
-Once we have logged the performance of each model, we will register the model with the highest macro average recall across all classes to the [Comet Model Registry](https://www.comet.com/site/products/machine-learning-model-versioning/).
+Once we have logged the performance of each model, we will register the model with the highest macro average recall across all classes to the [Comet Model Registry](https://www.comet.com/site/products/machine-learning-model-versioning/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=metaflow).
 

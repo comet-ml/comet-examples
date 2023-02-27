@@ -9,11 +9,11 @@ Instrument PyTorch with Comet to start managing experiments, create dataset vers
 
 ## Documentation
 
-For more information on using and configuring the PyTorch integration, see: https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch/
+For more information on using and configuring the PyTorch integration, see: [https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch/](https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=pytorch)
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-pytorch-mnist).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-pytorch-mnist?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=pytorch).
 
 ## Setup
 
@@ -29,5 +29,5 @@ This example is based on the tutorial from [Yunjey](https://github.com/yunjey/py
 
 
 ```bash
-python pytorch-mnist-example.py run
+python pytorch-mnist-example.py
 ```

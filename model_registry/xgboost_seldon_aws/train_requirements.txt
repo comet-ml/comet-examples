@@ -1,4 +1,0 @@
-xgboost
-pip
-seldon_core
-comet_ml

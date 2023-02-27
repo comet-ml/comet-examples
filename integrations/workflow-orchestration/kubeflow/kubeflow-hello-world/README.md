@@ -1,4 +1,4 @@
-# Kubeflow integration with Comet.ml
+# Kubeflow integration with Comet
 
 Comet integrates with Kubeflow.
 
@@ -6,11 +6,11 @@ Comet integrates with Kubeflow.
 
 ## Documentation
 
-For more information on using and configuring the Kubeflow integration, see: https://www.comet.com/docs/v2/integrations/third-party-tools/kubeflow/
+For more information on using and configuring the Kubeflow integration, see: [https://www.comet.com/docs/v2/integrations/third-party-tools/kubeflow/](https://www.comet.com/docs/v2/integrations/third-party-tools/kubeflow/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=kubeflow)
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-kubeflow-hello-world/).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-kubeflow-hello-world/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex).
 
 ## Setup
 

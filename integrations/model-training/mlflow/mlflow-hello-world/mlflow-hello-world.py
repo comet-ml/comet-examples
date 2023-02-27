@@ -1,3 +1,4 @@
+# coding: utf-8
 """Trains and evaluate a simple MLP
 on the Reuters newswire topic classification task.
 """
@@ -5,15 +6,16 @@ from __future__ import print_function
 
 # The following imports are the only additions to code required
 # to automatically log metrics and parameters to Comet.
-import comet_ml
+import comet_ml  # noqa
+
+import mlflow.keras
+import numpy as np
+
 import keras
 
 # The following import and function call are the only additions to code required
 # to automatically log metrics and parameters to MLflow.
 import mlflow
-import mlflow.keras
-
-import numpy as np
 from keras.datasets import reuters
 from keras.layers import Activation, Dense, Dropout
 from keras.models import Sequential
@@ -23,6 +25,7 @@ from keras.preprocessing.text import Tokenizer
 mlflow.set_tracking_uri("sqlite:///db.sqlite")
 
 # We need to create a run before calling keras or MLFlow will end the run by itself
+mlflow.set_experiment("comet-example-mlflow-hello-world")
 mlflow.start_run()
 
 mlflow.keras.autolog()

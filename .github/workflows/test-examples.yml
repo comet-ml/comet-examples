@@ -64,6 +64,7 @@ jobs:
           ipython "$notebook"
         env:
           COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
+          COMET_INTERNAL_SENTRY_DSN: ${{ secrets.COMET_INTERNAL_SENTRY_DSN }}
           COMET_WORKSPACE: cometexamples-tests
   test-scripts:
     runs-on: ${{ matrix.os }}
@@ -114,4 +115,5 @@ jobs:
           python "$script" ${{ matrix.example.arg }}
         env:
           COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
+          COMET_INTERNAL_SENTRY_DSN: ${{ secrets.COMET_INTERNAL_SENTRY_DSN }}
           COMET_WORKSPACE: cometexamples-tests

@@ -13,6 +13,7 @@ jobs:
         os: [ ubuntu-latest]
         python-version: [3.9]
         notebooks:
+          - guides/computer_vision/Computer_Vision_with_Comet.ipynb
           - guides/get-started/Comet_Quickstart.ipynb
           - guides/manage_data/A_Guide_to_Remote_Artifacts.ipynb
           - guides/manage_data/Introduction_to_Artifacts.ipynb

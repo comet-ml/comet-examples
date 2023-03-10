@@ -1,3 +1,4 @@
+alembic<1.10.0 # workaround ValueError: Constraint must have a name
 comet_ml
 mlflow
 tensorflow

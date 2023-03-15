@@ -1,5 +1,6 @@
 # coding: utf-8
 from comet_ml import Experiment, init
+from comet_ml.integration.pytorch import log_model
 
 import torch
 import torch.nn as nn
@@ -141,3 +142,6 @@ with experiment.test():
         "Test Accuracy of the model on the 10000 test images: %d %%"
         % (100 * correct / total)
     )
+
+# Log the model to Comet for easy tracking and deployment
+log_model(experiment, rnn, "Pytorch-Mnist")

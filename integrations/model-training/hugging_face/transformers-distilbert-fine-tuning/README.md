@@ -12,7 +12,7 @@ Instrument Transformers with Comet to start managing experiments, create dataset
 
 ## Documentation
 
-For more information on using and configuring the Transformers integration, see: [https://www.comet.com/docs/v2/integrations/ml-frameworks/huggingface/](https://www.comet.com/docs/v2/integrations/ml-frameworks/huggingface//?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=huggingface)
+For more information on using and configuring the Transformers integration, see: [https://www.comet.com/docs/v2/integrations/ml-frameworks/huggingface/](https://www.comet.com/docs/v2/integrations/ml-frameworks/huggingface/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=huggingface)
 
 ## See it
 

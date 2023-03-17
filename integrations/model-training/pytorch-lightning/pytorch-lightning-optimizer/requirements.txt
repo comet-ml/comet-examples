@@ -1,0 +1,4 @@
+comet_ml
+pytorch_lightning
+torch
+torchvision

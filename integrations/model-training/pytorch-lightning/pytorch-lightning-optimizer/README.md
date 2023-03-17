@@ -11,7 +11,7 @@ For more information on using and configuring the PyTorch Lightning integration,
 
 ## See it
 
-Take a look at this [public Comet Project](TODO?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=pytorch-lightning).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-pytorch-lightning-optimizer/view/4oWgNi4eS5IEr3rZhM1PwzDNq/panels?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=pytorch-lightning).
 
 ## Setup
 

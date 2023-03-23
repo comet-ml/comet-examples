@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 import comet_ml
+
 # import sagemaker_containers
 import torch
 import torch.distributed as dist
@@ -57,10 +58,7 @@ def _get_train_data_loader(batch_size, training_dir, **kwargs):
         ),
     )
     return torch.utils.data.DataLoader(
-        dataset,
-        batch_size=batch_size,
-        shuffle=True,
-        **kwargs
+        dataset, batch_size=batch_size, shuffle=True, **kwargs
     )
 
 
@@ -93,9 +91,7 @@ def train(args):
     if use_cuda:
         torch.cuda.manual_seed(args.seed)
 
-    train_loader = _get_train_data_loader(
-        args.batch_size, args.data_dir, **kwargs
-    )
+    train_loader = _get_train_data_loader(args.batch_size, args.data_dir, **kwargs)
     test_loader = _get_test_data_loader(args.test_batch_size, args.data_dir, **kwargs)
 
     logger.debug(
@@ -127,11 +123,7 @@ def train(args):
             loss.backward()
             optimizer.step()
             if batch_idx % args.log_interval == 0:
-                logger.info(
-                    "Train Loss: {:.6f};".format(
-                        loss.item(),
-                    )
-                )
+                logger.info("Train Loss: {:.6f};".format(loss.item()))
             experiment.log_metrics({"train_loss": loss.item()}, epoch=epoch)
 
         test(model, test_loader, device)
@@ -157,18 +149,10 @@ def test(model, test_loader, device):
 
     test_loss /= len(test_loader.dataset)
     test_accuracy = 100 * correct / len(test_loader.dataset)
-    experiment.log_metrics(
-        {"test_accuracy": test_accuracy, "test_loss": test_loss}
-    )
+    experiment.log_metrics({"test_accuracy": test_accuracy, "test_loss": test_loss})
 
-    logger.info(
-        "Test Average Loss: {:.4f};".format(test_loss)
-    )
-    logger.info(
-        "Test Accuracy: {:.2f}%;".format(
-            test_accuracy,
-        )
-    )
+    logger.info("Test Average Loss: {:.4f};".format(test_loss))
+    logger.info("Test Accuracy: {:.2f}%;".format(test_accuracy))
 
 
 def log_predictions(model, dataloader):

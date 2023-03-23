@@ -1,12 +1,11 @@
 # Using Comet with Pytorch and Sagemaker
 
 The preferred way to use Comet with Sagemaker is to add Comet to your script before launching your Sagemaker job.
+
 Executing your training jobs in this manner has several advantages over migrating data from completed runs, including:
 
-1. Being able to use Comet's auto-logging capabilities.
-
+1. Being able to leverage Comet's auto-logging capabilities.
 2. Supporting real-time reporting of metrics with step/epoch information.
-
 3. Being able to take advantage of Comet's advanced logging capabilities, such as:
    - logging media (image, text, audio)
    - logging interactive confusion matrices
@@ -53,9 +52,7 @@ estimator = PyTorch(
 To run this example, you will need both a Sagemaker account and a [Comet account](https://comet.com/signup)
 
 1. Upload the contents of the `src` directory to your Sagemaker Notebook instance.
-
 2. Upload `train_mnist.ipynb` to your Sagemake Notebook instance.
-
 3. Run the `train_mnist.ipynb` Notebook to create a Sagemaker Training Job and log the data to Comet.
 
 ## Example Project

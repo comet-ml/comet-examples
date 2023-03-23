@@ -161,11 +161,7 @@ def train(args):
                 _average_gradients(model)
             optimizer.step()
             if batch_idx % args.log_interval == 0:
-                logger.info(
-                    "Train Loss: {:.6f};".format(
-                        loss.item(),
-                    )
-                )
+                logger.info("Train Loss: {:.6f};".format(loss.item()))
         test(model, test_loader, device)
     save_model(model, args.model_dir)
 
@@ -187,13 +183,9 @@ def test(model, test_loader, device):
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
+    logger.info("Test Average Loss: {:.4f};".format(test_loss))
     logger.info(
-        "Test Average Loss: {:.4f};".format(test_loss)
-    )
-    logger.info(
-        "Test Accuracy: {:.2f}%;".format(
-            100 * correct / len(test_loader.dataset),
-        )
+        "Test Accuracy: {:.2f}%;".format(100 * correct / len(test_loader.dataset))
     )
 
 

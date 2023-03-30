@@ -6,9 +6,7 @@ Comet is an excellent complement to Sagemaker, enhancing the developer experienc
 
 By using Comet, users can streamline their workflows while benefiting from Sagemaker's powerful infrastructure orchestration and model deployment capabilities.
 
-## Logging to Comet with the Sagemaker SDK
-
-### Logging Custom Scripts with Comet and Sagemaker
+## Logging Custom Scripts with Comet and Sagemaker
 Comet requires minimal changes to your existing Sagemaker workflow in order to get up and running. Let’s take a look at a simple example that uses the Sagemaker SDK and Notebook instances to run a custom script.
 
 ```

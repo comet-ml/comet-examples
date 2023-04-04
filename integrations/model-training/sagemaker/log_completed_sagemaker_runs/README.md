@@ -3,7 +3,7 @@
 Comet supports transferring data from Sagemaker runs to Comet's Experiment Management tool. This approach requires no changes
 to existing Sagemake code. It simply transfers data from completed Sagemaker runs to Comet.
 
-There are three ways to log data from a completed Sagemaker Run to Comet
+There are three ways to log data from a completed Sagemaker Training Job to Comet
 
 ### 1. Using the Estimator object
 

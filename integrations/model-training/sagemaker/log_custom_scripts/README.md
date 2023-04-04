@@ -21,7 +21,7 @@ Your `src` directory would contain the model specific code needed to execute you
 To enable Comet logging in this workflow, simply
 
 1. Add `comet_ml` as a dependency in your `requirement.txt` file
-2. Import the `comet_ml` library of the `train.py` script
+2. Import the `comet_ml` library at the top of the `train.py` script
 3. Create a Comet `Experiment` object within the training script
 4. Pass in your Comet Credentials to the Sagemaker Estimator using the environment argument.
 5. Launch your training job in Sagemaker using `estimator.fit`

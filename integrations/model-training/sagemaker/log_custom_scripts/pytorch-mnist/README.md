@@ -52,7 +52,7 @@ estimator = PyTorch(
 To run this example, you will need both a Sagemaker account and a [Comet account](https://comet.com/signup)
 
 1. Upload the contents of the `src` directory to your Sagemaker Notebook instance.
-2. Upload `train_mnist.ipynb` to your Sagemake Notebook instance.
+2. Upload `train_mnist.ipynb` to your Sagemaker Notebook instance.
 3. Run the `train_mnist.ipynb` Notebook to create a Sagemaker Training Job and log the data to Comet.
 
 ## Example Project

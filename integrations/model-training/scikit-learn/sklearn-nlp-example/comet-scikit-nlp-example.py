@@ -1,7 +1,6 @@
 # coding: utf-8
-from __future__ import print_function
-
 import comet_ml
+from comet_ml.integration.sklearn import log_model
 
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
@@ -56,3 +55,6 @@ predicted = text_clf.predict(twenty_test.data)
 acc = accuracy_score(twenty_test.target, predicted)
 print(acc)
 experiment.log_metric(name="accuracy_score", value=acc)
+
+# Save model to Comet
+log_model(experiment, text_clf, "ScikitLearnNLPModel")

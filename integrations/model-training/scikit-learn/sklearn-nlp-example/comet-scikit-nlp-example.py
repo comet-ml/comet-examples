@@ -57,4 +57,4 @@ print(acc)
 experiment.log_metric(name="accuracy_score", value=acc)
 
 # Save model to Comet
-log_model(experiment, text_clf, "ScikitLearnNLPModel")
+log_model(experiment, "ScikitLearnNLPModel", text_clf)

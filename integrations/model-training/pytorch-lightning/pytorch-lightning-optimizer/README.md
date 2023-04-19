@@ -7,11 +7,11 @@ Instrument PyTorch Lightning with Comet to start managing experiments, create da
 
 ## Documentation
 
-For more information on using and configuring the PyTorch Lightning integration, see: [https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch-lightning/](https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch-lightning/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=pytorch-lightning)
+For more information on using and configuring the PyTorch Lightning integration, see: [https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch-lightning/](https://www.comet.com/docs/v2/integrations/ml-frameworks/pytorch-lightning/?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=pytorch-lightning)
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-pytorch-lightning-optimizer/view/4oWgNi4eS5IEr3rZhM1PwzDNq/panels?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=pytorch-lightning).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-pytorch-lightning-optimizer/view/4oWgNi4eS5IEr3rZhM1PwzDNq/panels?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=pytorch-lightning).
 
 ## Setup
 

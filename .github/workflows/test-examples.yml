@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest]
-        python-version: [3.10]
+        python-version: ["3.10"]
         notebooks:
           - guides/computer_vision/Computer_Vision_with_Comet.ipynb
           - guides/get-started/Comet_Quickstart.ipynb

@@ -73,7 +73,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9]
+        python-version: ["3.10"]
         example:
           - {script: "integrations/model-training/hugging_face/transformers-distilbert-fine-tuning/transformers-distilbert-fine-tuning.py", arg: ""}
           - {script: "integrations/model-training/keras/keras-mnist-dnn/keras-mnist-dnn.py", arg: ""}

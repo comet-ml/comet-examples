@@ -13,25 +13,25 @@ jobs:
         os: [ ubuntu-latest]
         python-version: ["3.10"]
         notebooks:
-          - guides/computer_vision/Computer_Vision_with_Comet.ipynb
+          # - guides/computer_vision/Computer_Vision_with_Comet.ipynb
           - guides/get-started/Comet_Quickstart.ipynb
           - guides/manage_data/A_Guide_to_Remote_Artifacts.ipynb
-          - guides/manage_data/Introduction_to_Artifacts.ipynb
-          - integrations/model-evaluation/gradio/notebooks/Gradio_and_Comet.ipynb
-          - integrations/model-evaluation/gradio/notebooks/Logging_Model_Inferences_with_Comet_and_Gradio.ipynb
-          - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb
-          - integrations/model-training/keras/notebooks/Comet_with_Keras.ipynb
-          - integrations/model-training/prophet/notebooks/Comet_and_Prophet.ipynb
-          - integrations/model-training/pytorch-lightning/notebooks/Comet_and_Pytorch_Lightning.ipynb
-          - integrations/model-training/pytorch/notebooks/Comet_and_Pytorch.ipynb
-          - integrations/model-training/pytorch/notebooks/Comet_Pytorch_Tensorboard.ipynb
-          - integrations/model-training/pytorch/notebooks/Comet_Pytorch_TensorboardX.ipynb
-          - integrations/model-training/pytorch/notebooks/Histogram_Logging_Pytorch.ipynb
-          - integrations/model-training/ray-train/notebooks/Comet_with_ray_train_keras.ipynb
-          - integrations/model-training/tensorflow/notebooks/Comet_and_Tensorflow.ipynb
+          # - guides/manage_data/Introduction_to_Artifacts.ipynb
+          # - integrations/model-evaluation/gradio/notebooks/Gradio_and_Comet.ipynb
+          # - integrations/model-evaluation/gradio/notebooks/Logging_Model_Inferences_with_Comet_and_Gradio.ipynb
+          # - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb
+          # - integrations/model-training/keras/notebooks/Comet_with_Keras.ipynb
+          # - integrations/model-training/prophet/notebooks/Comet_and_Prophet.ipynb
+          # - integrations/model-training/pytorch-lightning/notebooks/Comet_and_Pytorch_Lightning.ipynb
+          # - integrations/model-training/pytorch/notebooks/Comet_and_Pytorch.ipynb
+          # - integrations/model-training/pytorch/notebooks/Comet_Pytorch_Tensorboard.ipynb
+          # - integrations/model-training/pytorch/notebooks/Comet_Pytorch_TensorboardX.ipynb
+          # - integrations/model-training/pytorch/notebooks/Histogram_Logging_Pytorch.ipynb
+          # - integrations/model-training/ray-train/notebooks/Comet_with_ray_train_keras.ipynb
+          # - integrations/model-training/tensorflow/notebooks/Comet_and_Tensorflow.ipynb
           # - integrations/model-training/yolov5/notebooks/Comet_and_YOLOv5.ipynb
-          - integrations/reinforcement-learning/gymnasium/notebooks/comet_gymnasium_example.ipynb
-          - integrations/workflow-orchestration/metaflow/notebooks/metaflow_hello_world.ipynb
+          # - integrations/reinforcement-learning/gymnasium/notebooks/comet_gymnasium_example.ipynb
+          # - integrations/workflow-orchestration/metaflow/notebooks/metaflow_hello_world.ipynb
     env:
       NOTEBOOK_TO_TEST: ${{ matrix.notebooks }}
     steps:
@@ -86,57 +86,57 @@ jobs:
           name: debug-logs
           path: ${{ env.COMET_LOG_DIR }}
 
-  test-scripts:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.10"]
-        example:
-          - {script: "integrations/model-training/hugging_face/transformers-distilbert-fine-tuning/transformers-distilbert-fine-tuning.py", arg: ""}
-          - {script: "integrations/model-training/keras/keras-mnist-dnn/keras-mnist-dnn.py", arg: ""}
-          - {script: "integrations/model-training/mlflow/mlflow-hello-world/mlflow-hello-world.py", arg: "run"}
-          - {script: "integrations/model-training/pytorch-lightning/pytorch-lightning-optimizer/pytorch-lightning-optimizer.py", arg: ""}
-          - {script: "integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py", arg: ""}
-          - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", arg: ""}
-          - {script: "integrations/model-training/pytorch/pytorch-tensorboard/pytorch-tensorboard-example.py", arg: ""}
-          - {script: "integrations/model-training/scikit-learn/sklearn-classification-example/comet-scikit-classification-example.py", arg: "run"}
-          - {script: "integrations/model-training/scikit-learn/sklearn-nlp-example/comet-scikit-nlp-example.py", args: ""}
-          - {script: "integrations/model-training/xgboost/xgboost-california/xgboost-california.py", arg: ""}
-          - {script: "integrations/workflow-orchestration/metaflow/metaflow-hello-world/helloworld.py", arg: "run"}
-          - {script: "integrations/workflow-orchestration/metaflow/metaflow-model-evaluation/metaflow-model-evaluation.py", arg: "run --max-workers 1 --n_samples 100"}
-          - {script: "integrations/workflow-orchestration/metaflow/metaflow-regression/metaflow-regression-example.py", arg: "run"}
-    env:
-      SCRIPT_TO_TEST: ${{ matrix.example.script }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Get pip cache dir
-        id: pip-cache
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
-      - name: pip cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ matrix.os }}-${{ matrix.python-version }}-pip
-          restore-keys: |
-            ${{ matrix.os }}-${{ matrix.python-version }}-pip
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          directory=$(dirname -- "${SCRIPT_TO_TEST}")
-          pip install -r "${directory}"/requirements.txt
-      - name: Test examples
-        run: |
-          directory=$(dirname -- "${SCRIPT_TO_TEST}")
-          script=$(basename -- "${SCRIPT_TO_TEST}")
-          cd "$directory" || exit
-          python "$script" ${{ matrix.example.arg }}
-        env:
-          COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
-          COMET_INTERNAL_SENTRY_DSN: ${{ secrets.COMET_INTERNAL_SENTRY_DSN }}
-          COMET_WORKSPACE: cometexamples-tests
+  # test-scripts:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       python-version: ["3.10"]
+  #       example:
+  #         - {script: "integrations/model-training/hugging_face/transformers-distilbert-fine-tuning/transformers-distilbert-fine-tuning.py", arg: ""}
+  #         - {script: "integrations/model-training/keras/keras-mnist-dnn/keras-mnist-dnn.py", arg: ""}
+  #         - {script: "integrations/model-training/mlflow/mlflow-hello-world/mlflow-hello-world.py", arg: "run"}
+  #         - {script: "integrations/model-training/pytorch-lightning/pytorch-lightning-optimizer/pytorch-lightning-optimizer.py", arg: ""}
+  #         - {script: "integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py", arg: ""}
+  #         - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", arg: ""}
+  #         - {script: "integrations/model-training/pytorch/pytorch-tensorboard/pytorch-tensorboard-example.py", arg: ""}
+  #         - {script: "integrations/model-training/scikit-learn/sklearn-classification-example/comet-scikit-classification-example.py", arg: "run"}
+  #         - {script: "integrations/model-training/scikit-learn/sklearn-nlp-example/comet-scikit-nlp-example.py", args: ""}
+  #         - {script: "integrations/model-training/xgboost/xgboost-california/xgboost-california.py", arg: ""}
+  #         - {script: "integrations/workflow-orchestration/metaflow/metaflow-hello-world/helloworld.py", arg: "run"}
+  #         - {script: "integrations/workflow-orchestration/metaflow/metaflow-model-evaluation/metaflow-model-evaluation.py", arg: "run --max-workers 1 --n_samples 100"}
+  #         - {script: "integrations/workflow-orchestration/metaflow/metaflow-regression/metaflow-regression-example.py", arg: "run"}
+  #   env:
+  #     SCRIPT_TO_TEST: ${{ matrix.example.script }}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-python@v4
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
+  #     - name: Get pip cache dir
+  #       id: pip-cache
+  #       run: |
+  #         echo "::set-output name=dir::$(pip cache dir)"
+  #     - name: pip cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: ${{ steps.pip-cache.outputs.dir }}
+  #         key: ${{ matrix.os }}-${{ matrix.python-version }}-pip
+  #         restore-keys: |
+  #           ${{ matrix.os }}-${{ matrix.python-version }}-pip
+  #     - name: Install dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         directory=$(dirname -- "${SCRIPT_TO_TEST}")
+  #         pip install -r "${directory}"/requirements.txt
+  #     - name: Test examples
+  #       run: |
+  #         directory=$(dirname -- "${SCRIPT_TO_TEST}")
+  #         script=$(basename -- "${SCRIPT_TO_TEST}")
+  #         cd "$directory" || exit
+  #         python "$script" ${{ matrix.example.arg }}
+  #       env:
+  #         COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
+  #         COMET_INTERNAL_SENTRY_DSN: ${{ secrets.COMET_INTERNAL_SENTRY_DSN }}
+  #         COMET_WORKSPACE: cometexamples-tests

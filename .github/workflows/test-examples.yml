@@ -74,7 +74,7 @@ jobs:
       - name: Test notebook
         run: |
           cd "$TEST_DIRECTORY" || exit
-          ipython "$TEST_NOTEBOOK"
+          python -X faulthandler $(which ipython) "$TEST_NOTEBOOK"
         env:
           COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
           COMET_INTERNAL_SENTRY_DSN: ${{ secrets.COMET_INTERNAL_SENTRY_DSN }}

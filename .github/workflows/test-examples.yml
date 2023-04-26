@@ -70,7 +70,7 @@ jobs:
           echo "COMET_LOGGING_FILE_LEVEL=debug" >> "$GITHUB_ENV"
           log_dir="${{runner.temp}}/notebook/logs"
           echo "COMET_LOG_DIR=${log_dir}" >> "$GITHUB_ENV"
-          echo "COMET_LOGGING_FILE=${COMET_LOG_DIR}/log-{pid}.log" >> "$GITHUB_ENV"
+          echo "COMET_LOGGING_FILE=${log_dir}/log-{pid}.log" >> "$GITHUB_ENV"
       - name: Test notebook
         run: |
           cd "$TEST_DIRECTORY" || exit
@@ -84,7 +84,7 @@ jobs:
         if:  runner.debug == '1' && failure()
         with:
           name: debug-logs
-          path: $COMET_LOG_DIR
+          path: ${{ env.COMET_LOG_DIR }}
 
   test-scripts:
     runs-on: ${{ matrix.os }}

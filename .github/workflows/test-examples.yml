@@ -62,7 +62,7 @@ jobs:
           directory=$(dirname -- "${NOTEBOOK_TO_TEST}")
           notebook=$(basename -- "${NOTEBOOK_TO_TEST}")
           echo "TEST_DIRECTORY=${directory}"  >> "$GITHUB_ENV"
-          echo "TEST_NOTEBOOK" >> "$GITHUB_ENV"
+          echo "TEST_NOTEBOOK=${notebook}" >> "$GITHUB_ENV"
 
       - name: debugging
         if:  runner.debug == '1'

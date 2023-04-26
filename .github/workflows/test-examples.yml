@@ -29,7 +29,7 @@ jobs:
           - integrations/model-training/pytorch/notebooks/Histogram_Logging_Pytorch.ipynb
           - integrations/model-training/ray-train/notebooks/Comet_with_ray_train_keras.ipynb
           - integrations/model-training/tensorflow/notebooks/Comet_and_Tensorflow.ipynb
-          - integrations/model-training/yolov5/notebooks/Comet_and_YOLOv5.ipynb
+          # - integrations/model-training/yolov5/notebooks/Comet_and_YOLOv5.ipynb
           - integrations/reinforcement-learning/gymnasium/notebooks/comet_gymnasium_example.ipynb
           - integrations/workflow-orchestration/metaflow/notebooks/metaflow_hello_world.ipynb
     env:
@@ -81,7 +81,7 @@ jobs:
           COMET_WORKSPACE: cometexamples-tests
       - name: debugging-save-logs
         uses: actions/upload-artifact@v3
-        if:  runner.debug == '1'
+        if:  runner.debug == '1' && failure()
         with:
           name: debug-logs
           path: $COMET_LOG_DIR

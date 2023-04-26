@@ -57,16 +57,40 @@ jobs:
       - name: Debug installed dependencies
         run: |
           python -m pip list
+      - name: Prepare env variables
+        run: |
+          directory=$(dirname -- "${NOTEBOOK_TO_TEST}")
+          notebook=$(basename -- "${NOTEBOOK_TO_TEST}")
+          echo "TEST_DIRECTORY=${directory}"  >> "$GITHUB_ENV"
+          echo "TEST_NOTEBOOK" >> "$GITHUB_ENV"
+
+      - name: debugging
+        if:  runner.debug == '1'
+        run: |
+          echo "COMET_LOGGING_FILE_LEVEL=debug" >> "$GITHUB_ENV"
+          log_dir="${{runner.temp}}/notebook/logs"
+          echo "COMET_LOG_DIR=${log_dir}" >> "$GITHUB_ENV"
+          echo "COMET_LOGGING_FILE=${COMET_LOG_DIR}/log-{pid}.log" >> "$GITHUB_ENV"
       - name: Test notebook
         run: |
           directory=$(dirname -- "${NOTEBOOK_TO_TEST}")
           notebook=$(basename -- "${NOTEBOOK_TO_TEST}")
-          cd "$directory" || exit
-          ipython "$notebook"
+
+          if [ "$ACTIONS_STEP_DEBUG" == "foo" ]
+
+          cd "$TEST_DIRECTORY" || exit
+          ipython "$TEST_NOTEBOOK"
         env:
           COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
           COMET_INTERNAL_SENTRY_DSN: ${{ secrets.COMET_INTERNAL_SENTRY_DSN }}
           COMET_WORKSPACE: cometexamples-tests
+      - name: debugging-save-logs
+        uses: actions/upload-artifact@v3
+        if:  runner.debug == '1'
+        with:
+          name: debug-logs
+          path: $COMET_LOG_DIR
+
   test-scripts:
     runs-on: ${{ matrix.os }}
     strategy:

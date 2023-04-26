@@ -73,11 +73,6 @@ jobs:
           echo "COMET_LOGGING_FILE=${COMET_LOG_DIR}/log-{pid}.log" >> "$GITHUB_ENV"
       - name: Test notebook
         run: |
-          directory=$(dirname -- "${NOTEBOOK_TO_TEST}")
-          notebook=$(basename -- "${NOTEBOOK_TO_TEST}")
-
-          if [ "$ACTIONS_STEP_DEBUG" == "foo" ]
-
           cd "$TEST_DIRECTORY" || exit
           ipython "$TEST_NOTEBOOK"
         env:

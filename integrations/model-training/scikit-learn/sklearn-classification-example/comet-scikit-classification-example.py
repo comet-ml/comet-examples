@@ -1,5 +1,6 @@
 # coding: utf-8
 import comet_ml
+from comet_ml.integration.sklearn import log_model
 
 import numpy as np
 from sklearn.datasets import load_breast_cancer
@@ -63,3 +64,6 @@ metrics = {"f1": f1, "recall": recall, "precision": precision}
 experiment.log_dataset_hash(X_train_scaled)
 experiment.log_parameters(params)
 experiment.log_metrics(metrics)
+
+# Save the best estimator as a Model to Comet
+log_model(experiment, "ScikitLearnClassificationModel", clf)

@@ -11,8 +11,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest]
-        python-version: [3.9]
+        python-version: ["3.10"]
         notebooks:
+          - guides/computer_vision/Computer_Vision_with_Comet.ipynb
           - guides/get-started/Comet_Quickstart.ipynb
           - guides/manage_data/A_Guide_to_Remote_Artifacts.ipynb
           - guides/manage_data/Introduction_to_Artifacts.ipynb
@@ -57,25 +58,47 @@ jobs:
       - name: Debug installed dependencies
         run: |
           python -m pip list
-      - name: Test notebook
+      - name: Prepare env variables
         run: |
           directory=$(dirname -- "${NOTEBOOK_TO_TEST}")
           notebook=$(basename -- "${NOTEBOOK_TO_TEST}")
-          cd "$directory" || exit
-          ipython "$notebook"
+          echo "TEST_DIRECTORY=${directory}"  >> "$GITHUB_ENV"
+          echo "TEST_NOTEBOOK=${notebook}" >> "$GITHUB_ENV"
+
+      - name: debugging
+        if:  runner.debug == '1'
+        run: |
+          echo "COMET_LOGGING_FILE_LEVEL=debug" >> "$GITHUB_ENV"
+          log_dir="${{runner.temp}}/notebook/logs"
+          echo "COMET_LOG_DIR=${log_dir}" >> "$GITHUB_ENV"
+          echo "COMET_LOGGING_FILE=${log_dir}/log-{pid}.log" >> "$GITHUB_ENV"
+      - name: Test notebook
+        run: |
+          cd "$TEST_DIRECTORY" || exit
+          python -X faulthandler $(which ipython) "$TEST_NOTEBOOK"
         env:
           COMET_API_KEY: ${{ secrets.COMET_API_KEY }}
           COMET_INTERNAL_SENTRY_DSN: ${{ secrets.COMET_INTERNAL_SENTRY_DSN }}
           COMET_WORKSPACE: cometexamples-tests
+      - name: debugging-save-logs
+        uses: actions/upload-artifact@v3
+        if:  runner.debug == '1' && failure()
+        with:
+          name: debug-logs
+          path: ${{ env.COMET_LOG_DIR }}
+
   test-scripts:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9]
+        python-version: ["3.10"]
         example:
+          - {script: "integrations/model-training/hugging_face/transformers-distilbert-fine-tuning/transformers-distilbert-fine-tuning.py", arg: ""}
+          - {script: "integrations/model-training/keras/keras-mnist-dnn/keras-mnist-dnn.py", arg: ""}
           - {script: "integrations/model-training/mlflow/mlflow-hello-world/mlflow-hello-world.py", arg: "run"}
+          - {script: "integrations/model-training/pytorch-lightning/pytorch-lightning-optimizer/pytorch-lightning-optimizer.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-tensorboard/pytorch-tensorboard-example.py", arg: ""}

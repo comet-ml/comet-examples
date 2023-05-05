@@ -13,24 +13,27 @@
 # *******************************************************
 
 import os
-from argparse import Namespace
 
+import comet_ml
 from comet_ml import Optimizer
-from comet_ml.config import get_config
 
 import torch
 import torch.nn.functional as F
 import torchvision.transforms as transforms
-from pytorch_lightning import LightningModule, Trainer
 from pytorch_lightning.loggers import CometLogger
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 
+from pytorch_lightning import LightningModule, Trainer
+
+# Login to Comet if needed
+comet_ml.init(project_name="comet-example-pytorch-lightning-optimizer")
+
 
 class PyTorchLightningModel(LightningModule):
-    def __init__(self, hparams):
-        super(PyTorchLightningModel, self).__init__()
-        self.hparams = hparams
+    def __init__(self, learning_rate):
+        super().__init__()
+        self.save_hyperparameters()
         self.l1 = torch.nn.Linear(28 * 28, 10)
 
     def forward(self, x):
@@ -63,27 +66,18 @@ optimizer_config = {
 
 
 def run():
-    # torch.multiprocessing.freeze_support()
-
     optimizer = Optimizer(optimizer_config)
 
     for parameters in optimizer.get_parameters():
-        hyperparameters = Namespace(**parameters["parameters"])
-
-        model = PyTorchLightningModel(hparams=hyperparameters)
+        model = PyTorchLightningModel(**parameters["parameters"])
 
         comet_logger = CometLogger(
-            api_key=get_config("comet.api_key"),
-            rest_api_key=get_config("comet.api_key"),
             optimizer_data=parameters,
         )
 
         trainer = Trainer(
             max_epochs=1,
-            # early_stop_callback=True, # requires val_loss be logged
             logger=[comet_logger],
-            # num_processes=2,
-            # distributed_backend='ddp_cpu'
         )
 
         trainer.fit(model)

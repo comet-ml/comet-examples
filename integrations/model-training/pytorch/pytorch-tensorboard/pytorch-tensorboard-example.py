@@ -1,5 +1,6 @@
 # coding: utf-8
 import comet_ml
+from comet_ml.integration.pytorch import log_model
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -212,3 +213,6 @@ for epoch in range(hyper_params["num_epochs"]):  # loop over the dataset multipl
 print("Finished Training")
 
 writer.close()
+
+# Log the model to Comet for easy tracking and deployment
+log_model(experiment, net, "Pytorch-FashionMNIST")

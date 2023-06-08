@@ -119,6 +119,7 @@ training_args = TrainingArguments(
     evaluation_strategy="epoch",
     do_train=True,
     do_eval=True,
+    report_to=["comet_ml"],
 )
 trainer = Trainer(
     model=model,

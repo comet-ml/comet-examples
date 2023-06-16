@@ -1,3 +1,4 @@
+accelerate
 comet_ml
 pandas
 scikit-learn

@@ -182,7 +182,6 @@ class ModelEvaluationFlow(FlowSpec):
         )
         dataset = dataset.shuffle(self.seed, buffer_size=10_000)
         dataset = dataset.take(self.n_samples)
-        dataset = dataset.with_format("torch")
 
         dataloader = DataLoader(
             dataset, collate_fn=collate_fn, batch_size=self.batch_size

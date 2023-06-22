@@ -29,8 +29,8 @@ To enable Comet logging in this workflow, simply
 ### Examples
 
 - [Image Classification with Pytorch](/integrations/model-training/sagemaker/log_custom_scripts/pytorch-mnist)
-- [Image Classification with Tensorflow](integrations/model-training/sagemaker/log_custom_scripts/tensorflow-mnist)
-- [Text Classification with HuggingFace](integrations/model-training/sagemaker/log_custom_scripts/huggingface-text-classification)
+- [Image Classification with Tensorflow](/integrations/model-training/sagemaker/log_custom_scripts/tensorflow-mnist)
+- [Text Classification with HuggingFace](/integrations/model-training/sagemaker/log_custom_scripts/huggingface-text-classification)
 
 
 

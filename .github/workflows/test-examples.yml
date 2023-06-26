@@ -17,7 +17,7 @@ jobs:
           - guides/get-started/Comet_Quickstart.ipynb
           - guides/manage_data/A_Guide_to_Remote_Artifacts.ipynb
           - guides/manage_data/Introduction_to_Artifacts.ipynb
-          - integrations/llm/comet-llm/notebools/CometLLM_hello_world.ipynb
+          - integrations/llm/comet-llm/notebooks/CometLLM_hello_world.ipynb
           - integrations/model-evaluation/gradio/notebooks/Gradio_and_Comet.ipynb
           - integrations/model-evaluation/gradio/notebooks/Logging_Model_Inferences_with_Comet_and_Gradio.ipynb
           - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb

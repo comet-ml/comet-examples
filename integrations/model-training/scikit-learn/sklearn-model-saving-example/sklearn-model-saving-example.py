@@ -10,7 +10,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 MODEL_NAME = "my-sklearn-model"
-MODEL_VERSION = "1.0.1"
 WORKSPACE = os.environ["COMET_WORKSPACE"]
 
 # Login to comet and create an Experiment
@@ -36,12 +35,12 @@ model = ensemble.RandomForestRegressor().fit(X_train_scaled, y_train)
 
 # Save model to Comet
 log_model(experiment, MODEL_NAME, model, persistence_module=cloudpickle)
-experiment.register_model(MODEL_NAME, version=MODEL_VERSION)
+experiment.register_model(MODEL_NAME)
 
 # Upload everything
 experiment.end()
 
 # # Load model from Comet Model Registry
-loaded_model = load_model(f"registry://{WORKSPACE}/{MODEL_NAME}:{MODEL_VERSION}")
+loaded_model = load_model(f"registry://{WORKSPACE}/{MODEL_NAME}")
 
 print("LOADED", loaded_model)

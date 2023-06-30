@@ -22,6 +22,7 @@ jobs:
           - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb
           - integrations/model-training/keras/notebooks/Comet_with_Keras.ipynb
           - integrations/model-training/prophet/notebooks/Comet_and_Prophet.ipynb
+          - integrations/model-training/pycaret/notebooks/comet_pycaret.ipynb
           - integrations/model-training/pytorch-lightning/notebooks/Comet_and_Pytorch_Lightning.ipynb
           - integrations/model-training/pytorch/notebooks/Comet_and_Pytorch.ipynb
           - integrations/model-training/pytorch/notebooks/Comet_Pytorch_Tensorboard.ipynb

@@ -20,6 +20,7 @@ jobs:
           - integrations/llm/comet-llm/notebooks/CometLLM_hello_world.ipynb
           - integrations/model-evaluation/gradio/notebooks/Gradio_and_Comet.ipynb
           - integrations/model-evaluation/gradio/notebooks/Logging_Model_Inferences_with_Comet_and_Gradio.ipynb
+          - integrations/model-optimization/ray-tune/notebooks/Comet_and_Ray.ipynb
           - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb
           - integrations/model-training/keras/notebooks/Comet_with_Keras.ipynb
           - integrations/model-training/prophet/notebooks/Comet_and_Prophet.ipynb

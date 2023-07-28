@@ -6,11 +6,11 @@ Metaflow is a human-friendly Python/R library that helps scientists and engineer
 
 ## Documentation
 
-For more information on using and configuring Metaflow integration, please see: [https://www.comet.com/docs/v2/integrations/third-party-tools/metaflow/](https://www.comet.com/docs/v2/integrations/third-party-tools/metaflow/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=metaflow)
+For more information on using and configuring Metaflow integration, please see: [https://www.comet.com/docs/v2/integrations/third-party-tools/metaflow/](https://www.comet.com/docs/v2/integrations/third-party-tools/metaflow/?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=metaflow)
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-metaflow-regression?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=metaflow).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-metaflow-regression?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=metaflow).
 
 ## Setup
 

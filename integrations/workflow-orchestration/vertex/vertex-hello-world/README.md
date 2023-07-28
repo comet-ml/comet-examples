@@ -6,11 +6,11 @@ Comet integrates with Google Vertex AI.
 
 ## Documentation
 
-For more information on using and configuring the Vertex integration, see: [https://www.comet.com/docs/v2/integrations/third-party-tools/vertex-ai/](https://www.comet.com/docs/v2/integrations/third-party-tools/vertex-ai/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex)
+For more information on using and configuring the Vertex integration, see: [https://www.comet.com/docs/v2/integrations/third-party-tools/vertex-ai/](https://www.comet.com/docs/v2/integrations/third-party-tools/vertex-ai/?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex)
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-vertex-hello-world/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-vertex-hello-world/?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex).
 
 ## Setup
 

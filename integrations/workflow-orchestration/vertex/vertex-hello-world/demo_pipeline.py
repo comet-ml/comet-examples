@@ -14,6 +14,7 @@ init()
 COMET_PROJECT_NAME = "comet-example-vertex-hello-world"
 
 
+@dsl.component(packages_to_install=["comet_ml"])
 def data_preprocessing(a: str = None, b: str = None) -> str:
     import math
     import random
@@ -31,6 +32,7 @@ def data_preprocessing(a: str = None, b: str = None) -> str:
     return a
 
 
+@dsl.component(packages_to_install=["comet_ml"])
 def model_training(a: str = None, b: str = None) -> str:
     import math
     import random
@@ -48,6 +50,7 @@ def model_training(a: str = None, b: str = None) -> str:
     return a
 
 
+@dsl.component(packages_to_install=["comet_ml"])
 def model_evaluation(a: str = None, b: str = None) -> str:
     import math
     import random
@@ -65,19 +68,6 @@ def model_evaluation(a: str = None, b: str = None) -> str:
     return a
 
 
-data_preprocessing_op = kfp.components.create_component_from_func(
-    func=data_preprocessing, packages_to_install=["comet_ml"]
-)
-
-model_training_op = kfp.components.create_component_from_func(
-    func=model_training, packages_to_install=["comet_ml"]
-)
-
-model_evaluation_op = kfp.components.create_component_from_func(
-    func=model_evaluation, packages_to_install=["comet_ml"]
-)
-
-
 @dsl.pipeline(name="comet-integration-example")
 def pipeline():
     import comet_ml.integration.vertex
@@ -89,13 +79,13 @@ def pipeline():
         share_api_key_to_workers=True,
     )
 
-    task_1 = logger.track_task(data_preprocessing_op("test"))
+    task_1 = logger.track_task(data_preprocessing("test"))
 
-    task_2 = logger.track_task(model_training_op(task_1.output))
+    task_2 = logger.track_task(model_training(task_1.output))
 
-    task_3 = logger.track_task(model_training_op(task_1.output))
+    task_3 = logger.track_task(model_training(task_1.output))
 
-    _ = logger.track_task(model_evaluation_op(task_2.output, task_3.output))
+    _ = logger.track_task(model_evaluation(task_2.output, task_3.output))
 
 
 if __name__ == "__main__":

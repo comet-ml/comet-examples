@@ -1,3 +1,4 @@
-comet_ml>=3.33.7
+comet_ml>=3.33.10
 google-cloud-aiplatform
-kfp>=2
+# Ignore versions impacted by https://github.com/kubeflow/pipelines/issues/9974
+kfp>=2,!=2.1.3

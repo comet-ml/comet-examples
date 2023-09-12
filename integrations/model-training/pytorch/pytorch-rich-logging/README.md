@@ -28,5 +28,5 @@ This example is based on the tutorial from [Yunjey](https://github.com/yunjey/py
 
 
 ```bash
-python pytorch-rich-logging.py run
+python pytorch-rich-logging.py
 ```

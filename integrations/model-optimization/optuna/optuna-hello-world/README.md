@@ -7,7 +7,7 @@ Log each Optuna trial to Comet to monitor in real-time the progress of your stud
 
 ## See it
 
-Take a look at this [public Comet Project]().
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-optuna-hello-world/view/45MrjyCtPcJPpKG2gGbkbAHZo/panels).
 
 ## Setup
 

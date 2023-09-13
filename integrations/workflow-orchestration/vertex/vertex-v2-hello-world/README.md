@@ -4,16 +4,13 @@ Comet integrates with Google Vertex AI.
 
 [Google Vertex AI](https://cloud.google.com/vertex-ai/) lets you build, deploy, and scale ML models faster, with pre-trained and custom tooling within a unified artificial intelligence platform.
 
-> [!NOTE]
-> This example uses the first version of the KFP package
-
 ## Documentation
 
 For more information on using and configuring the Vertex integration, see: [https://www.comet.com/docs/v2/integrations/third-party-tools/vertex-ai/](https://www.comet.com/docs/v2/integrations/third-party-tools/vertex-ai/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex)
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-vertex-hello-world/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-vertex-v2-hello-world/view/mz2vYWFTYZ3vNzgWIK0r4ZRUR/panels?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex).
 
 ## Setup
 

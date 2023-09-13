@@ -112,6 +112,7 @@ jobs:
           - {script: "integrations/workflow-orchestration/metaflow/metaflow-hello-world/helloworld.py", arg: "run"}
           - {script: "integrations/workflow-orchestration/metaflow/metaflow-model-evaluation/metaflow-model-evaluation.py", arg: "run --max-workers 1 --n_samples 100"}
           - {script: "integrations/workflow-orchestration/metaflow/metaflow-regression/metaflow-regression-example.py", arg: "run"}
+          - {script: "integrations/model-optimization/optuna/optuna-hello-world/optuna-hello-world.py", arg: ""}
     env:
       SCRIPT_TO_TEST: ${{ matrix.example.script }}
     steps:

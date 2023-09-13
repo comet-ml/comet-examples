@@ -10,7 +10,7 @@ For more information on using and configuring the Vertex integration, see: [http
 
 ## See it
 
-Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-vertex-hello-world/?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex).
+Take a look at this [public Comet Project](https://www.comet.com/examples/comet-example-vertex-v2-hello-world/view/mz2vYWFTYZ3vNzgWIK0r4ZRUR/panels?utm_source=comet-examples&utm_medium=referral&utm_campaign=github_repo_2023&utm_content=vertex).
 
 ## Setup
 

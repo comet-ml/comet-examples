@@ -34,7 +34,6 @@ dls = tds.dataloaders(after_item=[ToTensor(), IntToFloatTensor()])
 
 learn = vision_learner(dls, resnet18, pretrained=True, metrics=error_rate)
 
-with experiment.train():
-    learn.fit_one_cycle(EPOCHS)
+learn.fit_one_cycle(EPOCHS)
 
 experiment.end()

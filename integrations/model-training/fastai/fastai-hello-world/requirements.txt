@@ -1,2 +1,2 @@
-comet_ml
+comet_ml>=3.37.0
 fastai

@@ -1,6 +1,6 @@
 # coding: utf-8
 from comet_ml import Experiment, init
-from comet_ml.integration.pytorch import log_model
+from comet_ml.integration.pytorch import log_model, watch
 
 import torch
 import torch.nn as nn
@@ -15,7 +15,7 @@ hyper_params = {
     "num_layers": 2,
     "num_classes": 10,
     "batch_size": 100,
-    "num_epochs": 3,
+    "num_epochs": 5,
     "learning_rate": 0.01,
 }
 
@@ -81,6 +81,7 @@ optimizer = torch.optim.Adam(rnn.parameters(), lr=hyper_params["learning_rate"])
 total_steps = len(train_dataset) // hyper_params["batch_size"]
 
 with experiment.train():
+    watch(rnn)
 
     step = 0
     for epoch in range(hyper_params["num_epochs"]):

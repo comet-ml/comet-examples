@@ -18,13 +18,13 @@ jobs:
           python -m pip install -U \
             ipython \
             nbconvert \
-            'tensorflow==1.15.2' \
+            'tensorflow=1.15.2' \
             numpy \
             matplotlib \
             keras \
             scikit-learn \
             'torch>=1' \
-            'fastai==1.0.38' \
+            'fastai=1.0.38' \
             dataclasses \
             chainer \
             mlflow

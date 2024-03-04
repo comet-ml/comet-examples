@@ -1,0 +1,37 @@
+name: nata-examples
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - CM-9290-investigate-concurrent-futures-thread-pool-executor-performance-and-data-loss-problem
+jobs:
+  test:
+    runs-on: summerwind
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     os: [ ubuntu-latest]
+    #     python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U \
+            ipython \
+            nbconvert \
+            'tensorflow==1.15.2' \
+            numpy \
+            matplotlib \
+            keras \
+            scikit-learn \
+            'torch>=1' \
+            'fastai==1.0.38' \
+            dataclasses \
+            chainer \
+            mlflow
+      - name: Debug installed dependencies
+        run: |
+          python -m pip list
+      - name: Run
+        run: python pytorch/comet-pytorch-ddp-mnist-single-experiment.py

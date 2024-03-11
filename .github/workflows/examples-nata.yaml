@@ -1,6 +1,5 @@
 name: nata-examples
 on:
-  workflow_dispatch:
   push:
     branches:
       - CM-9290-investigate-concurrent-futures-thread-pool-executor-performance-and-data-loss-problem

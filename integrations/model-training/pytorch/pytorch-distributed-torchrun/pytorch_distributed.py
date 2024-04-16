@@ -4,6 +4,7 @@ import os
 import random
 
 import comet_ml
+import comet_ml.system.gpu.gpu_logging
 
 import numpy as np
 import torch
@@ -44,13 +45,70 @@ def evaluate(model, device, test_loader):
     return accuracy
 
 
+def get_comet_experiment(global_rank):
+    """Create Comet Experiment in each worker
+
+    We create the Experiment in the global rank 0 then broadcast the unique
+    experiment Key to each worker which creates an ExistingExperiment to logs
+    system metrics to the same metrics
+    """
+    os.environ["COMET_DISTRIBUTED_NODE_IDENTIFIER"] = str(global_rank)
+    if global_rank == 0:
+        experiment = comet_ml.Experiment(
+            project_name="comet-example-pytorch-distributed-torchrun"
+        )
+        objects = [experiment.get_key()]
+    else:
+        objects = [None]
+
+    dist.broadcast_object_list(objects, src=0)
+
+    if global_rank != 0:
+        experiment = comet_ml.ExistingExperiment(
+            experiment_key=objects[0],
+            log_env_gpu=True,
+            log_env_cpu=True,
+            log_env_network=True,
+            log_env_details=True,
+            log_env_disk=True,
+            log_env_host=False,
+            display_summary_level=0,
+        )
+
+    return experiment
+
+
+def get_dataset(local_rank, transform):
+    # Data should be prefetched
+    # Download the data on local rank 0
+    if local_rank == 0:
+        train_set = torchvision.datasets.CIFAR10(
+            root="data", train=True, download=True, transform=transform
+        )
+        test_set = torchvision.datasets.CIFAR10(
+            root="data", train=False, download=False, transform=transform
+        )
+
+    # Wait for all local rank to have download the dataset
+    dist.barrier()
+
+    # Then load it for other workers on each node
+    if local_rank != 0:
+        train_set = torchvision.datasets.CIFAR10(
+            root="data", train=True, download=False, transform=transform
+        )
+        test_set = torchvision.datasets.CIFAR10(
+            root="data", train=False, download=False, transform=transform
+        )
+
+    return train_set, test_set
+
+
 def main():
     num_epochs_default = 5
     batch_size_default = 256  # 1024
     learning_rate_default = 0.1
     random_seed_default = 0
-    model_dir_default = "saved_models"
-    model_filename_default = "resnet_distributed.pth"
 
     # Each process runs on 1 GPU device specified by the local_rank argument.
     parser = argparse.ArgumentParser(
@@ -77,21 +135,7 @@ def main():
     parser.add_argument(
         "--random_seed", type=int, help="Random seed.", default=random_seed_default
     )
-    parser.add_argument(
-        "--model_dir",
-        type=str,
-        help="Directory for saving models.",
-        default=model_dir_default,
-    )
-    parser.add_argument(
-        "--model_filename",
-        type=str,
-        help="Model filename.",
-        default=model_filename_default,
-    )
-    parser.add_argument(
-        "--resume", action="store_true", help="Resume training from saved checkpoint."
-    )
+    parser.add_argument("--cpu", action="store_true", help="Train on CPU only.")
     argv = parser.parse_args()
 
     local_rank = int(os.environ["LOCAL_RANK"])
@@ -100,18 +144,7 @@ def main():
     batch_size = argv.batch_size
     learning_rate = argv.learning_rate
     random_seed = argv.random_seed
-    model_dir = argv.model_dir
-    model_filename = argv.model_filename
-    resume = argv.resume
-
-    # Create directories outside the PyTorch program
-    # Do not create directory here because it is not multiprocess safe
-    """
-    if not os.path.exists(model_dir):
-        os.makedirs(model_dir)
-    """
-
-    model_filepath = os.path.join(model_dir, model_filename)
+    train_on_cpu = argv.cpu
 
     # We need to use seeds to make sure that the models initialized in
     # different processes are the same
@@ -119,51 +152,33 @@ def main():
 
     # Initializes the distributed backend which will take care of sychronizing
     # nodes/GPUs
-
-    # GPU
-    # torch.distributed.init_process_group(backend="nccl")
-
-    # CPU
-    torch.distributed.init_process_group(backend="gloo")
-
-    # Create Comet Experiment We create the Experiment in the global rank 0
-    # then broadcast the unique experiment Key to each worker which creates
-    # an ExistingExperiment to logs system metrics to the same metrics
-    os.environ["COMET_DISTRIBUTED_NODE_IDENTIFIER"] = str(global_rank)
-    if global_rank == 0:
-        experiment = comet_ml.Experiment(
-            project_name="comet-example-pytorch-distributed-torchrun"
-        )
-        objects = [experiment.get_key()]
+    if train_on_cpu:
+        torch.distributed.init_process_group(backend="gloo")
     else:
-        objects = [None]
-    dist.broadcast_object_list(objects, src=0)
+        torch.distributed.init_process_group(backend="nccl")
 
-    if global_rank != 0:
-        experiment = comet_ml.ExistingExperiment(
-            experiment_key=objects[0],
-            log_env_gpu=True,
-            log_env_cpu=True,
-            log_env_network=True,
-            log_env_details=True,
-            log_env_disk=True,
-            log_env_host=False,
-            display_summary_level=0,
-        )
+        # We need to set the CUDA device to get distributed communication to works
+        torch.cuda.set_device("cuda:{}".format(local_rank))
+
+        # Also inform Comet about which GPU device to keep track of
+        comet_ml.system.gpu.gpu_logging.set_devices_to_report([local_rank])
+
+    # Get the Comet experiment for each worker
+    comet_experiment = get_comet_experiment(global_rank)
 
     # Encapsulate the model on the GPU assigned to the current process
     model = torchvision.models.resnet18(pretrained=False)
 
-    # device = torch.device("cuda:{}".format(local_rank))
-    device = torch.device("cpu")
-    model = model.to(device)
-    ddp_model = torch.nn.parallel.DistributedDataParallel(model)
-
-    # We only save the model who uses device "cuda:0"
-    # To resume, the device for the saved model would also be "cuda:0"
-    if resume is True:
-        map_location = {"cuda:0": "cuda:{}".format(local_rank)}
-        ddp_model.load_state_dict(torch.load(model_filepath, map_location=map_location))
+    if train_on_cpu:
+        device = torch.device("cpu")
+        model = model.to(device)
+        ddp_model = torch.nn.parallel.DistributedDataParallel(model)
+    else:
+        device = torch.device("cuda:{}".format(local_rank))
+        model = model.to(device)
+        ddp_model = torch.nn.parallel.DistributedDataParallel(
+            model, device_ids=[local_rank], output_device=local_rank
+        )
 
     # Prepare dataset and dataloader
     transform = transforms.Compose(
@@ -175,27 +190,7 @@ def main():
         ]
     )
 
-    # Data should be prefetched
-    # Download the data on local rank 0
-    if local_rank == 0:
-        train_set = torchvision.datasets.CIFAR10(
-            root="data", train=True, download=True, transform=transform
-        )
-        test_set = torchvision.datasets.CIFAR10(
-            root="data", train=False, download=False, transform=transform
-        )
-
-    # Wait for all local rank to have download the dataset
-    dist.barrier()
-
-    # Then load it for other workers on each node
-    if local_rank != 0:
-        train_set = torchvision.datasets.CIFAR10(
-            root="data", train=True, download=False, transform=transform
-        )
-        test_set = torchvision.datasets.CIFAR10(
-            root="data", train=False, download=False, transform=transform
-        )
+    train_set, test_set = get_dataset(local_rank, transform)
 
     # Restricts data loading to a subset of the dataset exclusive to the current process
     train_sampler = DistributedSampler(dataset=train_set)
@@ -221,7 +216,7 @@ def main():
         # Save and evaluate model routinely
         if local_rank == 0:
             accuracy = evaluate(model=ddp_model, device=device, test_loader=test_loader)
-            experiment.log_metric("accuracy", accuracy, epoch=epoch)
+            comet_experiment.log_metric("accuracy", accuracy, epoch=epoch)
             print("-" * 75)
             print("Epoch: {}, Accuracy: {}".format(epoch, accuracy))
             print("-" * 75)
@@ -244,5 +239,4 @@ def main():
 
 
 if __name__ == "__main__":
-
     main()

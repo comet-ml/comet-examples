@@ -484,6 +484,9 @@ def create_experiment_dir(
     hparams_file = exp_dir / "hparams.json"
     with hparams_file.open("w") as handle:
         json.dump(obj=all_arguments, fp=handle, indent=2)
+    # Finally create the Tensorboard Dir
+    tb_dir = exp_dir / "tb_dir"
+    tb_dir.mkdir(exist_ok=False)
     return exp_dir
 
 

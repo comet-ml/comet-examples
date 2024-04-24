@@ -1,0 +1,11 @@
+comet_ml
+datasets
+deepspeed
+fire
+loguru
+pytz
+sh
+tensorboard
+torch
+tqdm
+transformers

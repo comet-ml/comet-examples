@@ -758,6 +758,7 @@ def train(
             "enabled": True,
             "project": "comet-example-deepspeed-bert",
         },
+        "wall_clock_breakdown": True,
     }
     model, _, _, _ = deepspeed.initialize(
         model=model, model_parameters=model.parameters(), config=ds_config

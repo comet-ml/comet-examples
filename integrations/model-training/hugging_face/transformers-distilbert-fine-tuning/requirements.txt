@@ -3,4 +3,4 @@ comet_ml
 pandas
 scikit-learn
 torch
-transformers
+transformers<4.40.0

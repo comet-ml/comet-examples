@@ -754,6 +754,10 @@ def train(
             "stage": 1,
             "offload_optimizer": {"device": "cpu"},
         },
+        "comet": {
+            "enabled": True,
+            "project": "comet-example-deepspeed-bert",
+        },
     }
     model, _, _, _ = deepspeed.initialize(
         model=model, model_parameters=model.parameters(), config=ds_config

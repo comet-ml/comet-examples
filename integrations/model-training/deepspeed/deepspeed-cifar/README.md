@@ -22,9 +22,9 @@ python -m pip install -r requirements.txt
 
 ## Run the example
 
-This example is based on official example from [DeepSpeed](https://github.com/microsoft/DeepSpeedExamples/tree/master/training/HelloDeepSpeed).
+This example is based on official example from [DeepSpeed](https://github.com/microsoft/DeepSpeedExamples/tree/master/training/cifar).
 
 
 ```bash
-deepspeed train_bert_ds.py --checkpoint_dir .
+deepspeed --bind_cores_to_rank cifar10_deepspeed.py
 ```

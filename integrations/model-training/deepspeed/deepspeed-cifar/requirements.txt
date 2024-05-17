@@ -1,0 +1,4 @@
+comet_ml
+deepspeed
+torch
+torchvision

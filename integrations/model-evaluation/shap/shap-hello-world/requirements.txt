@@ -1,6 +1,6 @@
 comet_ml
-ipython
+keras
 matplotlib
-protobuf<3.20
+numpy
 shap
-tensorflow==1.15.3
+tensorflow<2.16.0 # https://github.com/shap/shap/issues/3645

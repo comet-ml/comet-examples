@@ -101,6 +101,7 @@ jobs:
         os: [ubuntu-latest]
         python-version: ["3.10"]
         example:
+          - {script: "integrations/model-evaluation/shap/shap-hello-world", arg: ""}
           - {script: "integrations/model-optimization/optuna/optuna-hello-world/optuna-hello-world.py", arg: ""}
           - {script: "integrations/model-training/fastai/fastai-hello-world/fastai_hello_world.py", arg: ""}
           - {script: "integrations/model-training/hugging_face/transformers-distilbert-fine-tuning/transformers-distilbert-fine-tuning.py", arg: ""}

@@ -22,7 +22,7 @@ python -m pip install -r requirements.txt
 
 ## Run the example
 
-This example is based on the Deep learning example from [SHAP Readme](https://github.com/slundberg/shap#deep-learning-example-with-gradientexplainer-tensorflowkeraspytorch-models).
+This example is based on the Deep learning example from [SHAP Readme](https://github.com/shap/shap?tab=readme-ov-file#deep-learning-example-with-deepexplainer-tensorflowkeras-models).
 
 
 ```bash

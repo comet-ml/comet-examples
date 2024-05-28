@@ -1,70 +1,78 @@
 # -*- coding: utf-8 -*-
-import json
-
 from comet_ml import Experiment, init
 
+import matplotlib
 import numpy as np
 import shap
-import tensorflow.keras.backend as K
-from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
+
+import keras
+from keras import layers
+from keras.utils import to_categorical
+
+# Force non-interactive matplotlib backend as Shap images are logged into Comet
+matplotlib.use("agg")
 
 # Login to Comet if needed
-init()
+init(project_name="comet-example-shap-hello-world")
 
-experiment = Experiment(project_name="comet-example-shap-hello-world")
+experiment = Experiment()
 
-# load pre-trained model and choose two images to explain
-model = VGG16(weights="imagenet", include_top=True)
+# Model / data parameters
+num_classes = 10
+input_shape = (28, 28, 1)
 
-X, y = shap.datasets.imagenet50()
-to_explain = X[[39, 41]]
+# Load the data and split it between train and test sets
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 
-# load the ImageNet class names
-url = "https://s3.amazonaws.com/deep-learning-models/image-models/imagenet_class_index.json"  # noqa: E501
-fname = shap.datasets.cache(url)
-with open(fname) as f:
-    class_names = json.load(f)
-
-# explain how the input to the 7th layer of the model explains
-# the top two classes
-
-
-def map2layer(x, layer):
-    feed_dict = dict(zip([model.layers[0].input], [preprocess_input(x.copy())]))
-    return K.get_session().run(model.layers[layer].input, feed_dict)
+# Scale images to the [0, 1] range
+x_train = x_train.astype("float32") / 255
+x_test = x_test.astype("float32") / 255
+# Make sure images have shape (28, 28, 1)
+x_train = np.expand_dims(x_train, -1)
+x_test = np.expand_dims(x_test, -1)
+print("x_train shape:", x_train.shape)
+print(x_train.shape[0], "train samples")
+print(x_test.shape[0], "test samples")
 
 
-e = shap.GradientExplainer(
-    (model.layers[7].input, model.layers[-1].output),
-    map2layer(preprocess_input(X.copy()), 7),
+# convert class vectors to binary class matrices
+y_train = to_categorical(y_train, num_classes)
+y_test = to_categorical(y_test, num_classes)
+
+batch_size = 128
+epochs = 3
+
+model = keras.Sequential(
+    [
+        layers.Input(shape=input_shape),
+        layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
+        layers.MaxPooling2D(pool_size=(2, 2)),
+        layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),
+        layers.MaxPooling2D(pool_size=(2, 2)),
+        layers.Flatten(),
+        layers.Dropout(0.5),
+        layers.Dense(num_classes, activation="softmax"),
+    ]
 )
 
-shap_values, indexes = e.shap_values(
-    map2layer(to_explain, 7),
-    ranked_outputs=2,
-    nsamples=10,
-)
+model.summary()
 
-# get the names for the classes
-index_names = np.vectorize(lambda x: class_names[str(x)][1])(indexes)
+model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 
-# plot the explanations
-shap.image_plot(shap_values, to_explain, index_names)
+model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
 
-# explain how the input to the 7th layer of the model explains the top two classes
-explainer = shap.GradientExplainer(
-    (model.layers[7].input, model.layers[-1].output),
-    map2layer(preprocess_input(X.copy()), 7),
-    local_smoothing=100,
-)
-shap_values, indexes = explainer.shap_values(
-    map2layer(to_explain, 7),
-    ranked_outputs=2,
-    nsamples=10,
-)
+score = model.evaluate(x_test, y_test, verbose=0)
+print("Test loss:", score[0])
+print("Test accuracy:", score[1])
 
-# get the names for the classes
-index_names = np.vectorize(lambda x: class_names[str(x)][1])(indexes)
+# select a set of background examples to take an expectation over
+background = x_train[np.random.choice(x_train.shape[0], 100, replace=False)]
 
-# plot the explanations
-shap.image_plot(shap_values, to_explain, index_names)
+# explain predictions of the model on four images
+e = shap.DeepExplainer(model, background)
+# ...or pass tensors directly
+# e = shap.DeepExplainer((model.layers[0].input, model.layers[-1].output), background)
+shap_values = e.shap_values(x_test[1:5])
+
+# plot the feature attributions
+shap.image_plot(shap_values, -x_test[1:5])

@@ -1,6 +1,6 @@
 comet_ml
-ipython
+keras
 matplotlib
-protobuf<3.20
-shap
-tensorflow==1.15.3
+numpy
+shap<0.45.0 # Shap output changed radically in version 0.45.0, likely after https://github.com/shap/shap/pull/3318
+tensorflow<2.16.0 # https://github.com/shap/shap/issues/3645

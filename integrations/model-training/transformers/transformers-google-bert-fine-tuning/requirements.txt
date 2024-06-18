@@ -1,0 +1,7 @@
+comet_ml
+datasets
+evaluate
+numpy
+scikit-learn
+torch
+transformers[torch]

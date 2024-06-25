@@ -107,6 +107,7 @@ jobs:
           - {script: "integrations/model-training/hugging_face/transformers-distilbert-fine-tuning/transformers-distilbert-fine-tuning.py", arg: ""}
           - {script: "integrations/model-training/keras/keras-mnist-dnn/keras-mnist-dnn.py", arg: ""}
           - {script: "integrations/model-training/mlflow/mlflow-hello-world/mlflow-hello-world.py", arg: "run"}
+          - {script: "integrations/model-training/mosaicml/mosaicml-getting-started/mosaicml-getting-started.py", arg: ""}
           - {script: "integrations/model-training/pytorch-lightning/pytorch-lightning-optimizer/pytorch-lightning-optimizer.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", arg: ""}

@@ -1,5 +1,5 @@
 accelerate
-comet_ml
+comet_ml>=3.43.2
 pandas
 scikit-learn
 torch

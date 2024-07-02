@@ -55,7 +55,7 @@ def compute_metrics(eval_pred):
     return metric.compute(predictions=predictions, references=labels)
 
 
-EPOCHS = 5
+EPOCHS = 3
 
 training_args = TrainingArguments(
     seed=SEED,

@@ -1,6 +1,8 @@
 # coding: utf-8
 import argparse
 
+import comet_ml
+
 import deepspeed
 import torch
 import torch.nn as nn
@@ -9,6 +11,9 @@ import torchvision
 import torchvision.transforms as transforms
 from deepspeed.accelerator import get_accelerator
 from deepspeed.moe.utils import split_params_into_different_moe_groups_for_optimizer
+
+# Login to Comet if needed
+comet_ml.init()
 
 
 def add_argument():

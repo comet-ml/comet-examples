@@ -134,9 +134,6 @@ def get_ds_config(args):
         "comet": {
             "enabled": True,
             "project": "comet-example-deepspeed-cifar",
-            "experiment_config": {
-                "distributed_node_identifier": "test_experiment_config"
-            },
         },
         "scheduler": {
             "type": "WarmupLR",

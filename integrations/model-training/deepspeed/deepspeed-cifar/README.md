@@ -1,12 +1,12 @@
 # DeepSpeed integration with Comet.ml
 
-[DeepSpeed](TODO) is a TODO.
+[DeepSpeed](https://github.com/microsoft/DeepSpeed) empowers ChatGPT-like model training with a single click, offering 15x speedup over SOTA RLHF systems with unprecedented cost reduction at all scales.
 
 
 
 ## Documentation
 
-For more information on using and configuring the DeepSpeed integration, see: [https://www.comet.com/docs/v2/integrations/ml-frameworks/deepspeed/](https://www.comet.com/docs/v2/integrations/ml-frameworks/TODO)
+For more information on using and configuring the DeepSpeed integration, see: [https://www.comet.com/docs/v2/integrations/ml-frameworks/deepspeed/](https://www.comet.com/docs/v2/integrations/ml-frameworks/deepspeed/)
 
 ## See it
 

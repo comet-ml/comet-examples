@@ -9,7 +9,7 @@ from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.preprocessing import StandardScaler
 
-comet_ml.init()
+comet_ml.login()
 
 experiment = comet_ml.Experiment(
     project_name="comet-example-scikit-learn-classification"

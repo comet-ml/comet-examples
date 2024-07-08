@@ -27,7 +27,7 @@ from torchvision.datasets import MNIST
 from pytorch_lightning import LightningModule, Trainer
 
 # Login to Comet if needed
-comet_ml.init(project_name="comet-example-pytorch-lightning-optimizer")
+comet_ml.login(project_name="comet-example-pytorch-lightning-optimizer")
 
 
 class PyTorchLightningModel(LightningModule):

@@ -10,7 +10,7 @@ from composer.loggers import CometMLLogger
 from composer.models import ComposerClassifier
 from torchvision import datasets, transforms
 
-comet_ml.init(project_name="comet-example-mosaicml-getting-started")
+comet_ml.login(project_name="comet-example-mosaicml-getting-started")
 torch.manual_seed(42)  # For replicability
 
 data_directory = "./data"

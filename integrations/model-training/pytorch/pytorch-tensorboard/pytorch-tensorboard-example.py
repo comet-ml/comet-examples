@@ -20,7 +20,7 @@ hyper_params = {
 }
 
 
-comet_ml.init()
+comet_ml.login()
 
 experiment = comet_ml.Experiment(project_name="comet-example-pytorch-tensorboard")
 experiment.log_parameters(hyper_params)

@@ -14,7 +14,7 @@ WORKSPACE = os.environ["COMET_WORKSPACE"]
 
 # Login to comet and create an Experiment
 
-comet_ml.init()
+comet_ml.login()
 
 experiment = comet_ml.Experiment(
     project_name="comet-example-scikit-learn-model-saving-example"

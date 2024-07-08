@@ -249,6 +249,6 @@ class ModelEvaluationFlow(FlowSpec):
 
 
 if __name__ == "__main__":
-    comet_ml.init()
+    comet_ml.login()
 
     ModelEvaluationFlow()

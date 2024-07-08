@@ -1,4 +1,4 @@
-comet_ml
+comet_ml>=3.44.0
 pytorch_lightning
 torch
 torchvision

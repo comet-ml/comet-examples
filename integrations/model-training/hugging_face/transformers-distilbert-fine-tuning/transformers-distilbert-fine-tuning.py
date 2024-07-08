@@ -19,7 +19,7 @@ from transformers import (
 EPOCHS = 100
 
 # Login to Comet if needed
-comet_ml.init(project_name="comet-example-transformers-distilbert-fine-tuning")
+comet_ml.login(project_name="comet-example-transformers-distilbert-fine-tuning")
 
 
 class Dataset(torch.utils.data.Dataset):

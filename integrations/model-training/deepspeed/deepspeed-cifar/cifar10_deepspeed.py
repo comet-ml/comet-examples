@@ -13,7 +13,7 @@ from deepspeed.accelerator import get_accelerator
 from deepspeed.moe.utils import split_params_into_different_moe_groups_for_optimizer
 
 # Login to Comet if needed
-comet_ml.init()
+comet_ml.login()
 
 
 def add_argument():

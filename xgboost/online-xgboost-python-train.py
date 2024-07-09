@@ -7,7 +7,7 @@
 # | |__| (_) | | | | | |  __/ |_ _| | | | | | |
 #  \____\___/|_| |_| |_|\___|\__(_)_| |_| |_|_|
 #
-#  Sign up for free at http://www.comet.ml
+#  Sign up for free at http://www.comet.com
 #  Copyright (C) 2015-2020 Comet ML INC
 #  This file can not be copied and/or distributed without the express
 #  permission of Comet ML Inc.
@@ -19,8 +19,9 @@ from comet_ml import Experiment
 
 import numpy as np
 import pandas as pd
-import xgboost as xgb
 from sklearn.model_selection import train_test_split
+
+import xgboost as xgb
 
 
 # Thanks to Chenglong Chen for providing this in the forum
@@ -150,7 +151,7 @@ dtest = xgb.DMatrix(test[features])
 
 watchlist = [(dvalid, "eval"), (dtrain, "train")]
 
-## Experiment 1: everything as normal, using .train():
+# Experiment 1: everything as normal, using .train():
 experiment = Experiment()
 experiment.add_tag("metrics")
 results = {}
@@ -166,7 +167,7 @@ gbm = xgb.train(
 )
 experiment.end()
 
-## Experiment 2: no results (thus no metrics), using .train():
+# Experiment 2: no results (thus no metrics), using .train():
 experiment = Experiment()
 experiment.add_tag("no metrics")
 gbm = xgb.train(
@@ -180,7 +181,7 @@ gbm = xgb.train(
 )
 experiment.end()
 
-## Experiment 3: results, but no metrics because we told it no, using .train():
+# Experiment 3: results, but no metrics because we told it no, using .train():
 experiment = Experiment(auto_metric_logging=False)
 experiment.add_tag("no metrics")
 results = {}

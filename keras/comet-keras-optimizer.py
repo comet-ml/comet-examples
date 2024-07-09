@@ -6,7 +6,7 @@
 # | |__| (_) | | | | | |  __/ |_ _| | | | | | |
 #  \____\___/|_| |_| |_|\___|\__(_)_| |_| |_|_|
 #
-#  Sign up for free at http://www.comet.ml
+#  Sign up for free at http://www.comet.com
 #  Copyright (C) 2019 Comet ML INC
 #  This file can not be copied and/or distributed without
 #   the express permission of Comet ML Inc.
@@ -21,14 +21,13 @@ Gets to 98.40% test accuracy after 20 epochs
 """
 from __future__ import print_function
 
-from os.path import dirname, join
-from comet_ml import Optimizer  # isort:skip
-
 import keras
 from keras.datasets import mnist
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import RMSprop
+
+from comet_ml import Optimizer  # isort:skip
 
 
 def main():
@@ -83,8 +82,6 @@ def build_model_graph(first_layer_units):
 def fit(
     experiment, x_train, y_train, x_test, y_test, epoch, batch_size, first_layer_units
 ):
-    current_dir = dirname(__file__)
-
     experiment.log_dataset_hash(x_train)
     experiment.log_parameter("first_layer_units", first_layer_units)
 

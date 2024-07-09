@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # Import Comet
-from comet_ml import Experiment, init
+from comet_ml import Experiment, login
 
 import pandas as pd
 from sklearn.datasets import fetch_california_housing
@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 import xgboost as xgb
 
 # Login to Comet if needed
-init()
+login()
 
 experiment = Experiment(project_name="comet-example-xgboost-california")
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from comet_ml import Experiment, init
+from comet_ml import Experiment, login
 
 import matplotlib
 import numpy as np
@@ -13,9 +13,9 @@ from keras.utils import to_categorical
 matplotlib.use("agg")
 
 # Login to Comet if needed
-init(project_name="comet-example-shap-hello-world")
+login()
 
-experiment = Experiment()
+experiment = Experiment(project_name="comet-example-shap-hello-world")
 
 # Model / data parameters
 num_classes = 10

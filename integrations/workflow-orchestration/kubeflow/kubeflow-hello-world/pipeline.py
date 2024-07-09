@@ -2,14 +2,14 @@
 
 import os
 
-from comet_ml import init
+from comet_ml import login
 
 import kfp
 import kfp.dsl as dsl
 from kubernetes.client.models import V1EnvVar
 
 # Login to Comet if needed
-init()
+login()
 
 
 COMET_PROJECT_NAME = "comet-example-kubeflow-hello-world"

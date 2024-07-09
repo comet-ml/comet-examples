@@ -1,14 +1,14 @@
 # coding: utf-8
 import os
 
-from comet_ml import init
+from comet_ml import login
 
 import google.cloud.aiplatform as aip
 import kfp
 import kfp.v2.dsl as dsl
 
 # Login to Comet if needed
-init()
+login()
 
 
 COMET_PROJECT_NAME = "comet-example-vertex-hello-world"

@@ -1,10 +1,10 @@
 # coding: utf-8
-from comet_ml import Experiment, init
+from comet_ml import Experiment, login
 
 import optuna
 
 # Login to Comet if needed
-init()
+login()
 
 
 def objective(trial):

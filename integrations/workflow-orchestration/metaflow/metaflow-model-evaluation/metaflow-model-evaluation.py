@@ -215,7 +215,7 @@ class ModelEvaluationFlow(FlowSpec):
         )
         accuracy = accuracy_score(labels, torch.argmax(predictions, dim=1))
 
-        self.comet_experiment.log_metrics(clf_metrics)
+        self.comet_experiment.log_metrics({"evaluation_by_class": clf_metrics})
         self.comet_experiment.log_metrics({"accuracy": accuracy})
 
         log_model(self.comet_experiment, model, self.input)

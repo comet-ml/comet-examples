@@ -51,7 +51,7 @@ def preprocess(texts, labels):
 
 
 def compute_metrics(pred):
-    experiment = comet_ml.get_global_experiment()
+    experiment = comet_ml.get_running_experiment()
 
     labels = pred.label_ids
     preds = pred.predictions.argmax(-1)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import random
 
 import comet_ml
@@ -6,7 +7,7 @@ from annoy import AnnoyIndex
 
 # Use this if you are using the Cloud version of Comet.ml
 # Comment this line if you are using a on-premise version of Comet.ml
-comet_ml.init()
+comet_ml.login()
 # Uncomment this line if you are using a on-premise version of Comet.ml
 # comet_ml.init_onprem()
 

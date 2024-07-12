@@ -8,7 +8,7 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.pipeline import Pipeline
 
-comet_ml.init()
+comet_ml.login()
 
 experiment = comet_ml.Experiment(project_name="comet-example-scikit-learn-nlp")
 

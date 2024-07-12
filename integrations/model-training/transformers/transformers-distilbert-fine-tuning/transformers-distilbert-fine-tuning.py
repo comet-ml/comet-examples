@@ -19,7 +19,7 @@ from transformers import (
 EPOCHS = 100
 
 # Login to Comet if needed
-comet_ml.init(project_name="comet-example-transformers-distilbert-fine-tuning")
+comet_ml.login(project_name="comet-example-transformers-distilbert-fine-tuning")
 
 
 class Dataset(torch.utils.data.Dataset):
@@ -51,7 +51,7 @@ def preprocess(texts, labels):
 
 
 def compute_metrics(pred):
-    experiment = comet_ml.get_global_experiment()
+    experiment = comet_ml.get_running_experiment()
 
     labels = pred.label_ids
     preds = pred.predictions.argmax(-1)

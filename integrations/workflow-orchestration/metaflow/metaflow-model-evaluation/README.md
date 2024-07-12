@@ -32,7 +32,7 @@ export COMET_WORKSPACE=<Your Comet Workspace>
 In this guide, we will demonstrate how to use Comet's Metaflow integration to build a simple model evaluation flow.
 
 ```shell
-python metaflow_model_evaluation.py run --max-workers 1 --n_samples 100
+python metaflow-model-evaluation.py run --max-workers 1 --n_samples 100
 ```
 
 Our flow consists of two steps.

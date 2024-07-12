@@ -21,6 +21,7 @@ jobs:
           - integrations/model-evaluation/gradio/notebooks/Gradio_and_Comet.ipynb
           - integrations/model-evaluation/gradio/notebooks/Logging_Model_Inferences_with_Comet_and_Gradio.ipynb
           - integrations/model-optimization/ray-tune/notebooks/Comet_and_Ray.ipynb
+          - integrations/model-training/composer/notebooks/comet_composer.ipynb
           - integrations/model-training/fastai/notebooks/fastai_hello_world.ipynb
           - integrations/model-training/hugging_face/notebooks/Comet_with_Hugging_Face_Trainer.ipynb
           - integrations/model-training/keras/notebooks/Comet_with_Keras.ipynb
@@ -38,6 +39,7 @@ jobs:
           - integrations/model-training/yolov5/notebooks/Comet_and_YOLOv5.ipynb
           - integrations/model-training/yolov8/notebooks/YOLOv8_and_Comet.ipynb
           - integrations/reinforcement-learning/gymnasium/notebooks/comet_gymnasium_example.ipynb
+          - integrations/reinforcement-learning/rllib/notebooks/Comet_and_RLLib.ipynb
           - integrations/workflow-orchestration/metaflow/notebooks/metaflow_hello_world.ipynb
     env:
       NOTEBOOK_TO_TEST: ${{ matrix.notebooks }}
@@ -103,6 +105,7 @@ jobs:
         example:
           - {script: "integrations/model-evaluation/shap/shap-hello-world/shap-hello-world.py", arg: ""}
           - {script: "integrations/model-optimization/optuna/optuna-hello-world/optuna-hello-world.py", arg: ""}
+          - {script: "integrations/model-training/composer/mosaicml-getting-started/mosaicml-getting-started.py", arg: ""}
           - {script: "integrations/model-training/fastai/fastai-hello-world/fastai_hello_world.py", arg: ""}
           - {script: "integrations/model-training/hugging_face/transformers-distilbert-fine-tuning/transformers-distilbert-fine-tuning.py", arg: ""}
           - {script: "integrations/model-training/keras/keras-mnist-dnn/keras-mnist-dnn.py", arg: ""}

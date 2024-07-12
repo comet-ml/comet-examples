@@ -1,17 +1,22 @@
+# coding: utf-8
+
 import argparse
 import json
 import logging
 import os
-import random
 import sys
 
 import comet_ml
-import torch
+
 from datasets import load_from_disk
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
-from transformers import (AutoModelForSequenceClassification, AutoTokenizer,
-                          Trainer, TrainingArguments)
+from transformers import (
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    Trainer,
+    TrainingArguments,
+)
 
 if __name__ == "__main__":
 
@@ -21,7 +26,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    # hyperparameters sent by the client are passed as command-line arguments to the script.
+    # hyperparameters sent by the client are passed as command-line arguments
+    # to the script
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--train_batch_size", type=int, default=32)
     parser.add_argument("--eval_batch_size", type=int, default=64)
@@ -71,11 +77,11 @@ if __name__ == "__main__":
         return {"accuracy": acc, "f1": f1, "precision": precision, "recall": recall}
 
     def log_metrics(results):
-        experiment = comet_ml.get_global_experiment()
+        experiment = comet_ml.get_running_experiment()
         experiment.log_metrics(results)
 
     def log_sagemaker_metadata():
-        experiment = comet_ml.get_global_experiment()
+        experiment = comet_ml.get_running_experiment()
         experiment.log_others(SM_TRAINING_ENV)
 
     def _get_model_metadata():
@@ -83,7 +89,7 @@ if __name__ == "__main__":
         return {"model_uri": model_uri}
 
     def log_model(name, model):
-        experiment = comet_ml.get_global_experiment()
+        experiment = comet_ml.get_running_experiment()
         comet_ml.integration.pytorch.log_model(
             experiment, model, name, metadata=_get_model_metadata()
         )
@@ -124,7 +130,7 @@ if __name__ == "__main__":
 
     # writes eval result to file which can be accessed later in s3 ouput
     with open(os.path.join(args.output_data_dir, "eval_results.txt"), "w") as writer:
-        print(f"***** Eval results *****")
+        print("***** Eval results *****")
         for key, value in sorted(eval_result.items()):
             writer.write(f"{key} = {value}\n")
 

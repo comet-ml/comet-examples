@@ -1,2 +1,2 @@
-comet_ml>=3.32.9
+comet_ml>=3.44.0
 scikit-learn

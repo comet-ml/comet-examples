@@ -6,7 +6,7 @@
 # | |__| (_) | | | | | |  __/ |_ _| | | | | | |
 #  \____\___/|_| |_| |_|\___|\__(_)_| |_| |_|_|
 #
-#  Sign up for free at http://www.comet.ml
+#  Sign up for free at http://www.comet.com
 #  Copyright (C) 2015-2020 Comet ML INC
 #  This file can not be copied and/or distributed without
 #  the express permission of Comet ML Inc.
@@ -27,7 +27,7 @@ from torchvision.datasets import MNIST
 from pytorch_lightning import LightningModule, Trainer
 
 # Login to Comet if needed
-comet_ml.init(project_name="comet-example-pytorch-lightning-optimizer")
+comet_ml.login(project_name="comet-example-pytorch-lightning-optimizer")
 
 
 class PyTorchLightningModel(LightningModule):

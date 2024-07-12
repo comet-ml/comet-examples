@@ -1,2 +1,2 @@
 annoy
-comet_ml
+comet_ml>=3.44.0

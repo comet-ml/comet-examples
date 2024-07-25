@@ -4,4 +4,4 @@ evaluate
 numpy
 scikit-learn
 torch
-transformers[torch]
+transformers[torch]>=4.43.0

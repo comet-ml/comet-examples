@@ -3,4 +3,4 @@ comet_ml>=3.44.0
 pandas
 scikit-learn
 torch
-transformers<4.40.0
+transformers>=4.43.0

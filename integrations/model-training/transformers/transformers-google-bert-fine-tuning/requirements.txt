@@ -1,0 +1,7 @@
+comet_ml>=3.43.2
+datasets
+evaluate
+numpy
+scikit-learn
+torch
+transformers[torch]>=4.43.0

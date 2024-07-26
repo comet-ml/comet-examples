@@ -44,4 +44,4 @@ Have questions? We have answers -
 We take feature requests through github at: https://github.com/comet-ml/issue-tracking
 
 ## Feature Spotlight
-Check out new product features and updates through our [Release Notes](https://www.comet.com/docs/v2/api-and-sdk/python-sdk/releases/). Also check out our [blog](https://medium.com/comet-ml](https://www.comet.com/site/blog/).
+Check out new product features and updates through our [Release Notes](https://www.comet.com/docs/v2/api-and-sdk/python-sdk/releases/). Also check out our [blog](https://www.comet.com/site/blog/).

@@ -1,1 +1,0 @@
-All of the PyTorch-Lightning examples has been moved here: https://github.com/comet-ml/comet-examples/tree/master/integrations/model-training/pytorch-lightning/.

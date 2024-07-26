@@ -34,7 +34,6 @@ Comet Python SDK is compatible with: __Python 3.5-3.13__.
 - [pytorch](https://github.com/comet-ml/comet-examples/tree/master/pytorch)
 - [scikit](https://github.com/comet-ml/comet-examples/tree/master/integrations/model-training/scikit-learn)
 - [tensorflow](https://github.com/comet-ml/comet-examples/tree/master/tensorflow)
-- 
 
 ## Support 
 Have questions? We have answers - 

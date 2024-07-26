@@ -32,7 +32,7 @@ Comet Python SDK is compatible with: __Python 3.5-3.13__.
 - [fastai](https://github.com/comet-ml/comet-examples/tree/master/integrations/model-training/fastai/)
 - [keras](https://github.com/comet-ml/comet-examples/tree/master/keras)
 - [pytorch](https://github.com/comet-ml/comet-examples/tree/master/pytorch)
-- [scikit](https://github.com/comet-ml/comet-examples/tree/master/scikit)
+- [scikit](https://github.com/comet-ml/comet-examples/tree/master/integrations/model-training/scikit-learn)
 - [tensorflow](https://github.com/comet-ml/comet-examples/tree/master/tensorflow)
 
 We also offer [Jupyter notebook examples for fastai and keras](https://github.com/comet-ml/comet-examples/tree/master/notebooks)

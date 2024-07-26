@@ -1,6 +1,6 @@
 <img src="https://www.comet.com/images/logo_comet_light.png" width="350" alt="Drawing" style="width: 350px;"/>
 
-## Comet for machine learning experiment management
+## Comet for Machine Learning Experiment Management
 **Our Misson:** Comet is doing for ML what GitHub did for code. We allow data science teams to automagically track their datasets, code changes, experimentation history and production models creating efficiency, transparency, and reproducibility. 
 
 We all strive to be data driven and yet every day valuable experiment results are lost and forgotten. Comet provides a dead simple way of fixing that. It works with any workflow, any ML task, any machine, and any piece of code.
@@ -34,8 +34,7 @@ Comet Python SDK is compatible with: __Python 3.5-3.13__.
 - [pytorch](https://github.com/comet-ml/comet-examples/tree/master/pytorch)
 - [scikit](https://github.com/comet-ml/comet-examples/tree/master/integrations/model-training/scikit-learn)
 - [tensorflow](https://github.com/comet-ml/comet-examples/tree/master/tensorflow)
-
-We also offer [Jupyter notebook examples for fastai and keras](https://github.com/comet-ml/comet-examples/tree/master/notebooks)
+- 
 
 ## Support 
 Have questions? We have answers - 
@@ -45,9 +44,5 @@ Have questions? We have answers -
 **Want to request a feature?** 
 We take feature requests through github at: https://github.com/comet-ml/issue-tracking
 
-
 ## Feature Spotlight
-Check out new product features and updates through our [Release Notes](https://www.notion.so/cometml/Comet-ml-Release-Notes-93d864bcac584360943a73ae9507bcaa). Also check out our [blog](https://medium.com/comet-ml](https://www.comet.com/site/blog/).
-
-
-
+Check out new product features and updates through our [Release Notes](https://www.comet.com/docs/v2/api-and-sdk/python-sdk/releases/). Also check out our [blog](https://medium.com/comet-ml](https://www.comet.com/site/blog/).

@@ -15,6 +15,7 @@ export COMET_WORKSPACE="<Comet workspace to log data to>"
 export COMET_PROJECT_NAME="<Comet project name>"
 export COMET_MODEL_REGISTRY_NAME="<Comet model registry name>"
 
+# These environment variables are only required if you are running MPM locally
 export COMET_URL_OVERRIDE="<EM endpoint, similar format to https://www.comet.com/clientlib/>"
 export COMET_URL="<MPM ingestion endpoint, similar format to https://www.comet.com/>"
 ```

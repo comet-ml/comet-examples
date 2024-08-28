@@ -55,12 +55,14 @@ if optimizer_id is None:
 metric_values = []
 parameter_values = defaultdict(list)
 metric_name = None
+count = 0
 for experiment in optimizers[optimizer_id]:
     if experiment.id not in map_others:
         continue
     value = get_from_summary(map_others[experiment.id], "name", "optimizer_metric_value")
-    if value is None or value == "none":
-        value = 0
+    if value is None or value == "none" or value == "null":
+        continue
+    count += 1
     m = float(value)
     metric_name = get_from_summary(map_others[experiment.id], "name", "optimizer_metric")
     metric_values.append(m)
@@ -92,7 +94,7 @@ for param in parameter_values:
 
 print("### Optimizer Sweep Summary")
 print(f"""
-1. Experiments: **{len(experiments)}**
+1. Matching Experiments: **{count}**
 2. optimizer id: **{optimizer_id}**
 3. metric: **{metric_name}**
 """)

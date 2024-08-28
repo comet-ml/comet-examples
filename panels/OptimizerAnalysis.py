@@ -56,7 +56,12 @@ metric_values = []
 parameter_values = defaultdict(list)
 metric_name = None
 for experiment in optimizers[optimizer_id]:
-    m = float(get_from_summary(map_others[experiment.id], "name", "optimizer_metric_value"))
+    if experiment.id not in map_others:
+        continue
+    value = get_from_summary(map_others[experiment.id], "name", "optimizer_metric_value")
+    if value is None or value == "none":
+        value = 0
+    m = float(value)
     metric_name = get_from_summary(map_others[experiment.id], "name", "optimizer_metric")
     metric_values.append(m)
     params_str = get_from_summary(map_others[experiment.id], "name", "optimizer_parameters")

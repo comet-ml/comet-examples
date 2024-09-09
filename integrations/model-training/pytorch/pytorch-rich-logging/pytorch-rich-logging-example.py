@@ -129,7 +129,6 @@ confusion_matrix = ConfusionMatrix(index_to_example_function=train_index_to_exam
 # Train the Model
 total_steps = len(train_dataset) // hyper_params["batch_size"]
 with experiment.train():
-
     print("Logging weights as histogram (before training)...")
     # Log model weights
     weights = []

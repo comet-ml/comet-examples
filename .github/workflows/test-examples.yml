@@ -106,6 +106,7 @@ jobs:
         example:
           - {script: "integrations/model-evaluation/shap/shap-hello-world/shap-hello-world.py", arg: ""}
           - {script: "integrations/model-optimization/optuna/optuna-hello-world/optuna-hello-world.py", arg: ""}
+          - {script: "integrations/model-optimization/optuna/optuna-hello-world/optuna-hello-world.py", arg: ""}
           - {script: "integrations/model-training/composer/mosaicml-getting-started/mosaicml-getting-started.py", arg: ""}
           - {script: "integrations/model-training/fastai/fastai-hello-world/fastai_hello_world.py", arg: ""}
           - {script: "integrations/model-training/keras/keras-mnist-dnn/keras-mnist-dnn.py", arg: ""}

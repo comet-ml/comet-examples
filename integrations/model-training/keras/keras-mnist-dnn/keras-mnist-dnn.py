@@ -21,7 +21,7 @@ params = {
 }
 
 # Login to Comet if needed
-comet_ml.init()
+comet_ml.login()
 
 
 def main():

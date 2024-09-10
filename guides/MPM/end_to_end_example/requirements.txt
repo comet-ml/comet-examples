@@ -1,0 +1,10 @@
+comet_ml
+pandas
+numpy
+lightgbm
+fastapi
+requests
+asyncio
+tqdm
+comet_mpm
+uvicorn

@@ -1,11 +1,11 @@
 # coding: utf-8
-from comet_ml import init
+from comet_ml import login
 
 import optuna
 from optuna_integration.comet import CometCallback
 
 # Login to Comet if needed
-init()
+login()
 
 study = optuna.create_study()
 comet = CometCallback(

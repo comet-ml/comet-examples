@@ -178,7 +178,10 @@ class ModelEvaluationFlow(FlowSpec):
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
         dataset = load_dataset(
-            self.dataset_name, split=self.dataset_split, streaming=True
+            self.dataset_name,
+            split=self.dataset_split,
+            streaming=True,
+            trust_remote_code=True,
         )
         dataset = dataset.shuffle(self.seed, buffer_size=10_000)
         dataset = dataset.take(self.n_samples)
@@ -212,8 +215,7 @@ class ModelEvaluationFlow(FlowSpec):
         )
         accuracy = accuracy_score(labels, torch.argmax(predictions, dim=1))
 
-        self.comet_experiment.log_metrics(clf_metrics["micro avg"], prefix="micro_avg")
-        self.comet_experiment.log_metrics(clf_metrics["macro avg"], prefix="macro_avg")
+        self.comet_experiment.log_metrics({"evaluation_by_class": clf_metrics})
         self.comet_experiment.log_metrics({"accuracy": accuracy})
 
         log_model(self.comet_experiment, model, self.input)
@@ -246,6 +248,6 @@ class ModelEvaluationFlow(FlowSpec):
 
 
 if __name__ == "__main__":
-    comet_ml.init()
+    comet_ml.login()
 
     ModelEvaluationFlow()

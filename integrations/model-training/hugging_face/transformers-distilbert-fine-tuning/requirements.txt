@@ -1,6 +1,0 @@
-accelerate
-comet_ml
-pandas
-scikit-learn
-torch
-transformers<4.40.0

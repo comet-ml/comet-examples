@@ -20,7 +20,7 @@ python -m pip install -r requirements.txt
 
 ## Run the example
 
-This example is based on the following [MLflow tutorial](https://github.com/mlflow/mlflow/blob/master/examples/keras/train.py).
+This example is based on the following [MLflow tutorial](https://mlflow.org/docs/latest/deep-learning/keras/quickstart/quickstart_keras.html).
 
 ```bash
 python mlflow-hello-world.py
@@ -30,4 +30,4 @@ python mlflow-hello-world.py
 
 If you have previous MLFlow runs that you would like to visualize in Comet.ml, please see:
 
-https://githib.com/comet-ml/comet-for-mlflow
+https://github.com/comet-ml/comet-for-mlflow

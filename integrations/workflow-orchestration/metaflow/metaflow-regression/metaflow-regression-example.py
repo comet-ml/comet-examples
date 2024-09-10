@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from comet_ml import init
+from comet_ml import login
 from comet_ml.integration.metaflow import comet_flow
 
 from metaflow import FlowSpec, JSONType, Parameter, card, step
@@ -122,6 +122,6 @@ class RegressionFlow(FlowSpec):
 
 if __name__ == "__main__":
     # Login to Comet if needed
-    init()
+    login()
 
     RegressionFlow()

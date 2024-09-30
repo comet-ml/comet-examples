@@ -27,5 +27,5 @@ This example shows how to use PyTorch Lightning and Comet Optimizer together to 
 
 
 ```bash
-python pytorch_lightning_optimizer.py_
+python pytorch-lightning-optimizer.py
 ```

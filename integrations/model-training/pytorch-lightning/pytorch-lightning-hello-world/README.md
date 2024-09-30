@@ -10,7 +10,7 @@ For more information on using and configuring the PyTorch Lightning integration,
 
 ## See it
 
-Take a look at this [public Comet Project](TODO).
+Take a look at this [public Comet Experiment](https://www.comet.com/examples/comet-example-pytorch-lightning/53ea47db44164a15af3a06a12f112f67).
 
 ## Setup
 
@@ -22,8 +22,7 @@ python -m pip install -r requirements.txt
 
 ## Run the example
 
-TODO?
 
 ```bash
-python pytorch-rich-logging.py
+python pytorch-lightning-hello-world.py
 ```

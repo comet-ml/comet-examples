@@ -113,7 +113,9 @@ jobs:
           - {script: "integrations/model-training/pytorch-lightning/pytorch-lightning-optimizer/pytorch-lightning-optimizer.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-mnist/pytorch-mnist-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", arg: ""}
+          - {script: "integrations/model-training/pytorch/pytorch-rich-logging/pytorch-rich-logging-example.py", arg: ""}
           - {script: "integrations/model-training/pytorch/pytorch-tensorboard/pytorch-tensorboard-example.py", arg: ""}
+          - {script: "integrations/model-training/ray-train/ray-train-hello-world-transformers/Comet_with_ray_train_huggingface_transformers.py", arg: "run"}
           - {script: "integrations/model-training/scikit-learn/sklearn-classification-example/comet-scikit-classification-example.py", arg: "run"}
           - {script: "integrations/model-training/scikit-learn/sklearn-nlp-example/comet-scikit-nlp-example.py", args: ""}
           - {script: "integrations/model-training/transformers/transformers-distilbert-fine-tuning/transformers-distilbert-fine-tuning.py", arg: ""}

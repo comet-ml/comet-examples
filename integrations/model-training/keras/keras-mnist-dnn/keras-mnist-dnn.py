@@ -98,8 +98,8 @@ def finalize_model(experiment, model, x_train, y_train, x_test, y_test):
 
     # Log Model
     Path("models/").mkdir(exist_ok=True)
-    model.save("models/mnist-nn.h5")
-    experiment.log_model("mnist-neural-net", "models/mnist-nn.h5")
+    model.save("models/mnist-nn.keras")
+    experiment.log_model("mnist-neural-net", "models/mnist-nn.keras")
 
 
 def train(x_train, y_train, x_test, y_test):

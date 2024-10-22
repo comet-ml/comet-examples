@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from comet_ml import Experiment, login
+from comet_ml import login, start
 
 import matplotlib
 import numpy as np
 import shap
+from keras.utils import to_categorical
 
 import keras
 from keras import layers
-from keras.utils import to_categorical
 
 # Force non-interactive matplotlib backend as Shap images are logged into Comet
 matplotlib.use("agg")
@@ -15,7 +15,7 @@ matplotlib.use("agg")
 # Login to Comet if needed
 login()
 
-experiment = Experiment(project_name="comet-example-shap-hello-world")
+experiment = start(project_name="comet-example-shap-hello-world")
 
 # Model / data parameters
 num_classes = 10

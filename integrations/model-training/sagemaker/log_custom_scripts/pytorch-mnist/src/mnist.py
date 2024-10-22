@@ -1,21 +1,20 @@
+# coding: utf-8
 import argparse
 import json
 import logging
 import os
 import sys
-from pathlib import Path
 
 import comet_ml
+from comet_ml.integration.pytorch import log_model
 
 # import sagemaker_containers
 import torch
-import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 import torch.utils.data.distributed
-from comet_ml.integration.pytorch import log_model
 from torchvision import datasets, transforms
 
 SM_TRAINING_ENV = json.loads(os.getenv("SM_TRAINING_ENV"))
@@ -24,7 +23,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler(sys.stdout))
 
-experiment = comet_ml.Experiment()
+experiment = comet_ml.start()
 experiment.log_others(SM_TRAINING_ENV)
 
 

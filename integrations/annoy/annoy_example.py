@@ -11,7 +11,7 @@ comet_ml.login()
 # Uncomment this line if you are using a on-premise version of Comet.ml
 # comet_ml.init_onprem()
 
-experiment = comet_ml.Experiment()
+experiment = comet_ml.start()
 
 # Annoy hyper-parameters
 f = 40  # Length of item vector that will be indexed

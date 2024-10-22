@@ -1,7 +1,7 @@
 # coding: utf-8
 import random
 
-from comet_ml import ConfusionMatrix, Experiment, login
+from comet_ml import ConfusionMatrix, login, start
 from comet_ml.integration.pytorch import log_model
 
 import numpy as np
@@ -26,7 +26,7 @@ hyper_params = {
 login()
 
 
-experiment = Experiment(project_name="comet-example-pytorch-rich-logging")
+experiment = start(project_name="comet-example-pytorch-rich-logging")
 
 experiment.add_tag("pytorch")
 

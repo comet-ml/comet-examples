@@ -11,9 +11,7 @@ from sklearn.preprocessing import StandardScaler
 
 comet_ml.login()
 
-experiment = comet_ml.Experiment(
-    project_name="comet-example-scikit-learn-classification"
-)
+experiment = comet_ml.start(project_name="comet-example-scikit-learn-classification")
 
 
 random_state = 42

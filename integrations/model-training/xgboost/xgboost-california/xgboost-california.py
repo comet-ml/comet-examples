@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # Import Comet
-from comet_ml import Experiment, login
+from comet_ml import login, start
 
 import pandas as pd
 from sklearn.datasets import fetch_california_housing
@@ -13,7 +13,7 @@ import xgboost as xgb
 # Login to Comet if needed
 login()
 
-experiment = Experiment(project_name="comet-example-xgboost-california")
+experiment = start(project_name="comet-example-xgboost-california")
 
 # Load and configure california housing dataset
 california = fetch_california_housing()

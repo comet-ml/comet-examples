@@ -5,11 +5,10 @@ from pathlib import Path
 
 import comet_ml
 
+import tensorflow as tf
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.utils import to_categorical
-
-import tensorflow as tf
 
 params = {
     "dropout": 0.2,
@@ -104,7 +103,7 @@ def finalize_model(experiment, model, x_train, y_train, x_test, y_test):
 
 def train(x_train, y_train, x_test, y_test):
 
-    experiment = comet_ml.Experiment(project_name="comet-example-keras-mnist-dnn")
+    experiment = comet_ml.start(project_name="comet-example-keras-mnist-dnn")
 
     # Log custom hyperparameters
     experiment.log_parameters(params)

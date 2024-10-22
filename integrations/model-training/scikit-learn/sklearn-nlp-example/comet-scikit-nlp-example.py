@@ -10,7 +10,7 @@ from sklearn.pipeline import Pipeline
 
 comet_ml.login()
 
-experiment = comet_ml.Experiment(project_name="comet-example-scikit-learn-nlp")
+experiment = comet_ml.start(project_name="comet-example-scikit-learn-nlp")
 
 # Get dataset and put into train,test lists
 categories = ["alt.atheism", "soc.religion.christian", "comp.graphics", "sci.med"]

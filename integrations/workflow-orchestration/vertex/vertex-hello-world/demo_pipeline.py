@@ -22,7 +22,7 @@ def data_preprocessing(a: str = None, b: str = None) -> str:
 
     import comet_ml
 
-    experiment = comet_ml.Experiment()
+    experiment = comet_ml.start()
 
     for i in range(60):
         experiment.log_metric("accuracy", math.log(i + random.random()))
@@ -40,7 +40,7 @@ def model_training(a: str = None, b: str = None) -> str:
 
     import comet_ml
 
-    experiment = comet_ml.Experiment()
+    experiment = comet_ml.start()
 
     for i in range(60):
         experiment.log_metric("accuracy", math.log(i + random.random()))
@@ -58,7 +58,7 @@ def model_evaluation(a: str = None, b: str = None) -> str:
 
     import comet_ml
 
-    experiment = comet_ml.Experiment()
+    experiment = comet_ml.start()
 
     for i in range(60):
         experiment.log_metric("accuracy", math.log(i + random.random()))

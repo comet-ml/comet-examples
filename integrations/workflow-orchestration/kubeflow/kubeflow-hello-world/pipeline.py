@@ -26,7 +26,7 @@ def data_preprocessing(a: str = None, b: str = None) -> str:
         "{{workflow.uid}}"  # The workflow uid is replaced at run time by Kubeflow
     )
     pod_name = "{{pod.name}}"
-    experiment = comet_ml.Experiment()
+    experiment = comet_ml.start()
     comet_ml.integration.kubeflow.initialize_comet_logger(
         experiment, workflow_uid, pod_name
     )
@@ -50,7 +50,7 @@ def model_training(a: str = None, b: str = None) -> str:
         "{{workflow.uid}}"  # The workflow uid is replaced at run time by Kubeflow
     )
     pod_name = "{{pod.name}}"
-    experiment = comet_ml.Experiment()
+    experiment = comet_ml.start()
     comet_ml.integration.kubeflow.initialize_comet_logger(
         experiment, workflow_uid, pod_name
     )
@@ -74,7 +74,7 @@ def model_evaluation(a: str = None, b: str = None) -> str:
         "{{workflow.uid}}"  # The workflow uid is replaced at run time by Kubeflow
     )
     pod_name = "{{pod.name}}"
-    experiment = comet_ml.Experiment()
+    experiment = comet_ml.start()
     comet_ml.integration.kubeflow.initialize_comet_logger(
         experiment, workflow_uid, pod_name
     )

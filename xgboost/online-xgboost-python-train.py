@@ -15,7 +15,7 @@
 
 import os.path
 
-from comet_ml import Experiment
+from comet_ml import ExperimentConfig, start
 
 import numpy as np
 import pandas as pd
@@ -152,7 +152,7 @@ dtest = xgb.DMatrix(test[features])
 watchlist = [(dvalid, "eval"), (dtrain, "train")]
 
 # Experiment 1: everything as normal, using .train():
-experiment = Experiment()
+experiment = start()
 experiment.add_tag("metrics")
 results = {}
 gbm = xgb.train(
@@ -168,7 +168,7 @@ gbm = xgb.train(
 experiment.end()
 
 # Experiment 2: no results (thus no metrics), using .train():
-experiment = Experiment()
+experiment = start()
 experiment.add_tag("no metrics")
 gbm = xgb.train(
     params,
@@ -182,7 +182,7 @@ gbm = xgb.train(
 experiment.end()
 
 # Experiment 3: results, but no metrics because we told it no, using .train():
-experiment = Experiment(auto_metric_logging=False)
+experiment = start(experiment_config=ExperimentConfig(auto_metric_logging=False))
 experiment.add_tag("no metrics")
 results = {}
 gbm = xgb.train(

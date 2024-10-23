@@ -13,7 +13,7 @@ comet_ml.login(project_name="comet-example-intro-to-comet")
 # A Comet Experiment is a unit of measurable research that defines a single
 # run with some data/parameters/code/metrics.
 
-experiment = comet_ml.Experiment()
+experiment = comet_ml.start()
 
 
 # Comet supports logging metrics, parameters, source code, system information,

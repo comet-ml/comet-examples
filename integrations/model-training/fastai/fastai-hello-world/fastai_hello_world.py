@@ -20,7 +20,7 @@ from fastai.vision.all import (
 EPOCHS = 5
 
 comet_ml.login(project_name="comet-example-fastai-hello-world")
-experiment = comet_ml.Experiment()
+experiment = comet_ml.start()
 
 path = untar_data(URLs.MNIST_TINY)
 

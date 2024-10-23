@@ -1,5 +1,5 @@
 # coding: utf-8
-from comet_ml import Experiment, login
+from comet_ml import login, start
 from comet_ml.integration.pytorch import log_model, watch
 
 import torch
@@ -23,7 +23,7 @@ hyper_params = {
 # Login to Comet if needed
 login()
 
-experiment = Experiment(project_name="comet-example-pytorch-mnist")
+experiment = start(project_name="comet-example-pytorch-mnist")
 experiment.log_parameters(hyper_params)
 
 

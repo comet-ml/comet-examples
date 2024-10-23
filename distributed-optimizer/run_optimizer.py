@@ -1,14 +1,14 @@
-import comet_ml
-import sys
+# -*- coding: utf-8 -*-
 import time
 
-from comet_ml import Experiment, Optimizer
+from comet_ml import Optimizer
 
-def run():  
+
+def run():
 
     # access existing Optimizer object using key
-    opt = Optimizer()   
-    
+    opt = Optimizer()
+
     # loop over experiments in Optimizer generator
     for experiment in opt.get_experiments():
         x = experiment.get_parameter("x")
@@ -22,5 +22,5 @@ def run():
         time.sleep(60)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

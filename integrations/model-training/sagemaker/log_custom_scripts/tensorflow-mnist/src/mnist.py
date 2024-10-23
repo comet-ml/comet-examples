@@ -1,13 +1,10 @@
+# coding: utf-8
 import argparse
 import os
 
 import comet_ml
-import numpy as np
-from PIL import Image
 
-import keras
-import tensorflow as tf
-from keras import backend as K
+import numpy as np
 from keras.layers import (
     Activation,
     BatchNormalization,
@@ -19,9 +16,17 @@ from keras.layers import (
 )
 from keras.models import Sequential
 from keras.optimizers import SGD
+from PIL import Image
+
+import keras
+from keras import backend as K
 
 if __name__ == "__main__":
-    experiment = comet_ml.Experiment(auto_histogram_gradient_logging=True)
+    experiment = comet_ml.start(
+        experiment_config=comet_ml.ExperimentConfig(
+            auto_histogram_gradient_logging=True
+        )
+    )
 
     parser = argparse.ArgumentParser()
 

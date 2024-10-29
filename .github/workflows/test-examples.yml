@@ -76,6 +76,7 @@ jobs:
           echo "TEST_NOTEBOOK=${notebook}" >> "$GITHUB_ENV"
           echo "COMET_LOG_OTHER_TEST_NOTEBOOK=${NOTEBOOK_TO_TEST}" >> "$GITHUB_ENV"
           echo "COMET_LOG_OTHER_GITHUB_RUN=${{github.run_number}}" >> "$GITHUB_ENV"
+          echo "COMET_AUTO_LOG_OUTPUT_LOGGER=simple" >> "$GITHUB_ENV"
 
       - name: debugging
         if:  runner.debug == '1'
@@ -155,6 +156,7 @@ jobs:
           script=$(basename -- "${SCRIPT_TO_TEST}")
           echo "COMET_LOG_OTHER_SCRIPT_TO_TEST=${SCRIPT_TO_TEST}" >> "$GITHUB_ENV"
           echo "COMET_LOG_OTHER_GITHUB_RUN=${{github.run_number}}" >> "$GITHUB_ENV"
+          echo "COMET_AUTO_LOG_OUTPUT_LOGGER=simple" >> "$GITHUB_ENV"
       - name: Test examples
         run: |
           directory=$(dirname -- "${SCRIPT_TO_TEST}")

@@ -74,7 +74,7 @@ jobs:
           notebook=$(basename -- "${NOTEBOOK_TO_TEST}")
           echo "TEST_DIRECTORY=${directory}"  >> "$GITHUB_ENV"
           echo "TEST_NOTEBOOK=${notebook}" >> "$GITHUB_ENV"
-          echo "COMET_LOG_OTHER_TEST_NOTEBOOK=${notebook}" >> "$GITHUB_ENV"
+          echo "COMET_LOG_OTHER_TEST_NOTEBOOK=${NOTEBOOK_TO_TEST}" >> "$GITHUB_ENV"
           echo "COMET_LOG_OTHER_GITHUB_RUN=${{github.run_number}}" >> "$GITHUB_ENV"
 
       - name: debugging
@@ -153,7 +153,7 @@ jobs:
       - name: Prepare env variables
         run: |
           script=$(basename -- "${SCRIPT_TO_TEST}")
-          echo "COMET_LOG_OTHER_SCRIPT_TO_TEST=${script}" >> "$GITHUB_ENV"
+          echo "COMET_LOG_OTHER_SCRIPT_TO_TEST=${SCRIPT_TO_TEST}" >> "$GITHUB_ENV"
           echo "COMET_LOG_OTHER_GITHUB_RUN=${{github.run_number}}" >> "$GITHUB_ENV"
       - name: Test examples
         run: |

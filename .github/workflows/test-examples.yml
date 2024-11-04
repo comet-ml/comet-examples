@@ -35,6 +35,7 @@ jobs:
           - integrations/model-training/pytorch/notebooks/Histogram_Logging_Pytorch.ipynb
           - integrations/model-training/ray-train/notebooks/Comet_with_ray_train_huggingface_transformers.ipynb
           - integrations/model-training/ray-train/notebooks/Comet_with_ray_train_keras.ipynb
+          - integrations/model-training/ray-train/notebooks/Comet_with_ray_train_pytorch_lightning.ipynb
           - integrations/model-training/ray-train/notebooks/Comet_with_ray_train_xgboost.ipynb
           - integrations/model-training/tensorflow/notebooks/Comet_and_Tensorflow.ipynb
           - integrations/model-training/transformers/notebooks/Comet_with_Hugging_Face_Trainer.ipynb

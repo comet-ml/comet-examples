@@ -3,6 +3,9 @@
 # >>> experiment.log_tensorflow_folder("./logs")
 # In the UI, group on "Group"
 
+# NOTE: there is only one Tensorboard Server for your
+# Python Panels; logs are shared across them
+
 from comet_ml import API
 import streamlit as st
 import streamlit.components.v1 as components

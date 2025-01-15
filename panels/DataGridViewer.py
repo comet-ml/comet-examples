@@ -1,5 +1,20 @@
 %pip install datagrid st-click-detector st-tools
 
+# Visualize tabluar data containing images, and data:
+
+# >>> from datagrid import DataGrid, Image
+
+# >>> dg = DataGrid(
+# >>>     columns=["Image", "Score", "Category"],
+# >>>     name="Demo"
+# >>> )
+
+# Loop:
+# >>>     image = Image(im, metadata={"category": category, "score": score})
+# >>>     dg.append([image, score, category])
+
+# >>> dg.log(experiment)
+
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed") 
 
 from comet_ml import API

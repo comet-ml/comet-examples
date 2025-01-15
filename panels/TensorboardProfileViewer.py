@@ -1,43 +1,25 @@
+# Comet Python Panel for visualizing Tensorboard Profile (and other) Data
+# Log the tensorboard profile (and other data) with 
+# experiment.log_tensorflow_folder("./logs")
+
+from comet_ml import API
 import streamlit as st
+import streamlit.components.v1 as components
+
 import os
 import subprocess
-import time
 import psutil
-import tempfile
-from comet_ml import API
-import streamlit.components.v1 as components
+import time
 import zipfile
-import argparse
-import urllib.parse
+import random
+import signal
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide") 
 
-if "current_profile" not in st.session_state:
-    st.session_state["current_profile"] = None
+if "tensorboard_state" not in st.session_state:
+    st.session_state["tensorboard_state"] = None
 
-@st.cache_data(show_spinner="Installing Python Packages...", persist="disk")
-def install_packages(*packages):
-    packages_str = " ".join([("%s" % package) for package in packages])
-    os.system('pip install %s' % packages_str)
-
-install_packages(
-    "tensorboard", "tensorflow", "tensorboard_plugin_profile", "streamlit_js_eval"
-)
-
-# After installations
 from streamlit_js_eval import get_page_location
-
-def lookup_proc(name):
-    for pid in psutil.pids():
-        try:
-            process = psutil.Process(pid)
-        except Exception:
-            continue
-
-        if (
-            process.name().startswith(name)
-        ):
-            return process
 
 api = API()
 experiments = api.get_panel_experiments()
@@ -48,17 +30,15 @@ class EmptyExperiment:
 
 experiments_with_log = [EmptyExperiment()]
 for experiment in experiments:
-    asset_list = experiment.get_asset_list()
-    for asset in asset_list:
-        if asset["type"] == "tensorflow-file":
-            experiments_with_log.append(experiment)
-            break
+    asset_list = experiment.get_asset_list("tensorflow-file")
+    if asset_list:
+        experiments_with_log.append(experiment)
 
 if len(experiments_with_log) == 1:
     st.write("No experiments with log")
     st.stop()
 elif len(experiments_with_log) == 2:
-    selected_experiment = experiments_with_log[1]
+    selected_experiment = experiments_with_log[1] 
 else:
     selected_experiment = st.selectbox(
         "Select Experiment with log:", 
@@ -69,47 +49,32 @@ else:
 if selected_experiment.id:
     page_location = get_page_location()
     if page_location is not None:
-        download_path = selected_experiment.id
-        
-        if not os.path.exists(download_path):
+        if not os.path.exists("./%s" % selected_experiment.id):
             bar = st.progress(0, "Downloading log files...")
-            selected_experiment.download_tensorflow_folder(download_path)
+            selected_experiment.download_tensorflow_folder("./%s" % selected_experiment.id)
             bar.empty()
     
         selected_log = st.selectbox(
-            "Select Profile Run:", 
-            [""] + os.listdir("./%s/logs/" % selected_experiment.id)
+            "Select Profile to view:", 
+            [""] + sorted(os.listdir("./%s/logs/" % selected_experiment.id))
         )
         if selected_log:
-            if st.session_state["current_profile"] != (selected_experiment.id, selected_log):
-                proc = lookup_proc("tensorboard")
-                if proc:
-                    #print("Killing!")
-                    proc.terminate()
-                    proc.kill()
-                    proc.wait()
-
-                st.session_state["current_profile"] = (selected_experiment.id, selected_log)
-                log_dir = "./%s/logs/%s" % (selected_experiment.id, selected_log)
-                parsed_args = [
-                    "--logdir", log_dir, 
-                    "--port", "6007", 
-                    #"--reuse_port", "True",
-                ]
-                (stdout_fd, stdout_path) = tempfile.mkstemp(prefix=".tensorboard-stdout-")
-                (stderr_fd, stderr_path) = tempfile.mkstemp(prefix=".tensorboard-stderr-")
-                try:
-                    p = subprocess.Popen(
-                        ["tensorboard"] + parsed_args,
-                        stdout=stdout_fd,
-                        stderr=stderr_fd,
-                    )
-                except OSError as e:
-                    raise
-                finally:
-                    os.close(stdout_fd)
-                    os.close(stderr_fd)
-
+            command = f"/home/stuser/.local/bin/tensorboard --logdir ./{selected_experiment.id}/logs/{selected_log} --port 6007".split()
+            env = {} # {"PYTHONPATH": "/.local/lib/python3.9/site-packages"}
+            if st.session_state["tensorboard_state"] != (selected_experiment.id, selected_log):
+                #print("Killing the hard way...")
+                for process in psutil.process_iter():
+                    try:
+                        if "tensorboard" in process.exe():
+                            os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+                            os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+                    except:
+                        print("Can't kill the server; continuing ...")
+            
+                process = subprocess.Popen(command, preexec_fn=os.setsid, env=env)
+                st.session_state["tensorboard_state"] = (selected_experiment.id, selected_log)
+                
+                # Allow to start
                 seconds = 5
                 bar = st.progress(0, "Starting Tensorboard...")
                 for i in range(seconds):
@@ -118,6 +83,6 @@ if selected_experiment.id:
                 bar.empty()
     
             path, _ = page_location["pathname"].split("/component")
-            url = page_location["origin"] + path + "/port/6007/server#profile"
+            url = page_location["origin"] + path + f"/port/6007/server?x={random.randint(1,1_000_000)}#profile"
             st.markdown('<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url, unsafe_allow_html=True)
             components.iframe(src=url, height=700)

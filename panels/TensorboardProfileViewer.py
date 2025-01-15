@@ -1,6 +1,9 @@
 # Comet Python Panel for visualizing Tensorboard Profile (and other) Data
 # Log the tensorboard profile (and other data) with 
-# experiment.log_tensorflow_folder("./logs")
+# >>> experiment.log_tensorflow_folder("./logs")
+
+# NOTE: there is only one Tensorboard Server for your
+# Python Panels; logs are shared across them
 
 from comet_ml import API
 import streamlit as st

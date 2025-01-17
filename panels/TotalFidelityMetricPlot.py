@@ -16,6 +16,9 @@ st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 if "plotly_chart_ranges" not in st.session_state:
     st.session_state["plotly_chart_ranges"] = {"xaxis": None}
 
+if "metric_priorities" not in st.session_state:
+    st.session_state["metric_priorities"] = ["train/", "optim/"]
+
 @st.cache_data(persist="disk")
 def get_metric_asset_df(_experiment, experiment_id, metric_name, x_axis, server_end_time):
     metric_name_original = metric_name
@@ -82,7 +85,7 @@ def get_sampled_total_fidelity(df, size, xaxis=None):
 
 
 def get_metric_priority(metric_name: str) -> int:
-    for priority, pattern in enumerate(METRIC_PRIORITY):
+    for priority, pattern in enumerate(st.session_state["metric_priorities"]):
         if fnmatch(metric_name, pattern + "*"):
             return priority
     return 1000
@@ -97,17 +100,28 @@ def handle_selection():
 def sort_metric_names(metric_names):
     return sorted(metric_names, key=lambda name: (get_metric_priority(name), name))
 
+def add_metric():
+    st.session_state["metric_priorities"].append(st.session_state.new_metric)
+    st.session_state.new_metric = ""
+
 api = API()
 
 experiments = api.get_panel_experiments()
 colors = api.get_panel_experiment_colors()
 
 with st.sidebar:
-    METRIC_PRIORITY = st.multiselect(
-        label="Priority metrics:",
-        options=["train/", "optim/"],
-        default=["train/", "optim/"],
-    )
+    with st.expander("Selection metrics"):
+        st.text_input(
+            "Add a metric priority:", 
+            on_change=add_metric,
+            key="new_metric"
+        )
+        st.multiselect(
+            label="Priority metrics:",
+            options=st.session_state["metric_priorities"],
+            default=st.session_state["metric_priorities"],
+            key="metric_priorities"
+        )
     metric_names = sort_metric_names(api.get_panel_metrics_names())
     if len(metric_names) == 1:
         metric_name = metric_names[0]

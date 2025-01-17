@@ -110,6 +110,14 @@ experiments = api.get_panel_experiments()
 colors = api.get_panel_experiment_colors()
 
 with st.sidebar:
+    st.number_input(
+        "Number of bins for sampling:", 
+        min_value=100, 
+        max_value=1500, 
+        value=500, 
+        step=100, 
+        key="bins", 
+    )
     with st.expander("Selection metrics"):
         st.text_input(
             "Add a metric priority:", 
@@ -163,7 +171,7 @@ if metric_name:
                 df["duration"] = df["timestamp"] - df["timestamp"].min()
             if x_axis in df:
                 df, n = get_sampled_total_fidelity(df, 100_000_000, **st.session_state["plotly_chart_ranges"])
-                num_bins = 1500
+                num_bins = st.session_state["bins"]
                 if not df.empty:
                     df["bin"] = pd.cut(df.index, bins=num_bins, labels=False)
                     bin_maxs = df.groupby('bin').max()

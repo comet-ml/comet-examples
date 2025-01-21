@@ -111,7 +111,7 @@ colors = api.get_panel_experiment_colors()
 
 with st.sidebar:
     st.number_input(
-        "Number of bins for sampling:", 
+        "Number of points per curve:", 
         min_value=100, 
         max_value=1500, 
         value=500, 

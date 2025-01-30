@@ -1,11 +1,11 @@
-%pip install streamlit-free-text-select
+# TotalFidelityMetricPlot
+# Visualize total fidelity metrics, shows all
+# outliers
 
-from streamlit_free_text_select import st_free_text_select
 import io
 import re
 import zipfile
 from fnmatch import fnmatch
-
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -22,15 +22,7 @@ if "metric_priorities" not in st.session_state:
 @st.cache_data(persist="disk")
 def get_metric_asset_df(_experiment, experiment_id, metric_name, x_axis, server_end_time):
     metric_name_original = metric_name
-    metric_name = (
-        metric_name.replace("/", "_")
-        .replace(" ", "_")
-        .replace("(", "_")
-        .replace(")", "_")
-        .replace("%", "_")
-    )
-    while "__" in metric_name:
-        metric_name = metric_name.replace("__", "_")
+    metric_name = re.sub("[^a-zA-Z0-9-+]+", "_", metric_name)
     asset_list = _experiment.get_asset_list("ASSET_TYPE_FULL_METRIC")
     metric_list = sorted(
         [
@@ -41,25 +33,16 @@ def get_metric_asset_df(_experiment, experiment_id, metric_name, x_axis, server_
         key=lambda item: item["fileName"],
     )
     dfs = []
-    df = None
     for metric in metric_list:
-        df = get_asset_df(experiment, experiment.id, metric["assetId"])
-        dfs.append(df)
+        df_part = get_asset_df(experiment, experiment.id, metric["assetId"])
+        if df_part is not None and not df_part.empty:
+            dfs.append(df_part)
     if dfs:
         df = pd.concat(dfs)
-    else:
-        if x_axis == 'step':
-            #If full fidelity assets do not exist, retrieve normal metric data via API
-            df1 = api.get_metrics_df(experiment_keys=[experiment.id], metrics = [metric_name_original], x_axis = x_axis)
-            column_name = [col for col in df1.columns if col in ['step', 'epoch', 'duration']][0]
-            #Reformat to match full fidelity output
-            df = pd.DataFrame({
-                'value': df1[metric_name_original],
-                'timestamp': None,
-                'step': df1['step'],
-                'epoch': None
-            })
-    return df
+        df["duration"] = df["timestamp"].diff()
+        df["datetime"] = pd.to_datetime(df["timestamp"], unit="s")
+        return df
+    return None
 
 @st.cache_data(persist="disk")
 def get_asset_df(_experiment, experiment_id, asset_id):
@@ -72,23 +55,20 @@ def get_asset_df(_experiment, experiment_id, asset_id):
                     df = pd.read_csv(file)
     return df
 
-def get_sampled_total_fidelity(df, size, xaxis=None):
+def get_metric_priority(metric_name: str) -> int:
+    for priority, pattern in enumerate(st.session_state["metric_priorities"]):
+        if fnmatch(metric_name, pattern + "*"):
+            return priority
+    return 1000
+
+def get_total_fidelity_range(df, xaxis=None):
     if xaxis is not None:
         xaxis["range"] = sorted(xaxis["range"])
         df = df.loc[
             (df[x_axis] >= xaxis["range"][0]) & (df[x_axis] <= xaxis["range"][1])
         ]
     total_in_range = len(df)
-    if size < len(df):
-        df = df.sample(size, random_state=42)
     return df.sort_values(by=x_axis), total_in_range
-
-
-def get_metric_priority(metric_name: str) -> int:
-    for priority, pattern in enumerate(st.session_state["metric_priorities"]):
-        if fnmatch(metric_name, pattern + "*"):
-            return priority
-    return 1000
 
 def handle_selection():
     if "plotly_chart" in st.session_state:
@@ -136,13 +116,10 @@ with st.sidebar:
     else:
         metric_name = st.selectbox("Select metric:", metric_names)
     y_axis_scale_type = st.selectbox("Y axis scale:", ["linear", "log"])
-    x_axis = st_free_text_select(
+    x_axis = st.selectbox(
         label="X axis:",
-        options=["step", "duration", "timestamp"],
+        options=["step", "datetime", "timestamp", "epoch", "duration"],
         index=0,
-        delay=300,
-        label_visibility="visible",
-        #key="free-text",
     )
 
 if metric_name:
@@ -157,7 +134,7 @@ if metric_name:
     bar = st.progress(0, "Loading %s ..." % metric_name)
     fig.update_layout(
         showlegend=False,
-        title=f"Total Fidelity: {metric_name}",
+        xaxis_title=x_axis,
         **st.session_state["plotly_chart_ranges"]
     )
     fig.update_yaxes(type=y_axis_scale_type)
@@ -167,32 +144,45 @@ if metric_name:
             experiment, experiment.id, metric_name, x_axis, experiment.end_server_timestamp
         )
         if df is not None:
-            if x_axis == "duration":
-                df["duration"] = df["timestamp"] - df["timestamp"].min()
             if x_axis in df:
-                df, n = get_sampled_total_fidelity(df, 100_000_000, **st.session_state["plotly_chart_ranges"])
+                df, n = get_total_fidelity_range(df, **st.session_state["plotly_chart_ranges"])
                 num_bins = st.session_state["bins"]
                 if not df.empty:
-                    df["bin"] = pd.cut(df.index, bins=num_bins, labels=False)
-                    bin_maxs = df.groupby('bin').max()
-                    #print(df.groupby('bin').size())
-                    fig.add_trace(go.Scatter(
-                        x=bin_maxs[x_axis], 
-                        y=bin_maxs["value"], 
-                        mode='lines',
-                        fill=None,
-                        marker=dict(color=colors[experiment.id]["primary"] if colors else None),
-                        name=experiment.name,
-                    ))
-                    bin_mins = df.groupby('bin').min()
-                    fig.add_trace(go.Scatter(
-                        x=bin_mins[x_axis], 
-                        y=bin_mins["value"], 
-                        mode='lines',
-                        fill="tonexty",
-                        marker=dict(color=colors[experiment.id]["primary"] if colors else None),
-                        name=experiment.name,
-                    ))
+                    if num_bins <= n:
+                        fig.update_layout(
+                            title=f"Total Fidelity: {metric_name}, showing {num_bins}/{n} points",
+                        )
+                        df["bin"] = pd.cut(df.index, bins=num_bins, labels=False)
+                        bin_maxs = df.groupby('bin').max()
+                        fig.add_trace(go.Scatter(
+                            x=bin_maxs[x_axis], 
+                            y=bin_maxs["value"], 
+                            mode='lines',
+                            fill=None,
+                            marker=dict(color=colors[experiment.id]["primary"] if colors else None),
+                            name=experiment.name,
+                        ))
+                        bin_mins = df.groupby('bin').min()
+                        fig.add_trace(go.Scatter(
+                            x=bin_mins[x_axis], 
+                            y=bin_mins["value"], 
+                            mode='lines',
+                            fill="tonexty",
+                            marker=dict(color=colors[experiment.id]["primary"] if colors else None),
+                            name=experiment.name,
+                        ))
+                    else:
+                        fig.update_layout(
+                            title=f"Total Fidelity: {metric_name}, showing {n}/{n} points",
+                        )
+                        fig.add_trace(go.Scatter(
+                            x=df[x_axis], 
+                            y=df["value"], 
+                            mode='lines',
+                            fill=None,
+                            marker=dict(color=colors[experiment.id]["primary"] if colors else None),
+                            name=experiment.name,
+                        ))
                     
         bar.empty()
     #st.plotly_chart(fig, use_container_width=True)

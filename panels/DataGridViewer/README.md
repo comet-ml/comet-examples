@@ -7,8 +7,6 @@ The UX is a sophisticated approach to grouping data to see (and select)
 images and other data in a tabular format, with a search feature that
 allows fast querying of the data (including metadata) using Python syntax.
 
-#### Snapshots
-
 <table>
 <tr>
 <td>

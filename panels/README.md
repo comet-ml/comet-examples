@@ -27,3 +27,5 @@ allows fast querying of the data (including metadata) using Python syntax.
 </tr>
 </table>
 
+
+For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/DataGridViewer/README.md">README.md</a>

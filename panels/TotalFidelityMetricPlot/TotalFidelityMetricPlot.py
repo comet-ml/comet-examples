@@ -21,8 +21,8 @@ if "metric_priorities" not in st.session_state:
     st.session_state["metric_priorities"] = ["train/", "optim/"]
 
 @st.cache_data(persist="disk")
-def get_total_metric_df(_experiment, experiment_id, asset_name):
-    df = experiment.get_total_metric_df(asset_name)
+def get_metric_total_df(_experiment, experiment_id, asset_name):
+    df = experiment.get_metric_total_df(asset_name)
     return df
 
 def get_metric_priority(metric_name: str) -> int:
@@ -117,7 +117,7 @@ if metric_name:
     fig.update_yaxes(type=y_axis_scale_type)
     for i, experiment in enumerate(experiments):
         bar.progress(i / len(experiments), "Loading %s ..." % metric_name)
-        df = get_total_metric_df(experiment, experiment.id, metric_name)
+        df = get_metric_total_df(experiment, experiment.id, metric_name)
         if df is not None:
             if x_axis in df:
                 df, n = get_total_fidelity_range(df, **st.session_state["plotly_chart_ranges"])

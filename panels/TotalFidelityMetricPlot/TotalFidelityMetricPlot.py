@@ -3,6 +3,7 @@
 # outliers
 
 import io
+import os
 import re
 import zipfile
 from fnmatch import fnmatch
@@ -20,39 +21,8 @@ if "metric_priorities" not in st.session_state:
     st.session_state["metric_priorities"] = ["train/", "optim/"]
 
 @st.cache_data(persist="disk")
-def get_metric_asset_df(_experiment, experiment_id, metric_name, x_axis, server_end_time):
-    metric_name_original = metric_name
-    metric_name = re.sub("[^a-zA-Z0-9-+]+", "_", metric_name)
-    asset_list = _experiment.get_asset_list("ASSET_TYPE_FULL_METRIC")
-    metric_list = sorted(
-        [
-            metric
-            for metric in asset_list
-            if re.match(metric_name + "_\\d+.csv.zip$", metric["fileName"])
-        ],
-        key=lambda item: item["fileName"],
-    )
-    dfs = []
-    for metric in metric_list:
-        df_part = get_asset_df(experiment, experiment.id, metric["assetId"])
-        if df_part is not None and not df_part.empty:
-            dfs.append(df_part)
-    if dfs:
-        df = pd.concat(dfs)
-        df["duration"] = df["timestamp"].diff()
-        df["datetime"] = pd.to_datetime(df["timestamp"], unit="s")
-        return df
-    return None
-
-@st.cache_data(persist="disk")
-def get_asset_df(_experiment, experiment_id, asset_id):
-    df = None
-    data = experiment.get_asset(asset_id, return_type="binary")
-    with io.BytesIO(data) as fp:
-        with zipfile.ZipFile(fp, "r") as zip_ref:
-            for file_info in zip_ref.infolist():
-                with zip_ref.open(file_info.filename) as file:
-                    df = pd.read_csv(file)
+def get_total_metric_df(_experiment, experiment_id, asset_name):
+    df = experiment.get_total_metric_df(asset_name)
     return df
 
 def get_metric_priority(metric_name: str) -> int:
@@ -123,12 +93,19 @@ with st.sidebar:
     )
 
 if metric_name:
-    if st.button(
+    columns = st.columns(5)
+    if columns[0].button(
         "Reset", 
         icon=":material/home:",
         disabled=st.session_state["plotly_chart_ranges"] == {"xaxis": None}
     ):
         st.session_state["plotly_chart_ranges"] = {"xaxis": None}
+    if columns[1].button(
+        "Clear Cache", 
+        icon=":material/clear:",
+        disabled=st.session_state["plotly_chart_ranges"] == {"xaxis": None}
+    ):
+        os.system("rm -rf /home/stuser/.streamlit/cache")
 
     fig = go.Figure()
     bar = st.progress(0, "Loading %s ..." % metric_name)
@@ -140,9 +117,7 @@ if metric_name:
     fig.update_yaxes(type=y_axis_scale_type)
     for i, experiment in enumerate(experiments):
         bar.progress(i / len(experiments), "Loading %s ..." % metric_name)
-        df = get_metric_asset_df(
-            experiment, experiment.id, metric_name, x_axis, experiment.end_server_timestamp
-        )
+        df = get_total_metric_df(experiment, experiment.id, metric_name)
         if df is not None:
             if x_axis in df:
                 df, n = get_total_fidelity_range(df, **st.session_state["plotly_chart_ranges"])

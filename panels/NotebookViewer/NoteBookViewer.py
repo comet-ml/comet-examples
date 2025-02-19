@@ -32,7 +32,7 @@ if experiment:
         notebook = None
     elif len(assets) == 1:
         notebook = assets[0]
-        columns[1].markdown("Notebook:\\\n**%s**"  % asset["fileName"])
+        columns[1].markdown("Notebook:\\\n**%s**"  % notebook["fileName"])
     else:
         notebook = columns[1].selectbox(
             "Select a notebook:", 

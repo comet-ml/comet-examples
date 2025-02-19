@@ -93,7 +93,7 @@ with st.sidebar:
     )
 
 if metric_name:
-    columns = st.columns(5)
+    columns = st.columns(4)
     if columns[0].button(
         "Reset", 
         icon=":material/home:",
@@ -103,7 +103,6 @@ if metric_name:
     if columns[1].button(
         "Clear Cache", 
         icon=":material/clear:",
-        disabled=st.session_state["plotly_chart_ranges"] == {"xaxis": None}
     ):
         os.system("rm -rf /home/stuser/.streamlit/cache")
 

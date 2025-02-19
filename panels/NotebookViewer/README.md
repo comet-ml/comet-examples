@@ -7,7 +7,7 @@ any [Jupyter Notebook](https://jupyter.org/).
 Comet will automatically log your Colab notebooks, both as a full
 history of commenads as `Code.ipynb', but also as a completed notebook
 with images and output. For Jupyter, you can use our
-[`cometx config --auto-log-notebook yes`](https://github.com/comet-ml/cometx/blob/main/README.md#cometx-config)
+[cometx config --auto-log-notebook yes](https://github.com/comet-ml/cometx/blob/main/README.md#cometx-config)
 
 
 <table>

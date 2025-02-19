@@ -93,7 +93,7 @@ with st.sidebar:
     )
 
 if metric_name:
-    columns = st.columns(4)
+    columns = st.columns(2)
     if columns[0].button(
         "Reset", 
         icon=":material/home:",

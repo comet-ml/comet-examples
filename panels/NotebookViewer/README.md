@@ -20,6 +20,16 @@ with images and output. For Jupyter, you can use our
 </tr>
 </table>
 
+#### Python Panel
+
+To include this panel from the github repo, use this code in a Custom Python Panel:
+
+```
+%include https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/NotebookViewer/NotebookViewer.py
+```
+
+Or, you can simply [copy the code](https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/NotebookViewer/NotebookViewer.py) into a custom Python Panel.
+
 #### Resources
 
 * Example Comet Project: [www.comet.com/examples/foodchatbot-eval](https://www.comet.com/examples/foodchatbot-eval/efa8e134778a456dac2e1a85e1604e13)

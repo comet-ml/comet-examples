@@ -7,7 +7,7 @@ any [Jupyter Notebook](https://jupyter.org/).
 Comet will automatically log your Colab notebooks, both as a full
 history of commenads as `Code.ipynb', but also as a completed notebook
 with images and output. For Jupyter, you can use our
-[`cometx config --auto-log-notebook yes`](https://github.com/comet-ml/cometx/blob/main/README.md#cometx-config)
+[cometx config --auto-log-notebook yes](https://github.com/comet-ml/cometx/blob/main/README.md#cometx-config)
 
 
 <table>
@@ -22,6 +22,29 @@ with images and output. For Jupyter, you can use our
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/NotebookViewer/README.md">README.md</a>
+### TotalFidelityMetricPlot
+
+The `TotalFidelityMetricPlot` panel is used to plot Total Fidelity Metrics --- metrics that are not sampled in any way.
+
+You can have your Comet Adminstrator turn on "Store metrics without sampling" in the `Admin Dashboard` => `Organization settings`.
+
+<table>
+<tr>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TotalFidelityMetricPlot/totalfidelity.png" 
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TotalFidelityMetricPlot/organization-settings.png" 
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+</tr>
+</table>
+
+
+For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TotalFidelityMetricPlot/README.md">README.md</a>
 ### DataGridViewer
 
 The `DataGridViewer` panel is used to visualize Comet `DataGrids` which

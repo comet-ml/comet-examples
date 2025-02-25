@@ -1,3 +1,28 @@
+### AudioCompare
+
+The `AudioCompare` panel is used to examine audio waveforms and spectrograms
+in a single experiment or across experiments. See also the built-in Audio Panel.
+
+
+<table>
+<tr>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/AudioCompare/audio-compare.png" 
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/AudioCompare/built-in-audio-panel.png" 
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+
+</tr>
+</table>
+
+
+For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/AudioCompare/README.md">README.md</a>
 ### NotebookViewer
 
 The `NotebookViewer` panel is used to render logged Notebooks, either from

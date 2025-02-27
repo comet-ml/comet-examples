@@ -74,7 +74,7 @@ Or, you can simply [copy the code](https://raw.githubusercontent.com/comet-ml/co
 
 #### Resources
 
-* Example Comet Project: [www.comet.com/examples/comet-example-save-model-as-artifact](https://www.comet.com/examples/comet-example-save-model-as-artifact)
+* Example Comet Project: [www.comet.com/examples/comet-example-save-model-as-artifact](https://www.comet.com/examples/comet-example-save-model-as-artifact/01209266b842498595b71824be5d4ba2)
 * Documentation:
   * [Logging a model](https://www.comet.com/docs/v2/guides/experiment-management/log-data/models/)
   * [Artifacts](https://www.comet.com/docs/v2/guides/artifacts/using-artifacts/)

@@ -28,6 +28,7 @@ Or, you can simply [copy the code](https://raw.githubusercontent.com/comet-ml/co
 
 #### Resources
 
+* [Colab Notebook](https://colab.research.google.com/github/comet-ml/comet-examples/blob/master/panels/CompareMaxAccuracyOverTime/Notebook.ipynb)
 * Example Comet Project: [www.comet.com/comet-demos/cifar10-vision](https://www.comet.com/comet-demos/cifar10-vision/view/kV9XoIkTfTSN0qyKCS1lKCzaF/panels)
 * Documentation:
   * [Logging metrics](https://www.comet.com/docs/v2/api-and-sdk/python-sdk/reference/Experiment/#comet_ml.Experiment.log_metric)

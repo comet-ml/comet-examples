@@ -90,6 +90,26 @@ You can have your Comet Adminstrator turn on "Store metrics without sampling" in
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TotalFidelityMetricPlot/README.md">README.md</a>
+### CompareMaxAccuracyOverTime
+
+The `CompareMaxAccuracyOverTime` panel is used to help track how the
+retraining of a model each week compares to the previous week. This panel
+creates a scatter plot of the max average of a metric (of your choosing)
+over time.
+
+
+<table>
+<tr>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/CompareMaxAccuracyOverTime/compare-max-accuracy-over-time.png" 
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+</tr>
+</table>
+
+
+For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/CompareMaxAccuracyOverTime/README.md">README.md</a>
 ### OptimizerAnalysis
 
 The `OptimizerAnalysis` panel is used to explore results from an

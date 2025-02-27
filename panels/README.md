@@ -23,17 +23,17 @@ in a single experiment or across experiments. See also the built-in Audio Panel.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/AudioCompare/README.md">README.md</a>
-### SaveModelAsAsset
+### SaveModelAsArtifact
 
-This panel allows you to save a model as an asset. Adding
+This panel allows you to save a model as an artifact. Adding
 metadata to the model when you log it allows examination,
-and saving, by epoch. You can either create a new Asset,
-or use an existing asset name.
+and saving, by epoch. You can either create a new Artifact,
+or use an existing artifact name.
 
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/SaveModelAsAsset/save-model-as-asset.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/SaveModelAsArtifact/save-model-as-artifact.png" 
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>

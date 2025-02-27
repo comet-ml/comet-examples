@@ -110,6 +110,25 @@ over time.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/CompareMaxAccuracyOverTime/README.md">README.md</a>
+### TensorboardGroupViewer
+
+The `TensorboardGroupViewer` panel is used to visualize Tensorboard
+logged data inside a Comet Custom Panel. This panel specifically is used
+to see a group of experiments' log folders.
+
+
+<table>
+<tr>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TensorboardGroupViewer/tensorboard-group-viewer.png"
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+</tr>
+</table>
+
+
+For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TensorboardGroupViewer/README.md">README.md</a>
 ### OptimizerAnalysis
 
 The `OptimizerAnalysis` panel is used to explore results from an

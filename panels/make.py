@@ -1,7 +1,7 @@
 import glob
 
 with open("README.md", "w") as fp:
-    for readme_filename in glob.glob("*/README.md"):
+    for readme_filename in sorted(glob.glob("*/README.md")):
         panel_name, _ = readme_filename.split("/")
         for line in open(readme_filename):
             if line.startswith("####"):

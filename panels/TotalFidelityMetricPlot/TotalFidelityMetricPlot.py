@@ -14,22 +14,38 @@ from comet_ml import API
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
+st.markdown(
+    """
+<style>
+.stMainBlockContainer {
+    padding: 0rem 3.5rem;
+    position: relative;
+    top: -95px;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
 if "plotly_chart_ranges" not in st.session_state:
     st.session_state["plotly_chart_ranges"] = {"xaxis": None}
 
 if "metric_priorities" not in st.session_state:
     st.session_state["metric_priorities"] = ["train/", "optim/"]
 
+
 @st.cache_data(persist="disk")
 def get_metric_total_df(_experiment, experiment_id, asset_name):
     df = experiment.get_metric_total_df(asset_name)
     return df
+
 
 def get_metric_priority(metric_name: str) -> int:
     for priority, pattern in enumerate(st.session_state["metric_priorities"]):
         if fnmatch(metric_name, pattern + "*"):
             return priority
     return 1000
+
 
 def get_total_fidelity_range(df, xaxis=None):
     if xaxis is not None:
@@ -40,19 +56,27 @@ def get_total_fidelity_range(df, xaxis=None):
     total_in_range = len(df)
     return df.sort_values(by=x_axis), total_in_range
 
+
 def handle_selection():
     if "plotly_chart" in st.session_state:
         if "box" in st.session_state["plotly_chart"]["selection"]:
             st.session_state["plotly_chart_ranges"] = {
-                "xaxis": {"range": st.session_state["plotly_chart"]["selection"]["box"][0]["x"]},
-            }    
+                "xaxis": {
+                    "range": st.session_state["plotly_chart"]["selection"]["box"][0][
+                        "x"
+                    ]
+                },
+            }
+
 
 def sort_metric_names(metric_names):
     return sorted(metric_names, key=lambda name: (get_metric_priority(name), name))
 
+
 def add_metric():
     st.session_state["metric_priorities"].append(st.session_state.new_metric)
     st.session_state.new_metric = ""
+
 
 api = API()
 
@@ -61,110 +85,161 @@ colors = api.get_panel_experiment_colors()
 
 with st.sidebar:
     st.number_input(
-        "Number of points per curve:", 
-        min_value=100, 
-        max_value=1500, 
-        value=500, 
-        step=100, 
-        key="bins", 
+        "Number of points per curve:",
+        min_value=100,
+        max_value=1500,
+        value=500,
+        step=100,
+        key="bins",
     )
     with st.expander("Selection metrics"):
-        st.text_input(
-            "Add a metric priority:", 
-            on_change=add_metric,
-            key="new_metric"
-        )
+        st.text_input("Add a metric priority:", on_change=add_metric, key="new_metric")
         st.multiselect(
             label="Priority metrics:",
             options=st.session_state["metric_priorities"],
             default=st.session_state["metric_priorities"],
-            key="metric_priorities"
+            key="metric_priorities",
         )
-    metric_names = sort_metric_names(api.get_panel_metrics_names())
-    if len(metric_names) == 1:
-        metric_name = metric_names[0]
-    else:
-        metric_name = st.selectbox("Select metric:", metric_names)
+    try:
+        metric_name
+    except Exception:
+        metric_names = sort_metric_names(api.get_panel_metrics_names())
+        if len(metric_names) == 1:
+            metric_name = metric_names[0]
+        else:
+            metric_name = st.selectbox("Select metric:", metric_names)
     y_axis_scale_type = st.selectbox("Y axis scale:", ["linear", "log"])
     x_axis = st.selectbox(
         label="X axis:",
         options=["step", "datetime", "timestamp", "epoch", "duration"],
         index=0,
     )
+    figure_height = st.number_input(
+        "Figure height:", min_value=100, max_value=900, value=350
+    )
 
 if metric_name:
-    columns = st.columns(2)
+    chart_container = st.container()
+    button_container = st.container()
+    columns = button_container.columns([1, 1, 1])
     if columns[0].button(
-        "Reset", 
+        "Reset",
         icon=":material/home:",
-        disabled=st.session_state["plotly_chart_ranges"] == {"xaxis": None}
+        disabled=st.session_state["plotly_chart_ranges"] == {"xaxis": None},
     ):
         st.session_state["plotly_chart_ranges"] = {"xaxis": None}
     if columns[1].button(
-        "Clear Cache", 
+        "Clear Cache",
         icon=":material/clear:",
     ):
         os.system("rm -rf /home/stuser/.streamlit/cache")
+    use_sampled = columns[2].checkbox("Fallback to sampled")
 
+    title = ""
     fig = go.Figure()
     bar = st.progress(0, "Loading %s ..." % metric_name)
     fig.update_layout(
-        showlegend=False,
-        xaxis_title=x_axis,
-        **st.session_state["plotly_chart_ranges"]
+        showlegend=False, xaxis_title=x_axis, **st.session_state["plotly_chart_ranges"]
     )
     fig.update_yaxes(type=y_axis_scale_type)
     for i, experiment in enumerate(experiments):
         bar.progress(i / len(experiments), "Loading %s ..." % metric_name)
         df = get_metric_total_df(experiment, experiment.id, metric_name)
-        if df is not None:
+        if df is None:
+            if use_sampled:
+                df = api.get_metrics_df([experiment.id], [metric_name])
+                if df is not None:
+                    fig.add_trace(
+                        go.Scatter(
+                            x=df["step"],
+                            y=df[metric_name],
+                            mode="lines",
+                            fill=None,
+                            marker=dict(
+                                color=(
+                                    colors[experiment.id]["primary"] if colors else None
+                                )
+                            ),
+                            name=experiment.name,
+                        )
+                    )
+        else:
             if x_axis in df:
-                df, n = get_total_fidelity_range(df, **st.session_state["plotly_chart_ranges"])
+                df, n = get_total_fidelity_range(
+                    df, **st.session_state["plotly_chart_ranges"]
+                )
                 num_bins = st.session_state["bins"]
                 if not df.empty:
                     if num_bins <= n:
-                        fig.update_layout(
-                            title=f"Total Fidelity: {metric_name}, showing {num_bins}/{n} points",
-                        )
+                        # fig.update_layout(
+                        title = f"**Total Fidelity**: {metric_name}, showing {num_bins}/{n} points"
+                        # )
                         df["bin"] = pd.cut(df.index, bins=num_bins, labels=False)
-                        bin_maxs = df.groupby('bin').max()
-                        fig.add_trace(go.Scatter(
-                            x=bin_maxs[x_axis], 
-                            y=bin_maxs["value"], 
-                            mode='lines',
-                            fill=None,
-                            marker=dict(color=colors[experiment.id]["primary"] if colors else None),
-                            name=experiment.name,
-                        ))
-                        bin_mins = df.groupby('bin').min()
-                        fig.add_trace(go.Scatter(
-                            x=bin_mins[x_axis], 
-                            y=bin_mins["value"], 
-                            mode='lines',
-                            fill="tonexty",
-                            marker=dict(color=colors[experiment.id]["primary"] if colors else None),
-                            name=experiment.name,
-                        ))
-                    else:
-                        fig.update_layout(
-                            title=f"Total Fidelity: {metric_name}, showing {n}/{n} points",
+                        bin_maxs = df.groupby("bin").max()
+                        fig.add_trace(
+                            go.Scatter(
+                                x=bin_maxs[x_axis],
+                                y=bin_maxs["value"],
+                                mode="lines",
+                                fill=None,
+                                marker=dict(
+                                    color=(
+                                        colors[experiment.id]["primary"]
+                                        if colors
+                                        else None
+                                    )
+                                ),
+                                name=experiment.name,
+                            )
                         )
-                        fig.add_trace(go.Scatter(
-                            x=df[x_axis], 
-                            y=df["value"], 
-                            mode='lines',
-                            fill=None,
-                            marker=dict(color=colors[experiment.id]["primary"] if colors else None),
-                            name=experiment.name,
-                        ))
-                    
+                        bin_mins = df.groupby("bin").min()
+                        fig.add_trace(
+                            go.Scatter(
+                                x=bin_mins[x_axis],
+                                y=bin_mins["value"],
+                                mode="lines",
+                                fill="tonexty",
+                                marker=dict(
+                                    color=(
+                                        colors[experiment.id]["primary"]
+                                        if colors
+                                        else None
+                                    )
+                                ),
+                                name=experiment.name,
+                            )
+                        )
+                    else:
+                        # fig.update_layout(
+                        title = (
+                            f"**Total Fidelity**: {metric_name}, showing {n}/{n} points"
+                        )
+                        # )
+                        fig.add_trace(
+                            go.Scatter(
+                                x=df[x_axis],
+                                y=df["value"],
+                                mode="lines",
+                                fill=None,
+                                marker=dict(
+                                    color=(
+                                        colors[experiment.id]["primary"]
+                                        if colors
+                                        else None
+                                    )
+                                ),
+                                name=experiment.name,
+                            )
+                        )
+
         bar.empty()
-    #st.plotly_chart(fig, use_container_width=True)
-    st.plotly_chart(
-        fig, 
-        use_container_width=True, 
+    fig.update_layout(height=figure_height)
+    chart_container.plotly_chart(
+        fig,
+        use_container_width=True,
         on_select=handle_selection,
         selection_mode="box",
         key="plotly_chart",
         config={"displayModeBar": False},
     )
+    chart_container.markdown(title)

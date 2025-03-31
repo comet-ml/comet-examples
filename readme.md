@@ -1,47 +1,49 @@
-<img src="https://www.comet.com/images/logo_comet_light.png" width="350" alt="Drawing" style="width: 350px;"/>
+<p align="center">
+  <img src="https://www.comet.com/images/logo_comet_light.png" width="350" alt="Comet Logo" />
+</p>
 
-## Comet for Machine Learning Experiment Management
-**Our Misson:** Comet is doing for ML what GitHub did for code. We allow data science teams to automagically track their datasets, code changes, experimentation history and production models creating efficiency, transparency, and reproducibility. 
+<p align="center">
+  <strong>Tools for evaluating, monitoring, and understanding ML and LLM systems</strong>
+</p>
 
-We all strive to be data driven and yet every day valuable experiment results are lost and forgotten. Comet provides a dead simple way of fixing that. It works with any workflow, any ML task, any machine, and any piece of code.
+<p align="center">
+  <a href="https://www.comet.com/docs">Documentation</a> |
+  <a href="https://www.comet.com">Website</a> |
+  <a href="https://github.com/comet-ml/opik">Opik</a> |
+  <a href="https://modelcontextprotocol.io">MCP</a>
+</p>
 
-## Examples Repository
+Comet builds open tools and infrastructure to help teams ship better models. From ML experiment tracking to LLM tracing and context-aware agents, we support developers across the entire AI lifecycle.
 
-This repository contains examples of using Comet in many Machine Learning Python libraries, including fastai, torch, sklearn, chainer, caffe, keras, tensorflow, mxnet, Jupyter notebooks, and with just pre Python.
+---
 
-If you don't see something you need, just let us know! See contact methods below.
+## Getting Started
 
-## Documentation
-[![PyPI version](https://badge.fury.io/py/comet-ml.svg)](https://badge.fury.io/py/comet-ml)
+- 🔬 Explore [Opik](https://github.com/comet-ml/opik): Debug, trace, evaluate and monitor LLM apps and RAG pipelines
+- 📈 Use [Comet ML](https://www.comet.com): Track experiments, datasets, models, and monitor production ML
+- 🧪 Try real-world [Examples](https://github.com/comet-ml/comet-examples): Notebooks, integrations, and how-tos
+- ⚙️ Extend with [opik-mcp](https://github.com/comet-ml/opik-mcp): Opik + MCP integration for structured LLM evaluation
 
-Full documentation and additional training examples are available on http://www.comet.com/docs/v2
+---
 
-## Installation
+## Projects
 
-- [Sign up for free!](https://www.comet.com/signup)
+- [opik](https://github.com/comet-ml/opik) – Open-source LLM evaluation & tracing framework  
+- [comet-examples](https://github.com/comet-ml/comet-examples) – Tutorials, notebooks, and example pipelines  
+- [opik-mcp](https://github.com/comet-ml/opik-mcp) – MCP-powered context and eval framework for Opik
 
-- **Install Comet from PyPI:**
+---
 
-```sh
-pip install comet_ml
-```
-Comet Python SDK is compatible with: __Python 3.5-3.13__.
+## Contributing
 
-## Tutorials + Examples
+We welcome contributions of all kinds – code, docs, feedback, and examples.  
+Start with any repo’s `README` and check out the open issues.
 
-- [fastai](https://github.com/comet-ml/comet-examples/tree/master/integrations/model-training/fastai/)
-- [keras](https://github.com/comet-ml/comet-examples/tree/master/keras)
-- [pytorch](https://github.com/comet-ml/comet-examples/tree/master/pytorch)
-- [scikit](https://github.com/comet-ml/comet-examples/tree/master/integrations/model-training/scikit-learn)
-- [tensorflow](https://github.com/comet-ml/comet-examples/tree/master/tensorflow)
+Questions? Join us in [Slack](https://www.comet.com/slack).
 
-## Support 
-Have questions? We have answers - 
-- Email us at <info@comet.com>
-- For the fastest response, ping us on [Slack](https://chat.comet.com/)
+---
 
-**Want to request a feature?** 
-We take feature requests through github at: https://github.com/comet-ml/issue-tracking
+## About
 
-## Feature Spotlight
-Check out new product features and updates through our [Release Notes](https://www.comet.com/docs/v2/api-and-sdk/python-sdk/releases/). Also check out our [blog](https://www.comet.com/site/blog/).
+Comet is a platform built for ML and LLM developers.  
+We help teams build, debug, and monitor AI systems with transparency and control.

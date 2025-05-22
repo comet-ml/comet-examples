@@ -1,0 +1,30 @@
+[project]
+name = "comet-demo-examples-langgraph"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Francisco",email = "22344801+fschlz@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11,<4"
+dependencies = [
+    "openai (>=1.81.0,<2.0.0)",
+    "opik (>=1.7.26,<2.0.0)",
+    "langgraph (>=0.4.5,<0.5.0)",
+    "langchain-openai (>=0.3.17,<0.4.0)",
+    "langchain (>=0.3.25,<0.4.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)",
+    "langchain-anthropic (>=0.3.13,<0.4.0)"
+]
+
+[tool.poetry]
+packages = [{include = "src"}]
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^9.2.0"
+black = "^25.1.0"
+isort = "^6.0.1"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

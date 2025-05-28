@@ -68,6 +68,7 @@ line-ending = "auto"
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
+version_provider = "poetry"
 version_files = [
     "pyproject.toml:version",
     "src/call_summarizer/__init__.py:__version__" # Assuming you might have version here

@@ -23,19 +23,19 @@ from ..config import settings
 from ..models.models import CallSummary, VectorStoreConfig
 
 # Define the custom prompt for the QA chain
-PROMPT_TEMPLATE_STR = """You are a helpful assistant for querying call summaries.
-Use only the following pieces of context (call transcripts and their metadata) to answer the question.
-The metadata for each call includes 'id', 'summary', 'action_items', 'category', and 'created_at'.
-If the provided context does not contain the answer to the question, state that the information was not found in the call history for that query.
-Do not make up information or answer questions outside of the provided context.
-Always answer in the same language as the question.
-Always answer in markdown format.
-
-Context:
-{context}
-
-Question: {input} 
-Helpful Answer:"""  # Note: Changed {question} to {input}
+PROMPT_TEMPLATE_STR = (
+    "You are a helpful assistant for querying call summaries.\n"
+    "Use only the following pieces of context (call transcripts and their metadata) to answer the question.\n"
+    "The metadata for each call includes 'id', 'summary', 'action_items', 'category', and 'created_at'.\n"
+    "If the provided context does not contain the answer to the question, "
+    "state that the information was not found in the call history for that query.\n"
+    "Do not make up information or answer questions outside of the provided context.\n"
+    "Always answer in the same language as the question.\n"
+    "Always answer in markdown format.\n\n"
+    "Context:\n{context}\n\n"
+    "Question: {input} \n"
+    "Helpful Answer:"
+)  # Note: Changed {question} to {input}
 CUSTOM_PROMPT = PromptTemplate(template=PROMPT_TEMPLATE_STR, input_variables=["context", "input"])  # Note: Changed 'question' to 'input'
 
 

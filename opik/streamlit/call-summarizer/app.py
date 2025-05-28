@@ -3,25 +3,24 @@
 import sys
 from pathlib import Path
 
-import streamlit as st
+# Add the src directory to the Python path BEFORE attempting to import from src
+# This assumes app.py is in the project root, and 'src' is a direct subdirectory.
+sys.path.append(str(Path(__file__).resolve().parent))
+
 from dotenv import load_dotenv
-from opik import track
+import opik  # For opik.configure
+import streamlit as st
+from opik import track  # For the decorator
 
-# Load environment variables first
-load_dotenv()
-
-# Add the src directory to the Python path
-sys.path.append(str(Path(__file__).parent))
-
-# Initialize Opik
-import opik
-
-# Import local modules after path is set
+# Now import local modules from 'src'
 from src.call_summarizer.config import settings
 from src.call_summarizer.models.models import CallSummary
 from src.call_summarizer.services.category_manager import CategoryManager
 from src.call_summarizer.services.summarization_workflow import CallSummarizer
 from src.call_summarizer.services.vector_store import VectorStoreConfig, VectorStoreService
+
+# Load environment variables after all imports are declared
+load_dotenv()
 
 opik = opik.configure(
     api_key=settings.opik_api_key,

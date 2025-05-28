@@ -1,5 +1,6 @@
 """Manages call categories and their configurations."""
 
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -86,27 +87,45 @@ class CategoryManager:
             {
                 "name": CallCategory.SALES.value,
                 "description": "Sales calls with potential or existing customers",
-                "prompt_template": "Summarize the following sales call transcript. Include key discussion points, customer needs, and next steps.\n\nTranscript:\n{transcript}",
+                "prompt_template": (
+                    "Summarize the following sales call transcript. "
+                    "Include key discussion points, customer needs, and next steps.\n\n"
+                    "Transcript:\n{transcript}"
+                ),
             },
             {
                 "name": CallCategory.SUPPORT.value,
                 "description": "Customer support or service calls",
-                "prompt_template": "Summarize the following support call transcript. Include the customer's issue, troubleshooting steps, and resolution.\n\nTranscript:\n{transcript}",
+                "prompt_template": (
+                    "Summarize the following support call transcript. "
+                    "Include the customer's issue, troubleshooting steps, and resolution.\n\n"
+                    "Transcript:\n{transcript}"
+                ),
             },
             {
                 "name": CallCategory.INTERVIEW.value,
                 "description": "Job interviews or candidate screenings",
-                "prompt_template": "Summarize the following interview transcript. Include key qualifications discussed, strengths, and areas for follow-up.\n\nTranscript:\n{transcript}",
+                "prompt_template": (
+                    "Summarize the following interview transcript. "
+                    "Include key qualifications discussed, strengths, and areas for follow-up.\n\n"
+                    "Transcript:\n{transcript}"
+                ),
             },
             {
                 "name": CallCategory.MEETING.value,
                 "description": "General business meetings",
-                "prompt_template": "Summarize the following meeting transcript. Include key decisions, action items, and next steps.\n\nTranscript:\n{transcript}",
+                "prompt_template": (
+                    "Summarize the following meeting transcript. "
+                    "Include key decisions, action items, and next steps.\n\n"
+                    "Transcript:\n{transcript}"
+                ),
             },
             {
                 "name": CallCategory.OTHER.value,
                 "description": "Other types of calls",
-                "prompt_template": "Summarize the following call transcript. Include key points and action items.\n\nTranscript:\n{transcript}",
+                "prompt_template": (
+                    "Summarize the following call transcript. " "Include key points and action items.\n\n" "Transcript:\n{transcript}"
+                ),
             },
         ]
 

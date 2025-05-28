@@ -52,16 +52,15 @@ def create_summarization_workflow() -> Graph:
         transcript = state["transcript"]
         category_config = state["category_config"]
 
-        prompt = f"""
-        {category_config.prompt_template}
-
-        Call Transcript:
-        {transcript}
-
-        Please provide a concise summary of the call based on the category '{category_config.name}'.
-        IMPORTANT: Your main task here is to generate the narrative summary. Do NOT include a list or section detailing specific action items in THIS summary. Action items will be extracted and listed entirely separately. Focus only on the overall discussion, key points, decisions, and outcomes as guided by the category template.
-        Summary:
-        """
+        prompt = f"""{category_config.prompt_template}\n\n"
+            f"Call Transcript:\n{transcript}\n\n"
+            f"Please provide a concise summary of the call based on the category '{category_config.name}'.\n"
+            f"IMPORTANT: Your main task here is to generate the narrative summary. "
+            f"Do NOT include a list or section detailing specific action items in THIS summary. "
+            f"Action items will be extracted and listed entirely separately. "
+            f"Focus only on the overall discussion, key points, decisions, and outcomes as guided by the category template.\n"
+            f"Summary:\n"
+            f"""
 
         messages = [
             SystemMessage(content=f"You are an expert call summarizer for the category: {category_config.name}."),

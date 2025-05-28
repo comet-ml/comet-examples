@@ -27,6 +27,8 @@ mcp-server-fetch = "^2025.4.7"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
 ruff = "^0.4.0"  # Or latest version
+pre-commit = "^3.7.0"
+commitizen = "^3.13.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0"]
@@ -62,3 +64,12 @@ skip-magic-trailing-comma = false
 
 # Like Black, automatically detect the appropriate line ending.
 line-ending = "auto"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_files = [
+    "pyproject.toml:version",
+    "src/call_summarizer/__init__.py:__version__" # Assuming you might have version here
+]
+# You can add more commitizen settings if needed, like update_changelog_on_bump

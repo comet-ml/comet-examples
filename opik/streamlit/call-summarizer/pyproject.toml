@@ -1,0 +1,76 @@
+[tool.poetry]
+name = "call-summarizer"
+version = "0.1.0"
+description = "A Streamlit app for summarizing and categorizing call transcripts using LangGraph and Opik"
+authors = ["Francisco <22344801+fschlz@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "call_summarizer", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+streamlit = "^1.32.0"
+opik = "^1.7.26"
+langchain = "^0.3.25"
+langgraph = "^0.4.5"
+langchain-openai = "^0.3.18"
+langchain-chroma = "^0.1.1"
+chromadb = "^0.5.0"
+pydantic = "^2.7.0"
+python-dotenv = "^1.0.1"
+python-multipart = "^0.0.9"
+pyyaml = "^6.0.1"
+pydantic-settings = "^2.9.1"
+beautifulsoup4 = "^4.12.3"
+watchdog = "^6.0.0"
+mcp-server-fetch = "^2025.4.7"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+ruff = "^0.4.0"  # Or latest version
+pre-commit = "^3.7.0"
+commitizen = "^3.13.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+# Same as Black.
+line-length = 140
+
+# Assume Python 3.12.
+target-version = "py312"
+
+# Specify the source directory for import sorting and other path-dependent checks.
+src = ["src"]
+
+[tool.ruff.lint]
+# Enable Pyflakes (F) and pycodestyle (E, W) and McCabe (C90) complexity.
+select = ["F", "E", "W", "C90"]
+ignore = []
+
+# Allow unused variables when underscore-prefixed.
+# dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_provider = "poetry"
+version_files = [
+    "pyproject.toml:version",
+    "src/call_summarizer/__init__.py:__version__" # Assuming you might have version here
+]
+# You can add more commitizen settings if needed, like update_changelog_on_bump

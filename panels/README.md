@@ -144,10 +144,9 @@ or use an existing artifact name.
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/SaveModelAsArtifact/README.md">README.md</a>
 ### TensorboardGroupViewer
 
-The `TensorboardGroupViewer` panel is used to visualize Tensorboard
-logged data inside a Comet Custom Panel. This panel specifically is used
-to see a group of experiments' log folders.
-
+The `TensorboardGroupViewer` panel is used to visualize
+Tensorboard-logged items inside a Comet Custom Panel, by grouping. This
+panel specifically is used to see a group of experiments' log folders.
 
 <table>
 <tr>
@@ -158,25 +157,62 @@ to see a group of experiments' log folders.
 </td>
 </tr>
 </table>
+
+First, run your experiment, including writing and logging the
+Tensorboard log folder:
+
+```python
+# Set up your experiment
+writer = tf.summary.create_file_writer("./logs/%s" % experiment.name)
+# Log items, including profile, to writer
+# Then, log the folder:
+experiment.log_tensorflow_folder("./logs")
+```
+
+Next, in the Comet UI you use the the "Group experiments" option on
+the left-hand side of the project view. Select the group you'd like to
+see the profiles. Finally click on "Copy Selected Experiment Logs to
+Tensorboard Server" in this panel.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TensorboardGroupViewer/README.md">README.md</a>
-### TensorboardGroupViewer
+### TensorboardProfileViewer
 
-The `TensorboardGroupViewer` panel is used to visualize Tensorboard
-logged data inside a Comet Custom Panel. This panel specifically is used
-to see a group of experiments' log folders.
+The `TensorboardProfileViewer` panel is used to visualize Tensorboard
+Profile data logged data inside a Comet Custom Panel.
 
 
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TensorboardGroupViewer/tensorboard-group-viewer.png"
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TensorboardProfileViewer/tensorboard-profile-viewer.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
 </tr>
 </table>
+
+First, run your experiment, including writing and logging the
+Tensorboard logdir:
+
+```python
+# Set up your experiment and callbacks:
+tboard_callback = tf.keras.callbacks.TensorBoard(
+    log_dir=logs,
+    histogram_freq=1,
+    profile_batch='500,520'
+)
+model.fit(
+    ds_train,
+    epochs=2,
+    validation_data=ds_test,
+    callbacks = [tboard_callback]
+)
+# Then, log the folder:
+experiment.log_tensorflow_folder("./logs")
+```
+
+Finally click on "Select Experiment with log:" in this panel.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TensorboardProfileViewer/README.md">README.md</a>

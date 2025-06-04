@@ -1,9 +1,8 @@
 ### TensorboardGroupViewer
 
-The `TensorboardGroupViewer` panel is used to visualize Tensorboard
-logged data inside a Comet Custom Panel. This panel specifically is used
-to see a group of experiments' log folders.
-
+The `TensorboardGroupViewer` panel is used to visualize
+Tensorboard-logged items inside a Comet Custom Panel, by grouping. This
+panel specifically is used to see a group of experiments' log folders.
 
 <table>
 <tr>
@@ -14,6 +13,22 @@ to see a group of experiments' log folders.
 </td>
 </tr>
 </table>
+
+First, run your experiment, including writing and logging the
+Tensorboard log folder:
+
+```python
+# Set up your experiment
+writer = tf.summary.create_file_writer("./logs/%s" % experiment.name)
+# Log items, including profile, to writer
+# Then, log the folder:
+experiment.log_tensorflow_folder("./logs")
+```
+
+Next, in the Comet UI you use the the "Group experiments" option on
+the left-hand side of the project view. Select the group you'd like to
+see the profiles. Finally click on "Copy Selected Experiment Logs to
+Tensorboard Server" in this panel.
 
 #### Example
 
@@ -56,6 +71,11 @@ To include this panel from the github repo, use this code in a Custom Python Pan
 ```
 
 Or, you can simply [copy the code](https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TensorboardGroupViewer/TensorboardGroupViewer.py) into a custom Python Panel.
+
+#### How it works
+
+The Python panel will start a Tensorboard server and make available
+the logs from those experiments that are in the group.
 
 #### Resources
 

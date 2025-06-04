@@ -45,11 +45,13 @@ if len(experiments_with_log) == 1:
 elif len(experiments_with_log) == 2:
     selected_experiment = experiments_with_log[1] 
 else:
-    selected_experiment = st.selectbox(
+    names = [exp.name for exp in experiments_with_log]
+    selected_experiment_name = st.selectbox(
         "Select Experiment with log:", 
-        experiments_with_log, 
-        format_func=lambda aexp: aexp.name
+        names, 
     )
+    selected_experiment = [exp for exp in experiments_with_log if exp.name == selected_experiment_name][0]
+
 
 if selected_experiment.id:
     page_location = get_page_location()

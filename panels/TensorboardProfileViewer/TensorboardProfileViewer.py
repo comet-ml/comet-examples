@@ -1,5 +1,3 @@
-%pip install tensorboard_plugin_profile
-
 # Comet Python Panel for visualizing Tensorboard Profile (and other) Data
 # Log the tensorboard profile (and other data) with 
 # >>> experiment.log_tensorflow_folder("./logs")

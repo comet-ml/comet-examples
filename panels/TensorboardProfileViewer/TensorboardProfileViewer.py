@@ -1,3 +1,5 @@
+%pip install tensorboard_plugin_profile
+
 # Comet Python Panel for visualizing Tensorboard Profile (and other) Data
 # Log the tensorboard profile (and other data) with 
 # >>> experiment.log_tensorflow_folder("./logs")
@@ -17,12 +19,12 @@ import zipfile
 import random
 import signal
 
-st.set_page_config(layout="wide") 
-
 if "tensorboard_state" not in st.session_state:
     st.session_state["tensorboard_state"] = None
 
 from streamlit_js_eval import get_page_location
+
+st.set_page_config(layout="wide") 
 
 api = API()
 experiments = api.get_panel_experiments()

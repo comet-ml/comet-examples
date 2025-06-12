@@ -12,12 +12,19 @@ selected_metric = ui.dropdown('Select a metric:', metrics)
 
 # Use API to fetch the metric data for all experiments in the panel scope
 experiment_keys = api.get_panel_experiment_keys()
+
+# Use API to fetch experiment colors
+colors = api.get_panel_experiment_colors()
+if colors:
+    colors = {key: value["primary"] for key,value in colors.items()}
+        
 if experiment_keys and selected_metric:
     data = api.get_metrics_for_chart(experiment_keys, [selected_metric])
     # Prepare data for the scatter plot and calculate averages
     x_data = []
     y_data = []
     hover_text = []
+    exp_color = []
 
     # To hold date and accuracy values for calculating the average per date
     date_accuracy_pairs = []
@@ -38,6 +45,7 @@ if experiment_keys and selected_metric:
                 x_data.append(timestamp_dt)
                 y_data.append(max_accuracy)
                 hover_text.append(exp_data["experimentName"])
+                exp_color.append(colors.get(exp_id, "#000000"))
 
                 # Store date and accuracy for average calculation
                 date_accuracy_pairs.append((timestamp_dt, max_accuracy))
@@ -54,7 +62,9 @@ if experiment_keys and selected_metric:
         x=x_data,
         y=y_data,
         mode='markers',
-        marker=dict(size=10),
+        marker=dict(
+            size=10,
+            color=exp_color),
         text=hover_text,  # Experiment names for hover
         #hoverinfo='text',  # Show only hover text
         name=selected_metric,

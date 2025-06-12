@@ -1,3 +1,4 @@
+%pip install torch_tb_profiler
 # Comet Python Panel for visualizing Pytorch Profiler information through Tensorboard
 # Log the torch profile .pt.trace.json file with 
 # >>> experiment.log_tensorflow_folder("./logs")

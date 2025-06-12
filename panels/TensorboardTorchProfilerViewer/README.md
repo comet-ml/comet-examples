@@ -1,13 +1,13 @@
-### TensorboardProfileViewer
+### TensorboardTorchProfilerViewer
 
-The `TensorboardProfileViewer` panel is used to visualize Tensorboard
-Profile data logged data inside a Comet Custom Panel.
+The `TensorboardTorchProfilerViewer` panel is used to visualize Pytorch
+Profile data via Tensorboard.
 
 
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TensorboardProfileViewer/tensorboard-profile-viewer.png"
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TensorboardTorchProfilerViewer/torch_profiler.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
@@ -39,8 +39,7 @@ Finally click on "Select Experiment with log:" in this panel.
 
 #### Example
 
-This example logs some dummy data to Tensorflow, and
-then logs the Tensorflow folder to Comet.
+This example logs some dummy torch profiling data and logs the folder to Comet.
 
 ```python
 import comet_ml
@@ -94,7 +93,7 @@ the logs from the experiment that is selected.
 
 #### Resources
 
-* [Example Comet Project]([https://www.comet.com/dsblank/tensorboard-profile/](https://www.comet.com/chasefortier/tf-profiler/f156e9c72d9b4e12b8eae4ecf6db43a1?compareXAxis=step&experiment-tab=panels&prevPath=%2Fchasefortier%2Ftf-profiler%2Fview%2Fnew%2Fpanels&showOutliers=true&smoothing=0&xAxis=step))
+* [Example Comet Project](https://www.comet.com/chasefortier/tf-profiler/f156e9c72d9b4e12b8eae4ecf6db43a1?compareXAxis=step&experiment-tab=panels&prevPath=%2Fchasefortier%2Ftf-profiler%2Fview%2Fnew%2Fpanels&showOutliers=true&smoothing=0&xAxis=step)
 * Documentation:
   * [Logging tensorflow folders](https://www.comet.com/docs/v2/api-and-sdk/python-sdk/reference/Experiment/#comet_ml.Experiment.log_tensorflow_folder)
   * [Automatic Tensorboard logging](https://www.comet.com/docs/v2/integrations/third-party-tools/tensorboard/#configure-comet-for-tensorboard)

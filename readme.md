@@ -45,3 +45,15 @@ We take feature requests through github at: https://github.com/comet-ml/issue-tr
 
 ## Feature Spotlight
 Check out new product features and updates through our [Release Notes](https://www.comet.com/docs/v2/api-and-sdk/python-sdk/releases/). Also check out our [blog](https://www.comet.com/site/blog/).
+
+## Using pyenv+poetry to install dependencies
+
+```sh
+pyenv install 3.12.6
+pyenv local 3.12.6
+
+poetry config virtualenvs.create true
+poetry config virtualenvs.in-project true
+
+poetry install
+```

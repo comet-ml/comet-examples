@@ -4,7 +4,11 @@
 """
 import argparse
 import os
+import dotenv
 
+dotenv.load_dotenv()
+
+import comet_ml
 from comet_ml import Experiment
 
 import torch
@@ -17,6 +21,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import random_split
 from torchvision import transforms
 from tqdm import tqdm
+from datetime import datetime
 
 torch.manual_seed(0)
 
@@ -25,6 +30,19 @@ LEARNING_RATE = 0.001
 
 # Learning Rate scaling factor is computed relative to this batch size
 MIN_BATCH_SIZE = 8
+
+comet_ml.login(api_key=os.getenv("COMET_API_KEY_TEST"), workspace="fschlz")
+
+
+def get_device(local_rank):
+    if torch.cuda.is_available():
+        return torch.device(f"cuda:{local_rank}")
+    # DDP on MPS is not supported, so fall back to CPU
+    if dist.is_initialized():
+        return torch.device("cpu")
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
 
 
 def scale_lr(batch_size, lr):
@@ -56,157 +74,140 @@ def load_data(data_dir="./data"):
     return trainset, testset
 
 
-def train(model, optimizer, criterion, trainloader, epoch, gpu_id, experiment):
+def train(model, optimizer, criterion, trainloader, epoch, device, experiment):
     model.train()
     total_loss = 0
     epoch_steps = 0
     for batch_idx, (images, labels) in tqdm(enumerate(trainloader)):
         optimizer.zero_grad()
-        images = images.cuda(gpu_id, non_blocking=True)
-        labels = labels.cuda(gpu_id, non_blocking=True)
+        images = images.to(device)
+        labels = labels.to(device)
 
         pred = model(images)
 
         loss = criterion(pred, labels)
         loss.backward()
 
-        experiment.log_metric("train_batch_loss", loss.item())
-
+        experiment.log_metric("train_batch_loss", loss.item(), step=epoch_steps)
         total_loss += loss.item()
         epoch_steps += 1
 
-        optimizer.step()
-
-    return total_loss / epoch_steps
+    return total_loss / len(trainloader)
 
 
-def evaluate(model, criterion, valloader, epoch, local_rank):
-    # Validation loss
-    total_loss = 0.0
-    epoch_steps = 0
-    total = 0
-    correct = 0
-
+def test(model, criterion, testloader, epoch, device, experiment):
     model.eval()
-    for i, data in enumerate(valloader, 0):
-        with torch.no_grad():
-            inputs, labels = data
-            inputs, labels = inputs.cuda(local_rank), labels.cuda(local_rank)
-            outputs = model(inputs)
-
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
-            loss = criterion(outputs, labels)
-
-            total_loss += loss.item()
-            epoch_steps += 1
-
-    val_acc = correct / total
-    val_loss = total_loss / epoch_steps
-
-    return val_loss, val_acc
-
-
-def test_accuracy(net, testset, device="cpu"):
-    testloader = torch.utils.data.DataLoader(
-        testset, batch_size=4, shuffle=False, num_workers=2
-    )
-
-    correct = 0
-    total = 0
+    total_loss = 0
     with torch.no_grad():
-        for data in testloader:
-            images, labels = data
-            images, labels = images.to(device), labels.to(device)
-            outputs = net(images)
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
+        for images, labels in testloader:
+            images = images.to(device)
+            labels = labels.to(device)
 
-    return correct / total
+            pred = model(images)
+            loss = criterion(pred, labels)
+            total_loss += loss.item()
+
+    return total_loss / len(testloader)
 
 
 def run(local_rank, world_size, args):
-    """
-    This is a single process that is linked to a single GPU
+    print(f"Running DDP example on rank {local_rank}.")
 
-    :param local_rank: The id of the GPU on the current node
-    :param world_size: Total number of processes across nodes
-    :param args:
-    :return:
-    """
-    torch.cuda.set_device(local_rank)
+    backend = args.backend
+    if not torch.cuda.is_available():
+        backend = "gloo"
 
-    # The overall rank of this GPU process across multiple nodes
-    global_process_rank = args.node_rank * args.gpus + local_rank
+    setup(local_rank, world_size, backend)
 
-    experiment = Experiment(auto_output_logging="simple")
-    experiment.log_parameter("run_id", args.run_id)
-    experiment.log_parameter("global_process_rank", global_process_rank)
-    experiment.log_parameter("replica_batch_size", args.replica_batch_size)
-    experiment.log_parameter("batch_size", args.replica_batch_size * world_size)
+    device = get_device(local_rank)
 
-    learning_rate = scale_lr(args.replica_batch_size * world_size, LEARNING_RATE)
-    experiment.log_parameter("learning_rate", learning_rate)
-
-    print(f"Running DDP model on Global Process with Rank: {global_process_rank }.")
-    setup(global_process_rank, world_size, args.backend)
-
-    model = Net()
-    model.cuda(local_rank)
-    ddp_model = DDP(model, device_ids=[local_rank])
-
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(ddp_model.parameters(), lr=learning_rate, momentum=0.9)
-
-    # Load training data
+    # Get Data
     trainset, testset = load_data()
-    test_abs = int(len(trainset) * 0.8)
-    train_subset, val_subset = random_split(
-        trainset, [test_abs, len(trainset) - test_abs]
-    )
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(
-        train_subset, num_replicas=world_size, rank=global_process_rank
+        trainset, num_replicas=world_size, rank=local_rank
+    )
+    trainloader = torch.utils.data.DataLoader(
+        trainset,
+        batch_size=args.replica_batch_size,
+        shuffle=False,
+        num_workers=0,
+        pin_memory=True,
+        sampler=train_sampler,
     )
 
-    trainloader = torch.utils.data.DataLoader(
-        train_subset,
+    test_sampler = torch.utils.data.distributed.DistributedSampler(
+        testset, num_replicas=world_size, rank=local_rank
+    )
+
+    testloader = torch.utils.data.DataLoader(
+        testset,
         batch_size=args.replica_batch_size,
-        sampler=train_sampler,
-        num_workers=8,
+        shuffle=False,
+        num_workers=0,
+        pin_memory=True,
+        sampler=test_sampler,
     )
-    valloader = torch.utils.data.DataLoader(
-        val_subset, batch_size=args.replica_batch_size, shuffle=True, num_workers=8
-    )
+
+    # build the model
+    model = Net().to(device)
+
+    # wrap the model in DDP
+    # device_ids tell DDP where to move the data for the replica
+    if torch.cuda.is_available():
+        ddp_model = DDP(model, device_ids=[local_rank])
+    else:
+        ddp_model = DDP(model)
+
+    # build the optimizer
+    scaled_lr = scale_lr(args.replica_batch_size * world_size, LEARNING_RATE)
+    optimizer = optim.SGD(ddp_model.parameters(), lr=scaled_lr, momentum=0.9)
+
+    # loss function
+    criterion = nn.CrossEntropyLoss()
+
+    experiment = None
+    if local_rank == 0:
+        experiment = comet_ml.Experiment()
+        experiment.set_name(f"pytorch-ddp-cifar10-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}")
+        experiment.log_parameters(
+            {
+                "world_size": world_size,
+                "epochs": args.epochs,
+                "replica_batch_size": args.replica_batch_size,
+                "node_rank": args.node_rank,
+                "gpus_per_node": args.gpus,
+                "learning_rate": LEARNING_RATE,
+                "scaled_learning_rate": scaled_lr,
+            }
+        )
 
     for epoch in range(args.epochs):
+        train_sampler.set_epoch(epoch)
         train_loss = train(
-            ddp_model, optimizer, criterion, trainloader, epoch, local_rank, experiment
+            ddp_model, optimizer, criterion, trainloader, epoch, device, experiment
         )
-        experiment.log_metric("train_loss", train_loss)
 
-        val_loss, val_acc = evaluate(ddp_model, criterion, valloader, epoch, local_rank)
-        experiment.log_metric("val_loss", val_loss, epoch=epoch)
-        experiment.log_metric("val_acc", val_acc, epoch=epoch)
+        if local_rank == 0:
+            print(f"Epoch {epoch}, Train Loss: {train_loss}")
+            experiment.log_metric("train_loss", train_loss, epoch=epoch)
 
-    test_acc = test_accuracy(model, testset, f"cuda:{local_rank}")
-    experiment.log_metric("test_acc", test_acc, epoch=args.epochs)
+            test_loss = test(ddp_model, criterion, testloader, epoch, device, experiment)
+            print(f"Epoch {epoch}, Test Loss: {test_loss}")
+            experiment.log_metric("test_loss", test_loss, epoch=epoch)
 
     cleanup()
 
 
 class Net(nn.Module):
-    def __init__(self, l1=120, l2=84):
+    def __init__(self):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, l1)
-        self.fc2 = nn.Linear(l1, l2)
-        self.fc3 = nn.Linear(l2, 10)
+        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, 10)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
@@ -221,7 +222,7 @@ class Net(nn.Module):
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--run_id", type=str)
-    parser.add_argument("-b", "--backend", type=str, default="nccl")
+    parser.add_argument("-b", "--backend", type=str, default="gloo")
     parser.add_argument(
         "-n",
         "--nodes",
@@ -231,7 +232,11 @@ def get_args():
         help="total number of compute nodes",
     )
     parser.add_argument(
-        "-g", "--gpus", default=1, type=int, help="number of gpus per node"
+        "-g",
+        "--gpus",
+        default=1,
+        type=int,
+        help="number of gpus per node (or processes to use for CPU)",
     )
     parser.add_argument(
         "-nr",

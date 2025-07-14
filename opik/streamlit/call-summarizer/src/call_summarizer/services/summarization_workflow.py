@@ -1,7 +1,7 @@
 """LangGraph workflow for call summarization with Opik tracing."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, TypedDict
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -113,7 +113,7 @@ def create_summarization_workflow() -> Graph:
     def add_metadata(state: WorkflowState) -> WorkflowState:
         """Add metadata to the call summary."""
         state["metadata"] = {
-            "summarization_date": datetime.utcnow().isoformat(),
+            "summarization_date": datetime.now(timezone.utc).isoformat(),
             "llm_model_used": "gpt-4o-mini",  # Or dynamically get from llm object if possible
             "workflow_version": "1.0",
         }

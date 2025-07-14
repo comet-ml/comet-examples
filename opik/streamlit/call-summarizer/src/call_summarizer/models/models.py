@@ -1,6 +1,6 @@
 """Data models for the call summarizer application."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Dict, List
 
@@ -25,7 +25,7 @@ class CallSummary(BaseModel):
     summary: str = Field(..., description="Generated summary of the call")
     action_items: List[str] = Field(default_factory=list, description="List of action items from the call")
     category: CallCategory = Field(default=CallCategory.OTHER, description="Category of the call")
-    created_at: datetime = Field(default_factory=datetime.utcnow, description="When the summary was created")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="When the summary was created")
     metadata: Dict = Field(default_factory=dict, description="Additional metadata about the call")
 
 
@@ -35,8 +35,8 @@ class CallCategoryConfig(BaseModel):
     name: str = Field(..., description="Name of the category")
     description: str = Field(..., description="Description of when to use this category")
     prompt_template: str = Field(..., description="Template for generating summaries")
-    created_at: datetime = Field(default_factory=datetime.utcnow, description="When the category was created")
-    updated_at: datetime = Field(default_factory=datetime.utcnow, description="When the category was last updated")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="When the category was created")
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="When the category was last updated")
 
 
 class VectorStoreConfig(BaseModel):

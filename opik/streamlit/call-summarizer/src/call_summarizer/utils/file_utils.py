@@ -18,7 +18,7 @@ def save_config(data: BaseModel, file_path: str) -> None:
     """Save a Pydantic model to a JSON file."""
     ensure_dir_exists(file_path)
     with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(data.dict(), f, indent=2, default=str)
+        json.dump(data.model_dump(), f, indent=2, default=str)
 
 
 def load_config(file_path: str, model_class: Type[T]) -> Optional[T]:
@@ -36,7 +36,7 @@ def save_list_of_configs(data_list: List[BaseModel], file_path: str) -> None:
     """Save a list of Pydantic models to a JSON file."""
     ensure_dir_exists(file_path)
     with open(file_path, "w", encoding="utf-8") as f:
-        json.dump([item.dict() for item in data_list], f, indent=2, default=str)
+        json.dump([item.model_dump() for item in data_list], f, indent=2, default=str)
 
 
 def load_list_of_configs(file_path: str, model_class: Type[T]) -> List[T]:

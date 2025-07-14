@@ -24,6 +24,7 @@ wheels/
 .env
 
 # Virtual Environment
+.venv/
 venv/
 env/
 ENV/
@@ -35,8 +36,11 @@ ENV/
 *.swo
 
 # Local data
-/data/
-/vector_store/
+/data/**
+/vector_store/**
+/MagicMock/**
+/.ruff_cache/**
+/.tmp/**
 
 # Logs
 *.log

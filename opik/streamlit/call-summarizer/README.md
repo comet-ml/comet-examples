@@ -58,7 +58,7 @@ A Streamlit application for summarizing and categorizing call transcripts using 
 
 ## Configuration
 
-The application can be configured using environment variables. Create a `.env` file in the project root with the following variables:
+The application can be configured using environment variables. Create a `.env` file in the project root with the following variables (an example file is included):
 
 ```ini
 # Required
@@ -66,6 +66,10 @@ OPENAI_API_KEY=your_openai_api_key_here
 
 # Optional - Opik for LLM tracing
 OPIK_API_KEY=your_opik_api_key_here
+OPIK_WORKSPACE="default"
+OPIK_PROJECT_NAME="demo-opik-callsummarizer"
+# OPIK_FILE_LOGGING_LEVEL="DEBUG"
+# OPIK_LOGGING_FILE=".tmp/opik-debug-$(date +%Y%m%d).log"
 
 # Storage paths
 VECTOR_STORE_PATH=./data/vector_store

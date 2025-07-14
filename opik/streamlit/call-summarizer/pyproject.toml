@@ -25,7 +25,7 @@ watchdog = "^6.0.0"
 mcp-server-fetch = "^2025.4.7"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.5"
+pytest = "^8.4.1"
 ruff = "^0.4.0"  # Or latest version
 pre-commit = "^3.7.0"
 commitizen = "^3.13.0"

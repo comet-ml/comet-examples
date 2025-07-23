@@ -1,4 +1,5 @@
 %pip install torch_tb_profiler
+
 # Comet Python Panel for visualizing Pytorch Profiler information through Tensorboard
 # Log the torch profile .pt.trace.json file with 
 # >>> experiment.log_tensorflow_folder("./logs")
@@ -59,8 +60,6 @@ if selected_experiment.id:
             bar = st.progress(0, "Downloading log files...")
             selected_experiment.download_tensorflow_folder("./%s/logs/" % selected_experiment.id)
             bar.empty()
-            print('hello')
-    
         selected_log = st.selectbox(
             "Select Profile to view:", 
             [""] + sorted(os.listdir("./%s/logs/" % selected_experiment.id))
@@ -69,15 +68,16 @@ if selected_experiment.id:
             command = f"/home/stuser/.local/bin/tensorboard --logdir ./{selected_experiment.id}/logs/{selected_log} --port 6007".split()
             env = {} # {"PYTHONPATH": "/.local/lib/python3.9/site-packages"}
             if st.session_state["tensorboard_state"] != (selected_experiment.id, selected_log):
-                #print("Killing the hard way...")
+                kill_status = st.empty()  # Placeholder for dynamic message
+
                 for process in psutil.process_iter():
                     try:
                         if "tensorboard" in process.exe():
                             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
                             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
-                    except:
-                        print("Can't kill the server; continuing ...")
-            
+                    except Exception as e:
+                        kill_status.warning("Can't kill the server; continuing ...")
+                kill_status.empty()
                 process = subprocess.Popen(command, preexec_fn=os.setsid, env=env)
                 st.session_state["tensorboard_state"] = (selected_experiment.id, selected_log)
                 

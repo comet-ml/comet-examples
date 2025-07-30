@@ -68,6 +68,26 @@ def is_http_server_ready(port=6007, timeout=3):
         return False
 
 
+def wait_for_server_stop(port=6007, max_wait=10):
+    """Wait for server to stop by checking if port is no longer accepting connections."""
+    start_time = time.time()
+
+    while time.time() - start_time < max_wait:
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            result = sock.connect_ex(("localhost", port))
+            sock.close()
+            if result != 0:  # Port is no longer accepting connections
+                return True
+        except:
+            return True  # Assume stopped if we can't check
+
+        time.sleep(0.5)
+
+    return False  # Server didn't stop within timeout
+
+
 def wait_for_server(port=6007, max_wait=30):
     """Wait for server to be ready with a progress bar."""
     bar = st.progress(0, "Starting Tensorboard...")
@@ -107,13 +127,14 @@ if selected_experiment.id:
             [""] + sorted(os.listdir("./%s/logs/" % selected_experiment.id)),
         )
         if selected_log:
-            command = f"/home/stuser/.local/bin/tensorboard --logdir ./{selected_experiment.id}/logs/{selected_log} --port 6007".split()
-            env = {}  # {"PYTHONPATH": "/.local/lib/python3.9/site-packages"}
-            if st.session_state["tensorboard_state"] != (
+            # Check if we need to restart server
+            needs_refresh = st.session_state["tensorboard_state"] != (
                 selected_experiment.id,
                 selected_log,
-            ):
-                # print("Killing the hard way...")
+            )
+
+            if needs_refresh:
+                # Kill existing server
                 for process in psutil.process_iter():
                     try:
                         if "tensorboard" in process.exe():
@@ -122,6 +143,13 @@ if selected_experiment.id:
                     except:
                         print("Can't kill the server; continuing ...")
 
+                # Wait for server to stop before starting new one
+                if not wait_for_server_stop(port=6007, max_wait=10):
+                    st.warning("Previous Tensorboard server may still be running")
+
+                # Start new server
+                command = f"/home/stuser/.local/bin/tensorboard --logdir ./{selected_experiment.id}/logs/{selected_log} --port 6007".split()
+                env = {}  # {"PYTHONPATH": "/.local/lib/python3.9/site-packages"}
                 process = subprocess.Popen(command, preexec_fn=os.setsid, env=env)
                 st.session_state["tensorboard_state"] = (
                     selected_experiment.id,
@@ -146,7 +174,7 @@ if selected_experiment.id:
                     st.error("Failed to start Tensorboard server. Please try again.")
 
             else:
-                # Server already running, just show the iframe
+                # Server already running with correct state, just show the iframe
                 path, _ = page_location["pathname"].split("/component")
                 url = (
                     page_location["origin"]

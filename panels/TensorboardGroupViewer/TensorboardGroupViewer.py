@@ -19,6 +19,8 @@ import random
 import glob
 import shutil
 import requests
+import socket
+import signal
 
 st.set_page_config(layout="wide")
 
@@ -39,6 +41,7 @@ if DEBUG:
 api = API()
 experiments = api.get_panel_experiments()
 
+
 def is_http_server_ready(port=6007, timeout=3):
     """Check if Tensorboard HTTP server is ready by making a request to the root endpoint."""
     try:
@@ -46,6 +49,26 @@ def is_http_server_ready(port=6007, timeout=3):
         return response.status_code == 200
     except:
         return False
+
+
+def wait_for_server_stop(port=6007, max_wait=10):
+    """Wait for server to stop by checking if port is no longer accepting connections."""
+    start_time = time.time()
+
+    while time.time() - start_time < max_wait:
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            result = sock.connect_ex(("localhost", port))
+            sock.close()
+            if result != 0:  # Port is no longer accepting connections
+                return True
+        except:
+            return True  # Assume stopped if we can't check
+
+        time.sleep(0.5)
+
+    return False  # Server didn't stop within timeout
 
 
 def wait_for_server(port=6007, max_wait=30):
@@ -71,63 +94,97 @@ def wait_for_server(port=6007, max_wait=30):
     st.error(f"Tensorboard failed to start within {max_wait} seconds")
     return False
 
+
+if "tensorboard_state" not in st.session_state:
+    st.session_state["tensorboard_state"] = None
+
 needs_refresh = False
 page_location = get_page_location()
 if page_location is not None:
     if True:
-        column = st.columns([.7, .3])
+        column = st.columns([0.7, 0.3])
         clear = column[1].checkbox("Clear previous logs", value=True)
-        if column[0].button("Copy Selected Experiment Logs to Tensorboard Server", type="primary"):
+        if column[0].button(
+            "Copy Selected Experiment Logs to Tensorboard Server", type="primary"
+        ):
             needs_refresh = True
             if clear and os.path.exists("./logs"):
                 for filename in glob.glob("./logs/*"):
                     shutil.move(filename, "./tb_cache/")
             bar = st.progress(0, "Downloading log files...")
             for i, experiment in enumerate(experiments):
-                bar.progress(i/len(experiments), "Downloading log files...")
+                bar.progress(i / len(experiments), "Downloading log files...")
                 if not os.path.exists("./logs/%s" % experiment.name):
                     if os.path.exists("./tb_cache/%s" % experiment.name):
-                        if DEBUG: print("found in cache!")
+                        if DEBUG:
+                            print("found in cache!")
                         shutil.move(
                             "./tb_cache/%s" % experiment.name,
                             "./logs/%s" % experiment.name,
                         )
                     else:
-                        if DEBUG: print("downloading...")
+                        if DEBUG:
+                            print("downloading...")
                         assets = experiment.get_asset_list("tensorflow-file")
                         if assets:
-                            if DEBUG: print(assets[0]["fileName"])
+                            if DEBUG:
+                                print(assets[0]["fileName"])
                             if assets[0]["fileName"].startswith("logs/"):
                                 experiment.download_tensorflow_folder("./")
                             else:
                                 experiment.download_tensorflow_folder("./logs/")
             bar.empty()
 
-        running = False
-        for process in psutil.process_iter():
-            try:
-                if "tensorboard" in process.exe():
-                    running = True
-            except:
-                pass
-        if not running:
-            command = f"/home/stuser/.local/bin/tensorboard --logdir ./logs --port 6007".split()
-            env = {} # {"PYTHONPATH": "/home/st_user/.local/lib/python3.9/site-packages"}
-            process = subprocess.Popen(command, preexec_fn=os.setsid, env=env)
-            needs_refresh = True
+        # Check if we need to restart server
+        if needs_refresh and st.session_state["tensorboard_state"] != "group_viewer":
+            # Kill existing server
+            for process in psutil.process_iter():
+                try:
+                    if "tensorboard" in process.exe():
+                        os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+                        os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+                except:
+                    print("Can't kill the server; continuing ...")
 
-        if needs_refresh:
+            # Wait for server to stop before starting new one
+            if not wait_for_server_stop(port=6007, max_wait=10):
+                st.warning("Previous Tensorboard server may still be running")
+
+            # Start new server
+            command = f"/home/stuser/.local/bin/tensorboard --logdir ./logs --port 6007".split()
+            env = (
+                {}
+            )  # {"PYTHONPATH": "/home/st_user/.local/lib/python3.9/site-packages"}
+            process = subprocess.Popen(command, preexec_fn=os.setsid, env=env)
+            st.session_state["tensorboard_state"] = "group_viewer"
+
             # Wait for server to be ready
             if wait_for_server(port=6007, max_wait=30):
                 path, _ = page_location["pathname"].split("/component")
-                url = page_location["origin"] + path + f"/port/6007/server?x={random.random()}"
-                st.markdown('<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url, unsafe_allow_html=True)
+                url = (
+                    page_location["origin"]
+                    + path
+                    + f"/port/6007/server?x={random.randint(1,1_000_000)}"
+                )
+                st.markdown(
+                    '<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>'
+                    % url,
+                    unsafe_allow_html=True,
+                )
                 components.iframe(src=url, height=700)
             else:
                 st.error("Failed to start Tensorboard server. Please try again.")
-        else:
-            # Server already running, just show the iframe
+
+        elif needs_refresh:
+            # Server already running with correct state, just show the iframe
             path, _ = page_location["pathname"].split("/component")
-            url = page_location["origin"] + path + f"/port/6007/server?x={random.random()}"
-            st.markdown('<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url, unsafe_allow_html=True)
+            url = (
+                page_location["origin"]
+                + path
+                + f"/port/6007/server?x={random.randint(1,1_000_000)}"
+            )
+            st.markdown(
+                '<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url,
+                unsafe_allow_html=True,
+            )
             components.iframe(src=url, height=700)

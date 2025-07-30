@@ -57,6 +57,14 @@ else:
     ][0]
 
 
+def wait_to_load(seconds):
+    bar = st.progress(0, "Loading Tensorboard data...")
+    for i in range(seconds):
+        bar.progress(((i + 1) / seconds), "Loading Tensorboard data...")
+        time.sleep(1)
+    bar.empty()
+
+
 def is_http_server_ready(port=6007, timeout=3):
     """Check if Tensorboard HTTP server is ready by making a request to the root endpoint."""
     try:
@@ -169,6 +177,7 @@ if selected_experiment.id:
                         % url,
                         unsafe_allow_html=True,
                     )
+                    wait_to_load(5)
                     components.iframe(src=url, height=700)
                 else:
                     st.error("Failed to start Tensorboard server. Please try again.")
@@ -186,4 +195,5 @@ if selected_experiment.id:
                     % url,
                     unsafe_allow_html=True,
                 )
+                wait_to_load(5)
                 components.iframe(src=url, height=700)

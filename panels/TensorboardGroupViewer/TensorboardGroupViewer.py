@@ -42,6 +42,14 @@ api = API()
 experiments = api.get_panel_experiments()
 
 
+def wait_to_load(seconds):
+    bar = st.progress(0, "Loading Tensorboard data...")
+    for i in range(seconds):
+        bar.progress(((i + 1) / seconds), "Loading Tensorboard data...")
+        time.sleep(1)
+    bar.empty()
+
+
 def is_http_server_ready(port=6007, timeout=3):
     """Check if Tensorboard HTTP server is ready by making a request to the root endpoint."""
     try:
@@ -171,6 +179,7 @@ if page_location is not None:
                     % url,
                     unsafe_allow_html=True,
                 )
+                wait_to_load(5)
                 components.iframe(src=url, height=700)
             else:
                 st.error("Failed to start Tensorboard server. Please try again.")
@@ -187,4 +196,5 @@ if page_location is not None:
                 '<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url,
                 unsafe_allow_html=True,
             )
+            wait_to_load(5)
             components.iframe(src=url, height=700)

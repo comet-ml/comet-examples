@@ -106,7 +106,6 @@ def wait_for_server(port=6007, max_wait=30):
 if "tensorboard_state" not in st.session_state:
     st.session_state["tensorboard_state"] = None
 
-needs_refresh = False
 page_location = get_page_location()
 if page_location is not None:
     if True:
@@ -115,7 +114,6 @@ if page_location is not None:
         if column[0].button(
             "Copy Selected Experiment Logs to Tensorboard Server", type="primary"
         ):
-            needs_refresh = True
             if clear and os.path.exists("./logs"):
                 for filename in glob.glob("./logs/*"):
                     shutil.move(filename, "./tb_cache/")
@@ -144,7 +142,7 @@ if page_location is not None:
             bar.empty()
 
         # Check if we need to restart server
-        if needs_refresh and st.session_state["tensorboard_state"] != "group_viewer":
+        if st.session_state["tensorboard_state"] != "group_viewer":
             # Kill existing server
             for process in psutil.process_iter():
                 try:
@@ -184,7 +182,7 @@ if page_location is not None:
             else:
                 st.error("Failed to start Tensorboard server. Please try again.")
 
-        elif needs_refresh:
+        else:
             # Server already running with correct state, just show the iframe
             path, _ = page_location["pathname"].split("/component")
             url = (
@@ -196,5 +194,4 @@ if page_location is not None:
                 '<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url,
                 unsafe_allow_html=True,
             )
-            wait_to_load(5)
             components.iframe(src=url, height=700)

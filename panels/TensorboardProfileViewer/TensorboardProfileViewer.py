@@ -195,5 +195,4 @@ if selected_experiment.id:
                     % url,
                     unsafe_allow_html=True,
                 )
-                wait_to_load(5)
                 components.iframe(src=url, height=700)

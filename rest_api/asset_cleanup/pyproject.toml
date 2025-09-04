@@ -1,0 +1,55 @@
+[project]
+name = "comet-em-asset-cleanup"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Francisco",email = "22344801+fschlz@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "requests (>=2.32.5,<3.0.0)",
+    "argparse (>=1.4.0,<2.0.0)",
+    "pre-commit (>=4.3.0,<5.0.0)"
+]
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.12.12"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+# Same as Black.
+line-length = 140
+
+# Assume Python 3.12.
+target-version = "py312"
+
+# Specify the source directory for import sorting and other path-dependent checks.
+src = ["src"]
+
+[tool.ruff.lint]
+# Enable Pyflakes (F) and pycodestyle (E, W) and McCabe (C90) complexity.
+select = ["F", "E", "W", "C90"]
+ignore = ["E402", "C901"]
+
+# Allow unused variables when underscore-prefixed.
+# dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"

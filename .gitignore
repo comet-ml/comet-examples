@@ -103,3 +103,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+data/*
+
+# pytest
+.pytest_cache/
+MagicMock/

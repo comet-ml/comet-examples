@@ -270,6 +270,11 @@ def main():
 
     # Configure Opik
     project_name = "demo-multimodal-image-classification"
+
+    # Set environment variables for better connection handling
+    os.environ["OPIK_REQUEST_TIMEOUT"] = "300"  # 5 minutes timeout for large payloads
+    os.environ["OPIK_BATCH_SIZE"] = "20"  # Smaller batch size
+
     opik.configure(use_local=False, workspace=os.getenv("OPIK_WORKSPACE_NAME"), api_key=os.getenv("OPIK_API_KEY"))
 
     os.environ["OPIK_PROJECT_NAME"] = project_name
@@ -295,7 +300,14 @@ def main():
     except Exception:
         # Create new dataset if it doesn't exist
         dataset = client.create_dataset(name=dataset_name)
-        dataset.insert(dataset_items)
+
+        # Insert items in smaller batches to avoid broken pipe errors
+        batch_size = 20  # Smaller batches for large base64 images
+        for i in range(0, len(dataset_items), batch_size):
+            batch = dataset_items[i : i + batch_size]
+            dataset.insert(batch)
+            print(f"   Inserted batch {i // batch_size + 1}/{(len(dataset_items) + batch_size - 1) // batch_size}")
+
         print(f"✅ Dataset '{dataset_name}' created with {len(dataset_items)} items")
         print(f"   Columns: {', '.join(dataset_items[0].keys())}")
 

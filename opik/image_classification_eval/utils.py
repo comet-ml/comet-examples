@@ -15,12 +15,13 @@ from opik.evaluation.metrics import BaseMetric, score_result
 logger = logging.getLogger(__name__)
 
 
-def download_image_from_url(url: str) -> bytes:
+def download_image_from_url(url: str, max_size: tuple = (800, 800)) -> bytes:
     """
     Download an image from a URL and return as bytes.
 
     Args:
         url: URL to the image
+        max_size: Maximum dimensions (width, height) to resize image to
 
     Returns:
         Image bytes
@@ -28,13 +29,29 @@ def download_image_from_url(url: str) -> bytes:
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        return response.content
+
+        # Open and resize image to reduce size
+        img = Image.open(io.BytesIO(response.content))
+        img.thumbnail(max_size, Image.Resampling.LANCZOS)
+
+        # Convert to RGB if necessary (removes alpha channel)
+        if img.mode in ("RGBA", "LA"):
+            background = Image.new("RGB", img.size, (255, 255, 255))
+            background.paste(img, mask=img.split()[-1] if img.mode == "RGBA" else None)
+            img = background
+
+        # Save with compression
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format="JPEG", quality=85, optimize=True)
+        img_bytes.seek(0)
+        return img_bytes.read()
+
     except Exception as e:
         logger.warning(f"Could not download image from {url}: {str(e)}")
         # Fallback: create a simple colored image
         img = Image.new("RGB", (400, 400), color="gray")
         img_bytes = io.BytesIO()
-        img.save(img_bytes, format="PNG")
+        img.save(img_bytes, format="JPEG", quality=85)
         img_bytes.seek(0)
         return img_bytes.read()
 

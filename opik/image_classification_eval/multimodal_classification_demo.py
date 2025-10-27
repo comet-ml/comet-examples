@@ -48,11 +48,6 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 
-opik.configure(use_local=False, workspace=os.getenv("OPIK_WORKSPACE_NAME"), api_key=os.getenv("OPIK_API_KEY"))
-
-os.environ["OPIK_PROJECT_NAME"] = "demo-multimodal-image-classification"
-
-
 # Helper functions (following RAG example patterns)
 def get_datestamp():
     return datetime.datetime.now().strftime(format="%Y%m%d%H%M%S")
@@ -259,8 +254,9 @@ def main():
     print("=" * 70)
 
     # Configure Opik
-    project_name = "multimodal-classification-demo"
-    opik.configure(api_key=os.getenv("COMET_API_KEY"), workspace=os.getenv("OPIK_WORKSPACE_NAME", "default"))
+    project_name = "demo-multimodal-image-classification"
+    opik.configure(use_local=False, workspace=os.getenv("OPIK_WORKSPACE_NAME"), api_key=os.getenv("OPIK_API_KEY"))
+
     os.environ["OPIK_PROJECT_NAME"] = project_name
 
     # Initialize Opik client

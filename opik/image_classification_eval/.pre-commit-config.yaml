@@ -1,0 +1,27 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-toml
+    -   id: check-added-large-files
+        args: ["--maxkb=10000"]
+    -   id: check-merge-conflict
+    -   id: detect-private-key
+    -   id: check-case-conflict
+    -   id: mixed-line-ending
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+    -   id: ruff-format
+    -   id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+
+-   repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.27.0
+    hooks:
+    -   id: commitizen
+        stages: [commit-msg]

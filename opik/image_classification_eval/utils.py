@@ -139,12 +139,12 @@ class ImageClassificationQualityMetric(BaseMetric):
     def __init__(self, name: str = "classification_quality"):
         super().__init__(name=name)
 
-    def score(self, output: Dict[str, Any], **kwargs) -> score_result.ScoreResult:
+    def score(self, output: Any, **kwargs) -> score_result.ScoreResult:
         """
         Score the image classification based on format and content quality.
 
         Args:
-            output: Model output containing label and reason
+            output: Model output - can be dict or wrapped in another dict
             **kwargs: Additional context including expected values
 
         Returns:
@@ -154,13 +154,20 @@ class ImageClassificationQualityMetric(BaseMetric):
             # Extract expected values
             expected_label = kwargs.get("expected_label", "").lower()
 
+            # Handle nested output structure
+            if isinstance(output, dict) and "output" in output:
+                # Output is wrapped - extract the nested dict
+                output_data = output["output"]
+            else:
+                output_data = output
+
             # Extract actual values from output
-            if isinstance(output, dict):
-                actual_label = (output.get("response_label") or output.get("label", "")).lower()
-                actual_reason = output.get("response_reason") or output.get("reason", "")
+            if isinstance(output_data, dict):
+                actual_label = (output_data.get("response_label") or output_data.get("label", "")).lower()
+                actual_reason = output_data.get("response_reason") or output_data.get("reason", "")
             else:
                 # Handle string outputs
-                parsed = parse_json_response(str(output))
+                parsed = parse_json_response(str(output_data))
                 if parsed:
                     actual_label = parsed.get("label", "").lower()
                     actual_reason = parsed.get("reason", "")

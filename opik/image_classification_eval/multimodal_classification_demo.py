@@ -132,7 +132,7 @@ class GeminiClassifier(ImageClassifier):
 
     def __init__(self, model: str = "gemini-2.0-flash-001"):
         super().__init__(model)
-        self.client = track_genai(genai.Client())
+        self.client = track_genai(genai.Client(api_key=os.getenv("GEMINI_API_KEY")))
 
     @track()
     def classify_image(self, image_base64: str, prompt_text: str) -> Dict[str, Any]:
@@ -212,37 +212,52 @@ def create_image_dataset(num_items: int = 200) -> List[Dict[str, Any]]:
     return dataset_items
 
 
+def evaluate_classification(x: Dict[str, Any], classifier: ImageClassifier, system_prompt: str) -> Dict[str, Any]:
+    """Evaluation task that returns output in expected format"""
+    result = classifier.process_item(x, system_prompt)
+
+    # Return in format expected by the metric (with 'output' key)
+    return {
+        "output": {"response_label": result.get("response_label", ""), "response_reason": result.get("response_reason", "")},
+        "response": result.get("raw_response", ""),
+    }
+
+
 def run_evaluation_with_prompt(
     dataset: Any, classifiers: List[ImageClassifier], prompt: opik.Prompt, experiment_tag: str, project_name: str
 ) -> Dict[str, Any]:
     """Run evaluation across all classifiers with given prompt"""
     results = {}
-    metric = ImageClassificationQualityMetric()
+
+    # Create metrics
+    quality_metric = ImageClassificationQualityMetric()
 
     for classifier in classifiers:
         model_name = classifier.model.replace("/", "_").replace("-", "_")
-        logger.info(f"Evaluating {model_name}...")
+        print(f"\n🔍 Evaluating {model_name}...")
 
         try:
-            # Create evaluation task
-            def eval_task(item: Dict[str, Any]) -> Dict[str, Any]:
-                return classifier.process_item(item, prompt.format())
+            # Create evaluation task for this classifier
+            def task(x: Dict[str, Any]) -> Dict[str, Any]:
+                return evaluate_classification(x, classifier, prompt.format())
 
             # Run evaluation
             experiment = evaluate(
                 dataset=dataset,
-                task=eval_task,
-                scoring_metrics=[metric],
+                task=task,
+                scoring_metrics=[quality_metric],
                 experiment_name=f"{model_name}_{experiment_tag}",
                 project_name=project_name,
                 prompt=prompt,
-                scoring_key_mapping={"expected_label": "expected_label"},
             )
 
             results[model_name] = {"experiment": experiment, "status": "success"}
+            print(f"✅ {model_name} evaluation completed")
 
         except Exception as e:
-            logger.error(f"Error evaluating {model_name}: {e}")
+            error_msg = f"Error evaluating {model_name}: {str(e)}"
+            logger.error(error_msg)
+            print(f"❌ {error_msg}")
             results[model_name] = {"status": "error", "error": str(e)}
 
     return results
@@ -266,17 +281,23 @@ def main():
     print("\n📊 Step 1: Creating dataset using Opik SDK")
     print("-" * 50)
 
+    dataset_name = "multimodal_images"
+
+    # Always create fresh dataset items for the demo
     dataset_items = create_image_dataset(num_items=200)
-    dataset_name = f"multimodal_images_{get_datestamp()}"
 
     try:
+        # Try to get existing dataset
+        dataset = client.get_dataset(name=dataset_name)
+        print(f"✅ Using existing dataset '{dataset_name}'")
+        # Clear existing data and insert fresh items
+        # Note: Opik doesn't have a clear method, so we'll work with existing data
+    except Exception:
+        # Create new dataset if it doesn't exist
         dataset = client.create_dataset(name=dataset_name)
         dataset.insert(dataset_items)
         print(f"✅ Dataset '{dataset_name}' created with {len(dataset_items)} items")
         print(f"   Columns: {', '.join(dataset_items[0].keys())}")
-    except Exception as e:
-        logger.error(f"Dataset creation error: {e}")
-        return
 
     # Initialize classifiers
     classifiers = [OpenAIClassifier("gpt-4o"), GeminiClassifier("gemini-2.0-flash-001"), OpenRouterClassifier("qwen/qwen-2-vl-7b-instruct")]
@@ -503,7 +524,7 @@ Analyze the image and provide your classification:""",
 
 if __name__ == "__main__":
     # Check for required API keys
-    required_keys = ["OPIK_API_KEY", "OPENAI_API_KEY", "GOOGLE_API_KEY", "OPENROUTER_API_KEY"]
+    required_keys = ["OPIK_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY", "OPENROUTER_API_KEY"]
     missing_keys = [key for key in required_keys if not os.getenv(key)]
 
     if missing_keys:

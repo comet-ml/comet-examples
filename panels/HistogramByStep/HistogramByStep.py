@@ -3,6 +3,7 @@ from comet_ml.data_structure import Histogram
 import random
 import numpy as np
 import plotly.express as px
+import streamlit as st
 
 # Options:
 
@@ -161,12 +162,22 @@ def plot_histogram(experiment, asset):
     st.plotly_chart(fig)
 
 
+def select_experiment(experiment_list):
+    names = [exp.name for exp in experiment_list]
+    selected_idx = st.selectbox(
+        "Select Experiment:",
+        range(len(names)),
+        format_func=lambda i: names[i],
+    )
+    return experiment_list[selected_idx]
+
+
 api = API()
 experiments = api.get_panel_experiments()
 if len(experiments) == 1:
     selected_experiment = experiments[0]
 else:
-    selected_experiment = ui.dropdown("Experiments: ", experiments)
+    selected_experiment = select_experiment(experiments)
 
 if selected_experiment:
     assets = sorted(

@@ -41,9 +41,11 @@ def get_instance_port(instance_id, registry_key="instance_port_map"):
     return registry[instance_id]
 
 
-instance_id = os.environ["COMET_PANEL_INSTANCE_ID"]
-port = get_instance_port(instance_id)
-
+instance_id = os.environ.get("COMET_PANEL_INSTANCE_ID")
+if instance_id is None:
+    port = 6007
+else:
+    port = get_instance_port(instance_id)
 if "tensorboard_state" not in st.session_state:
     st.session_state["tensorboard_state"] = None
 

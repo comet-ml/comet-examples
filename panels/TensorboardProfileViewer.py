@@ -59,6 +59,17 @@ class EmptyExperiment:
     id = None
     name = ""
 
+
+def select_experiment(experiment_list):
+    names = [exp.name for exp in experiment_list]
+    selected_idx = st.selectbox(
+        "Select Experiment with log:",
+        range(len(names)),
+        format_func=lambda i: names[i],
+    )
+    return experiment_list[selected_idx]
+
+
 experiments_with_log = [EmptyExperiment()]
 for experiment in experiments:
     asset_list = experiment.get_asset_list("tensorflow-file")
@@ -69,13 +80,9 @@ if len(experiments_with_log) == 1:
     st.write("No experiments with log")
     st.stop()
 elif len(experiments_with_log) == 2:
-    selected_experiment = experiments_with_log[1] 
+    selected_experiment = experiments_with_log[1]
 else:
-    selected_experiment = st.selectbox(
-        "Select Experiment with log:", 
-        experiments_with_log, 
-        format_func=lambda aexp: aexp.name
-    )
+    selected_experiment = select_experiment(experiments_with_log)
 
 if selected_experiment.id:
     page_location = get_page_location()

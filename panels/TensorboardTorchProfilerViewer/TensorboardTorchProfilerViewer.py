@@ -72,6 +72,16 @@ class EmptyExperiment:
     name = ""
 
 
+def select_experiment(experiment_list):
+    names = [exp.name for exp in experiment_list]
+    selected_idx = st.selectbox(
+        "Select Experiment with log:",
+        range(len(names)),
+        format_func=lambda i: names[i],
+    )
+    return experiment_list[selected_idx]
+
+
 experiments_with_log = [EmptyExperiment()]
 for experiment in experiments:
     asset_list = experiment.get_asset_list("tensorflow-file")
@@ -84,14 +94,7 @@ if len(experiments_with_log) == 1:
 elif len(experiments_with_log) == 2:
     selected_experiment = experiments_with_log[1]
 else:
-    names = [exp.name for exp in experiments_with_log]
-    selected_experiment_name = st.selectbox(
-        "Select Experiment with log:",
-        names,
-    )
-    selected_experiment = [
-        exp for exp in experiments_with_log if exp.name == selected_experiment_name
-    ][0]
+    selected_experiment = select_experiment(experiments_with_log)
 
 
 def wait_to_load(seconds):

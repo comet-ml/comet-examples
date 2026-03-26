@@ -17,7 +17,35 @@ import zipfile
 import random
 import signal
 
-st.set_page_config(layout="wide") 
+# --- Per-instance port assignment (6000-6009) ---
+# All Streamlit panels share the same session_state, so this dict persists
+# across instances and can be reused by other panels that start servers.
+
+PORT_RANGE_START = 6000
+PORT_RANGE_END = 6010  # exclusive
+
+
+def get_instance_port(instance_id, registry_key="instance_port_map"):
+    """Return the port assigned to instance_id, assigning the next available
+    port if this instance hasn't been seen before.  Raises RuntimeError when
+    the port range is exhausted."""
+    if registry_key not in st.session_state:
+        st.session_state[registry_key] = {}
+    registry = st.session_state[registry_key]
+    if instance_id not in registry:
+        next_port = PORT_RANGE_START + len(registry)
+        if next_port >= PORT_RANGE_END:
+            raise RuntimeError(
+                f"No available ports: all ports {PORT_RANGE_START}-{PORT_RANGE_END - 1} are in use."
+            )
+        registry[instance_id] = next_port
+    return registry[instance_id]
+
+
+instance_id = os.environ["COMET_PANEL_INSTANCE_ID"]
+port = get_instance_port(instance_id)
+
+st.set_page_config(layout="wide")
 
 if "tensorboard_state" not in st.session_state:
     st.session_state["tensorboard_state"] = None
@@ -31,6 +59,17 @@ class EmptyExperiment:
     id = None
     name = ""
 
+
+def select_experiment(experiment_list):
+    names = [exp.name for exp in experiment_list]
+    selected_idx = st.selectbox(
+        "Select Experiment with log:",
+        range(len(names)),
+        format_func=lambda i: names[i],
+    )
+    return experiment_list[selected_idx]
+
+
 experiments_with_log = [EmptyExperiment()]
 for experiment in experiments:
     asset_list = experiment.get_asset_list("tensorflow-file")
@@ -41,13 +80,9 @@ if len(experiments_with_log) == 1:
     st.write("No experiments with log")
     st.stop()
 elif len(experiments_with_log) == 2:
-    selected_experiment = experiments_with_log[1] 
+    selected_experiment = experiments_with_log[1]
 else:
-    selected_experiment = st.selectbox(
-        "Select Experiment with log:", 
-        experiments_with_log, 
-        format_func=lambda aexp: aexp.name
-    )
+    selected_experiment = select_experiment(experiments_with_log)
 
 if selected_experiment.id:
     page_location = get_page_location()
@@ -62,7 +97,7 @@ if selected_experiment.id:
             [""] + sorted(os.listdir("./%s/logs/" % selected_experiment.id))
         )
         if selected_log:
-            command = f"/home/stuser/.local/bin/tensorboard --logdir ./{selected_experiment.id}/logs/{selected_log} --port 6007".split()
+            command = f"/home/stuser/.local/bin/tensorboard --logdir ./{selected_experiment.id}/logs/{selected_log} --port {port}".split()
             env = {} # {"PYTHONPATH": "/.local/lib/python3.9/site-packages"}
             if st.session_state["tensorboard_state"] != (selected_experiment.id, selected_log):
                 #print("Killing the hard way...")
@@ -86,6 +121,6 @@ if selected_experiment.id:
                 bar.empty()
     
             path, _ = page_location["pathname"].split("/component")
-            url = page_location["origin"] + path + f"/port/6007/server?x={random.randint(1,1_000_000)}#profile"
+            url = page_location["origin"] + path + f"/port/{port}/server?x={random.randint(1,1_000_000)}#profile"
             st.markdown('<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url, unsafe_allow_html=True)
             components.iframe(src=url, height=700)

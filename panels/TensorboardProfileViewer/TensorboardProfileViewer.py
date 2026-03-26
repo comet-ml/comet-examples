@@ -2,9 +2,6 @@
 # Log the tensorboard profile (and other data) with
 # >>> experiment.log_tensorflow_folder("./logs")
 
-# NOTE: there is only one Tensorboard Server for your
-# Python Panels; logs are shared across them
-
 from comet_ml import API
 import streamlit as st
 import streamlit.components.v1 as components
@@ -18,6 +15,34 @@ import random
 import signal
 import requests
 import socket
+
+# --- Per-instance port assignment (6000-6009) ---
+# All Streamlit panels share the same session_state, so this dict persists
+# across instances and can be reused by other panels that start servers.
+
+PORT_RANGE_START = 6000
+PORT_RANGE_END = 6010  # exclusive
+
+
+def get_instance_port(instance_id, registry_key="instance_port_map"):
+    """Return the port assigned to instance_id, assigning the next available
+    port if this instance hasn't been seen before.  Raises RuntimeError when
+    the port range is exhausted."""
+    if registry_key not in st.session_state:
+        st.session_state[registry_key] = {}
+    registry = st.session_state[registry_key]
+    if instance_id not in registry:
+        next_port = PORT_RANGE_START + len(registry)
+        if next_port >= PORT_RANGE_END:
+            raise RuntimeError(
+                f"No available ports: all ports {PORT_RANGE_START}-{PORT_RANGE_END - 1} are in use."
+            )
+        registry[instance_id] = next_port
+    return registry[instance_id]
+
+
+instance_id = os.environ["COMET_PANEL_INSTANCE_ID"]
+port = get_instance_port(instance_id)
 
 if "tensorboard_state" not in st.session_state:
     st.session_state["tensorboard_state"] = None
@@ -35,6 +60,16 @@ class EmptyExperiment:
     name = ""
 
 
+def select_experiment(experiment_list):
+    names = [exp.name for exp in experiment_list]
+    selected_idx = st.selectbox(
+        "Select Experiment with log:",
+        range(len(names)),
+        format_func=lambda i: names[i],
+    )
+    return experiment_list[selected_idx]
+
+
 experiments_with_log = [EmptyExperiment()]
 for experiment in experiments:
     asset_list = experiment.get_asset_list("tensorflow-file")
@@ -47,14 +82,7 @@ if len(experiments_with_log) == 1:
 elif len(experiments_with_log) == 2:
     selected_experiment = experiments_with_log[1]
 else:
-    names = [exp.name for exp in experiments_with_log]
-    selected_experiment_name = st.selectbox(
-        "Select Experiment with log:",
-        names,
-    )
-    selected_experiment = [
-        exp for exp in experiments_with_log if exp.name == selected_experiment_name
-    ][0]
+    selected_experiment = select_experiment(experiments_with_log)
 
 
 def wait_to_load(seconds):
@@ -152,11 +180,11 @@ if selected_experiment.id:
                         print("Can't kill the server; continuing ...")
 
                 # Wait for server to stop before starting new one
-                if not wait_for_server_stop(port=6007, max_wait=10):
+                if not wait_for_server_stop(port=port, max_wait=10):
                     st.warning("Previous Tensorboard server may still be running")
 
                 # Start new server
-                command = f"/home/stuser/.local/bin/tensorboard --logdir ./{selected_experiment.id}/logs/{selected_log} --port 6007".split()
+                command = f"/home/stuser/.local/bin/tensorboard --logdir ./{selected_experiment.id}/logs/{selected_log} --port {port}".split()
                 env = {}  # {"PYTHONPATH": "/.local/lib/python3.9/site-packages"}
                 process = subprocess.Popen(command, preexec_fn=os.setsid, env=env)
                 st.session_state["tensorboard_state"] = (
@@ -165,12 +193,12 @@ if selected_experiment.id:
                 )
 
                 # Wait for server to be ready
-                if wait_for_server(port=6007, max_wait=30):
+                if wait_for_server(port=port, max_wait=30):
                     path, _ = page_location["pathname"].split("/component")
                     url = (
                         page_location["origin"]
                         + path
-                        + f"/port/6007/server?x={random.randint(1,1_000_000)}#profile"
+                        + f"/port/{port}/server?x={random.randint(1,1_000_000)}#profile"
                     )
                     st.markdown(
                         '<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>'
@@ -188,7 +216,7 @@ if selected_experiment.id:
                 url = (
                     page_location["origin"]
                     + path
-                    + f"/port/6007/server?x={random.randint(1,1_000_000)}#profile"
+                    + f"/port/{port}/server?x={random.randint(1,1_000_000)}#profile"
                 )
                 st.markdown(
                     '<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>'

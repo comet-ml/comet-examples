@@ -19,6 +19,34 @@ import random
 import glob
 import shutil
 
+# --- Per-instance port assignment (6000-6009) ---
+# All Streamlit panels share the same session_state, so this dict persists
+# across instances and can be reused by other panels that start servers.
+
+PORT_RANGE_START = 6000
+PORT_RANGE_END = 6010  # exclusive
+
+
+def get_instance_port(instance_id, registry_key="instance_port_map"):
+    """Return the port assigned to instance_id, assigning the next available
+    port if this instance hasn't been seen before.  Raises RuntimeError when
+    the port range is exhausted."""
+    if registry_key not in st.session_state:
+        st.session_state[registry_key] = {}
+    registry = st.session_state[registry_key]
+    if instance_id not in registry:
+        next_port = PORT_RANGE_START + len(registry)
+        if next_port >= PORT_RANGE_END:
+            raise RuntimeError(
+                f"No available ports: all ports {PORT_RANGE_START}-{PORT_RANGE_END - 1} are in use."
+            )
+        registry[instance_id] = next_port
+    return registry[instance_id]
+
+
+instance_id = os.environ["COMET_PANEL_INSTANCE_ID"]
+port = get_instance_port(instance_id)
+
 st.set_page_config(layout="wide")
 
 from streamlit_js_eval import get_page_location
@@ -78,7 +106,7 @@ if page_location is not None:
             except:
                 pass
         if not running:
-            command = f"/home/stuser/.local/bin/tensorboard --logdir ./logs --port 6007".split()
+            command = f"/home/stuser/.local/bin/tensorboard --logdir ./logs --port {port}".split()
             env = {} # {"PYTHONPATH": "/home/st_user/.local/lib/python3.9/site-packages"}
             process = subprocess.Popen(command, preexec_fn=os.setsid, env=env)
             needs_refresh = True
@@ -93,6 +121,6 @@ if page_location is not None:
             bar.empty()
 
         path, _ = page_location["pathname"].split("/component")
-        url = page_location["origin"] + path + f"/port/6007/server?x={random.random()}"
+        url = page_location["origin"] + path + f"/port/{port}/server?x={random.random()}"
         st.markdown('<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url, unsafe_allow_html=True)
         components.iframe(src=url, height=700)

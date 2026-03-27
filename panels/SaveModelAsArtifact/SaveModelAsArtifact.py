@@ -23,14 +23,26 @@ if not api_key:
 
 os.environ["COMET_REAL_API_KEY"] = api_key
 
+def select_experiment(experiment_list, container=None):
+    if container is None:
+        container = st
+    names = [exp.name or exp.id for exp in experiment_list]
+    selected_idx = container.selectbox(
+        "Choose one:",
+        range(len(names)),
+        format_func=lambda i: names[i],
+    )
+    return experiment_list[selected_idx]
+
+
 api = API(api_key)
 experiments = api.get_panel_experiments()
 
 root = api._client.server_url
 
 if len(experiments) > 1:
-    api_experiment = ui.dropdown("Choose one:", experiments)
-else: 
+    api_experiment = select_experiment(experiments)
+else:
     api_experiment = experiments[0]
 
 metric_names = sorted([

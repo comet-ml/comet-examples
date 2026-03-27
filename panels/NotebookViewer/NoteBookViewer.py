@@ -8,6 +8,18 @@ from nbformat import read
 st.set_page_config(layout="wide")
 
 
+def select_experiment(experiment_list, container=None):
+    if container is None:
+        container = st
+    names = [exp.name or exp.id for exp in experiment_list]
+    selected_idx = container.selectbox(
+        "Select an experiment:",
+        range(len(names)),
+        format_func=lambda i: names[i],
+    )
+    return experiment_list[selected_idx]
+
+
 api = API()
 
 columns = st.columns(2)
@@ -20,11 +32,7 @@ elif len(experiments) == 1:
     experiment = experiments[0]
     columns[0].markdown("Experiment:\\\n**%s**"  % (experiment.name or experiment.id))
 else:
-    experiment = columns[0].selectbox(
-        "Select an experiment:", 
-        experiments, 
-        format_func=lambda experiment: (experiment.name or experiment.id)
-    )
+    experiment = select_experiment(experiments, columns[0])
 
 if experiment:
     assets = experiment.get_asset_list("notebook")

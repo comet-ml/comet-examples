@@ -205,6 +205,18 @@ def drawHistogram(asset):
         show_selected_data(selected_data, z, y, x)
 
 
+def select_experiment(experiment_list, container=None):
+    if container is None:
+        container = st
+    names = [exp.name or exp.id for exp in experiment_list]
+    selected_idx = container.selectbox(
+        "Experiment:",
+        range(len(names)),
+        format_func=lambda i: names[i],
+    )
+    return experiment_list[selected_idx]
+
+
 api = comet_ml.API()
 
 experiments = api.get_panel_experiments()
@@ -215,11 +227,7 @@ if len(experiments) == 0:
 elif len(experiments) == 1:
     experiment = experiments[0]
 else:
-    experiment = st.sidebar.selectbox(
-        "Experiment:",
-        experiments,
-        format_func=lambda experiment: experiment.name or experiment.id,
-    )
+    experiment = select_experiment(experiments, st.sidebar)
 
 assets = experiment.get_asset_list("histogram_combined_3d")
 

@@ -24,13 +24,29 @@ import requests
 import socket
 import signal
 
-# --- Per-instance port assignment (6000-6009) ---
+# --- Per-instance port assignment and TensorBoard state (6000-6009) ---
 # Registry is stored in a file so it is shared across all panel processes
 # and survives Streamlit session resets.
 
 PORT_RANGE_START = 6000
 PORT_RANGE_END = 6010  # exclusive
 PORT_REGISTRY_FILE = "/tmp/tb_port_registry.json"
+
+
+def _load_registry(f):
+    """Read registry from an open file handle, migrating old int-only entries
+    ({"id": port}) to the current dict format ({"id": {"port": N, "tb_state": ...}})."""
+    try:
+        data = json.load(f)
+    except (json.JSONDecodeError, ValueError):
+        return {}
+    migrated = {}
+    for k, v in data.items():
+        if isinstance(v, int):
+            migrated[k] = {"port": v, "tb_state": None}
+        else:
+            migrated[k] = v
+    return migrated
 
 
 def get_instance_port(instance_id):
@@ -43,12 +59,9 @@ def get_instance_port(instance_id):
             json.dump({}, f)
     with open(PORT_REGISTRY_FILE, "r+") as f:
         fcntl.flock(f, fcntl.LOCK_EX)
-        try:
-            registry = json.load(f)
-        except (json.JSONDecodeError, ValueError):
-            registry = {}
+        registry = _load_registry(f)
         if instance_id not in registry:
-            used_ports = set(registry.values())
+            used_ports = {entry["port"] for entry in registry.values()}
             next_port = next(
                 (p for p in range(PORT_RANGE_START, PORT_RANGE_END) if p not in used_ports),
                 None,
@@ -57,11 +70,53 @@ def get_instance_port(instance_id):
                 raise RuntimeError(
                     f"No available ports: all ports {PORT_RANGE_START}-{PORT_RANGE_END - 1} are in use."
                 )
-            registry[instance_id] = next_port
+            registry[instance_id] = {"port": next_port, "tb_state": None}
             f.seek(0)
             f.truncate()
             json.dump(registry, f)
-        return registry[instance_id]
+        return registry[instance_id]["port"]
+
+
+def get_tb_state(instance_id):
+    """Return the stored tb_state for instance_id from the registry file."""
+    if instance_id is None or not os.path.exists(PORT_REGISTRY_FILE):
+        return None
+    with open(PORT_REGISTRY_FILE, "r") as f:
+        fcntl.flock(f, fcntl.LOCK_SH)
+        registry = _load_registry(f)
+    return registry.get(instance_id, {}).get("tb_state")
+
+
+def set_tb_state(instance_id, state):
+    """Persist tb_state for instance_id in the registry file."""
+    if instance_id is None:
+        return
+    if not os.path.exists(PORT_REGISTRY_FILE):
+        with open(PORT_REGISTRY_FILE, "w") as f:
+            json.dump({}, f)
+    with open(PORT_REGISTRY_FILE, "r+") as f:
+        fcntl.flock(f, fcntl.LOCK_EX)
+        registry = _load_registry(f)
+        if instance_id not in registry:
+            registry[instance_id] = {"port": None, "tb_state": state}
+        else:
+            registry[instance_id]["tb_state"] = state
+        f.seek(0)
+        f.truncate()
+        json.dump(registry, f)
+
+
+def kill_process_on_port(port):
+    """Kill the process listening on the given port, if any."""
+    for proc in psutil.process_iter():
+        try:
+            for conn in proc.net_connections():
+                if conn.laddr.port == port and conn.status == 'LISTEN':
+                    os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+                    os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+                    return
+        except (psutil.NoSuchProcess, psutil.AccessDenied, AttributeError):
+            pass
 
 
 instance_id = os.environ.get("COMET_PANEL_INSTANCE_ID")
@@ -154,9 +209,6 @@ def wait_for_server(port=6007, max_wait=30):
     return False
 
 
-if "tensorboard_state" not in st.session_state:
-    st.session_state["tensorboard_state"] = None
-
 need_refresh = False
 page_location = get_page_location()
 if page_location is not None:
@@ -196,16 +248,23 @@ if page_location is not None:
                             experiment.download_tensorflow_folder(f"{log_dir}/")
         bar.empty()
 
-    # Check if we need to restart server
-    if st.session_state["tensorboard_state"] != "group_viewer":
-        # Kill existing server
-        for process in psutil.process_iter():
-            try:
-                if "tensorboard" in process.exe():
-                    os.killpg(os.getpgid(process.pid), signal.SIGTERM)
-                    os.killpg(os.getpgid(process.pid), signal.SIGKILL)
-            except:
-                print("Can't kill the server; continuing ...")
+    if get_tb_state(instance_id) == "group_viewer" and is_http_server_ready(port):
+        # Server is already running with the correct state — just show the iframe
+        path, _ = page_location["pathname"].split("/component")
+        url = (
+            page_location["origin"]
+            + path
+            + f"/port/{port}/server?x={random.randint(1,1_000_000)}"
+        )
+        st.markdown(
+            '<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url,
+            unsafe_allow_html=True,
+        )
+        if need_refresh:
+            wait_to_load(5)
+        components.iframe(src=url, height=700)
+    else:
+        kill_process_on_port(port)
 
         # Wait for server to stop before starting new one
         if not wait_for_server_stop(port=port, max_wait=10):
@@ -213,11 +272,9 @@ if page_location is not None:
 
         # Start new server
         command = f"/home/stuser/.local/bin/tensorboard --logdir {log_dir} --port {port}".split()
-        env = (
-            {}
-        )  # {"PYTHONPATH": "/home/st_user/.local/lib/python3.9/site-packages"}
+        env = {}  # {"PYTHONPATH": "/home/st_user/.local/lib/python3.9/site-packages"}
         process = subprocess.Popen(command, preexec_fn=os.setsid, env=env)
-        st.session_state["tensorboard_state"] = "group_viewer"
+        set_tb_state(instance_id, "group_viewer")
 
         # Wait for server to be ready
         if wait_for_server(port=port, max_wait=30):
@@ -236,19 +293,3 @@ if page_location is not None:
             components.iframe(src=url, height=700)
         else:
             st.error("Failed to start Tensorboard server. Please try again.")
-
-    else:
-        # Server already running with correct state, just show the iframe
-        path, _ = page_location["pathname"].split("/component")
-        url = (
-            page_location["origin"]
-            + path
-            + f"/port/{port}/server?x={random.randint(1,1_000_000)}"
-        )
-        st.markdown(
-            '<a href="%s" style="text-decoration: auto;">⛶ Open in tab</a>' % url,
-            unsafe_allow_html=True,
-        )
-        if need_refresh:
-            wait_to_load(5)
-        components.iframe(src=url, height=700)

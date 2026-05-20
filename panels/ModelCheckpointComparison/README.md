@@ -29,8 +29,6 @@ for i in range(10):
     experiment.log_metric('metric2', 50-i, epoch=i)
 ```
 
-Finally click on "Select Experiment with log:" in this panel.
-
 #### Example
 
 This example logs some dummy metric + model checkpoint data to Comet so that you can test out the panel. 

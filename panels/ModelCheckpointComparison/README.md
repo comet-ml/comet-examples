@@ -62,6 +62,19 @@ Or, you can simply [copy the code](https://raw.githubusercontent.com/comet-ml/co
 
 #### How it works
 
-The Python panel will retrieve a list of your model checkpoints, then use the epoch values logged to the checkpoint metadata to fine the value of the specific metric at that epoch.
+The Python panel will retrieve a list of your model checkpoints, then use the epoch values logged to the checkpoint metadata to find the value of the specific metric at that epoch.
+
+Once you have decided on which checkpoint you want to move forward with, you can then click the 'Register Model' button in the top right corner of the experiment page to promote that checkpoint to the Comet Model Registry.
+
+<table>
+<tr>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/ModelCheckpointComparison/register-model-button.png"
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+</tr>
+</table>
 
 
+See [here](https://www.comet.com/docs/v2/guides/model-registry/using-model-registry/#register-a-model-from-comet-ui) for further documentation on promoting models to the model registry.

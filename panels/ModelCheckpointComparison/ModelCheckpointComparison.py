@@ -6,18 +6,7 @@ from ast import literal_eval
 
 st.set_page_config(layout="wide")
 
-api_key = st.sidebar.text_input(
-    "Comet API key:", 
-    value=os.environ.get("COMET_REAL_API_KEY", ""), 
-    type="password"
-)
-if not api_key:
-    st.info("Enter your Comet API key on left sidebar", icon="ℹ️")
-    st.stop()
-
-os.environ["COMET_REAL_API_KEY"] = api_key
-
-api = API(api_key)
+api = API()
 experiments = api.get_panel_experiments()
 
 if len(experiments) > 1:
@@ -104,35 +93,6 @@ if len(data) > 0:
     
     st.dataframe(df, use_container_width=True)
 
-    # Model registration form
-    st.header("Create Model Artifact")
-    
-    # Select a model to register
-    model_names = df['Model-Name'].unique().tolist()
-    selected_model = st.selectbox("Select a model:", model_names)
-
-    # Model name input
-    workspace = api.get_panel_workspace()
-    artifacts = api.get_artifact_list(workspace)["artifacts"]
-    artifact_names = [artifact["name"] for artifact in artifacts]
-    artifact_name = st.selectbox("Select an Artifact:", artifact_names, help = "A new version will be created within this artifact")
-    def create_artifact():
-        try:
-            api_experiment.download_model(selected_model, f"./{selected_model}")
-            # Filter and get the "Asset-Name" where "Model-Name" is "checkpoint_0"
-            asset_name = df.loc[df["Model-Name"] == selected_model, "Asset-Name"].values[0]
-            path = f'./{selected_model}/{asset_name}'
-            artifact = Artifact(name=artifact_name, metadata = {"model_checkpoint":path, f"{step_or_epoch}": df.loc[df["Model-Name"] == selected_model, f"metadata.{step_or_epoch}"].values[0]})
-            artifact.add(path)
-            #exp = ExistingExperiment(api_key = api_key, experiment_key=api_experiment.key)
-            exp = start(api_key = api_key, mode="get", experiment_key=api_experiment.key)
-            exp.log_artifact(artifact)
-            st.success("Artifact Created Successfully!")
-            exp.end()
-        except Exception as e:
-            ui.display_text(f"Error registering model: {str(e)}")
-
-    st.button("Create Model Artifact", on_click=create_artifact)
 
 else:
     ui.display('No models logged to this experiment')

@@ -491,7 +491,19 @@ else:
         bar.progress(75, "Unzipping datagrid")
         with zipfile.ZipFile(zip_name, "r") as zip_ref:
             zip_ref.extractall(experiment.id)
-        with open(json_name, "r") as fp:
+            # The JSON file inside the zip is not guaranteed to match dg_name;
+            # use the actual member name from the archive instead.
+            json_members = [
+                member
+                for member in zip_ref.namelist()
+                if member.endswith(".json")
+            ]
+        extracted_json = (
+            os.path.join(experiment.id, json_members[0])
+            if json_members
+            else json_name
+        )
+        with open(extracted_json, "r") as fp:
             datagrid_json = json.load(fp)
         new_columns = datagrid_json["columns"]
         dg = datagrid._DataGrid(

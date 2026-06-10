@@ -27,7 +27,7 @@ allows fast querying of the data (including metadata) using Python syntax.
 </tr>
 </table>
 
-#### Example Code
+#### Example Logging Code
 
 ```
 %pip install comet_ml datagrid
@@ -57,6 +57,12 @@ for i in range(50):
 
 dg.log(experiment)
 experiment.end()
+```
+
+To add the Python panel to your project or experiment view, copy this into a new Python panel:
+
+```
+%include https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/DataGridViewer/DataGridViewer.py
 ```
 
 #### Resources

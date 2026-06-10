@@ -333,8 +333,14 @@ def experiment_get_asset(_experiment, experiment_id, asset_id, return_type):
     return _experiment.get_asset(asset_id, return_type=return_type)
 
 
-# @st.cache_data(persist="disk", show_spinner="Loading datagrids...")
+# Cached with a short TTL so newly-logged datagrids show up within ~60s while
+# repeated reruns stay fast. The cache key includes experiment_keys, so new
+# experiments bust the cache immediately.
+@st.cache_data(persist="disk", ttl=60, show_spinner="Loading datagrids...")
 def get_datagrids(_experiments, experiment_keys):
+    # NOTE: return only pickle-able values (no Experiment objects) so that
+    # st.cache_data can serialize the result. The live Experiment objects are
+    # re-attached by experiment id below.
     datagrids = [("", None, None)]
     for experiment in _experiments:
         name = experiment.get_name()
@@ -343,7 +349,7 @@ def get_datagrids(_experiments, experiment_keys):
             datagrids.append(
                 (
                     "%s: %s" % (name, os.path.basename(asset["fileName"])),
-                    experiment,
+                    experiment.id,
                     asset["assetId"],
                 )
             )
@@ -356,9 +362,10 @@ def get_cached_completions(datagrid_name):
 
 
 experiments = api.get_panel_experiments()
+experiments_by_id = {experiment.id: experiment for experiment in experiments}
 datagrids = {
-    name: (name, exp, asset_id)
-    for name, exp, asset_id in get_datagrids(
+    name: (name, experiments_by_id.get(experiment_id), asset_id)
+    for name, experiment_id, asset_id in get_datagrids(
         experiments, [experiment.id for experiment in experiments]
     )
 }

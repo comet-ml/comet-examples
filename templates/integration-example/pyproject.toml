@@ -1,0 +1,13 @@
+[project]
+name = "example-integration"
+version = "0.1.0"
+description = "TODO: one-line description of what this example does"
+requires-python = ">=3.10"
+dependencies = [
+    "comet_ml>=3.44.0",
+    # TODO: add your framework dependency, e.g. torch, fastai, scikit-learn, transformers
+]
+
+# WHY: this example is a script to run, not a library to install — keep uv from trying to build it.
+[tool.uv]
+package = false

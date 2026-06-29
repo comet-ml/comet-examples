@@ -108,3 +108,8 @@ data/*
 # pytest
 .pytest_cache/
 MagicMock/
+
+# Tooling / agent harness
+.ruff_cache/
+.tmp/
+*-workspace/   # skill eval scratch (e.g. skill-creator benchmarks) — never commit

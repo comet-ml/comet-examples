@@ -1,9 +1,9 @@
-# <Framework> integration with Comet
+# {Framework} integration with Comet
 
 <!-- TODO: one paragraph — what the framework is, and what instrumenting it with Comet gives you
      (experiment tracking, hyperparameter logging, reproducibility, collaboration). -->
 
-Instrument <Framework> with Comet to start managing experiments, create dataset versions, and track
+Instrument {Framework} with Comet to start managing experiments, create dataset versions, and track
 hyperparameters for faster, easier reproducibility and collaboration.
 
 ## Documentation
@@ -17,20 +17,20 @@ For more information on using and configuring the integration, see:
 
 ## Setup
 
-Install dependencies
+Install dependencies with [uv](https://docs.astral.sh/uv/):
 
 ```bash
-python -m pip install -r requirements.txt
+uv sync
 ```
 
 ## Run the example
 
 ```bash
-python example_integration.py
+uv run python example_integration.py
 ```
 
 No Comet account? Run it offline (logs to a local archive instead of the Comet UI):
 
 ```bash
-COMET_MODE=offline python example_integration.py
+COMET_MODE=offline uv run python example_integration.py
 ```

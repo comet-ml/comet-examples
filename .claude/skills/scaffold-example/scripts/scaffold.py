@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Scaffold a new Comet example by copying and renaming the canonical template.
 
-One template lives under `templates/integration-example/`: a single `comet_ml` script, a
-`requirements.txt`, and a README in the house structure. It is a real, runnable example under a
+One template lives under `templates/integration-example/`: a `pyproject.toml`, a single `comet_ml`
+script, and a README in the house structure. It is a real, runnable example under a
 sentinel identity (`example_integration` / `example-integration`). This script copies it to the
 target directory and rewrites those sentinels to the new name — a pure identifier rename, no
 template language. Run it, then fill in the TODO stubs.
@@ -21,7 +21,7 @@ PKG_SENTINEL = "example_integration"  # snake_case: the .py module name
 PROJECT_SENTINEL = "example-integration"  # kebab-case: folder + comet project name
 
 EXCLUDE = shutil.ignore_patterns(
-    ".venv", "__pycache__", "*.pyc", ".ruff_cache", ".env", "*.log", ".tmp"
+    ".venv", "uv.lock", "__pycache__", "*.pyc", ".ruff_cache", ".env", "*.log", ".tmp"
 )
 
 
@@ -54,7 +54,7 @@ def main() -> int:
     parser.add_argument(
         "--description",
         default=None,
-        help="One-line description (printed; paste into the README intro).",
+        help="One-line description (written to pyproject.toml).",
     )
     parser.add_argument(
         "--dest",
@@ -109,6 +109,19 @@ def main() -> int:
         if new != text:
             path.write_text(new, encoding="utf-8")
 
+    # Description -> pyproject.toml.
+    if args.description:
+        pyproject = dest / "pyproject.toml"
+        text = pyproject.read_text(encoding="utf-8")
+        text = re.sub(
+            r'^description = ".*"$',
+            f'description = "{args.description}"',
+            text,
+            count=1,
+            flags=re.MULTILINE,
+        )
+        pyproject.write_text(text, encoding="utf-8")
+
     try:
         rel = dest.relative_to(repo_root)
     except ValueError:
@@ -120,9 +133,13 @@ def main() -> int:
     if args.description:
         print(f"  description:   {args.description}")
     print("\nNext steps:")
-    print(f"  1. cd {rel} && python -m pip install -r requirements.txt")
-    print(f"  2. Fill in {pkg}.py (real logic) and the README sections (intro, links).")
-    print(f"  3. Run it: python {pkg}.py   (or: COMET_MODE=offline python {pkg}.py)")
+    print(f"  1. cd {rel} && uv sync")
+    print(
+        f"  2. Fill in {pkg}.py (real logic), pyproject.toml deps, and the README sections."
+    )
+    print(
+        f"  3. Run it: uv run python {pkg}.py   (or: COMET_MODE=offline uv run python {pkg}.py)"
+    )
     print("  4. To test it in CI, add it to .github/workflows/test-examples.yml.")
     return 0
 

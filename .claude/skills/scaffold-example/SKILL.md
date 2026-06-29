@@ -6,11 +6,11 @@ description: Scaffold a brand-new Comet example in this repo from the canonical 
 # Scaffold a new Comet example
 
 This repo has one canonical example shape, a real, runnable template under
-[`templates/integration-example/`](../../../templates/integration-example): a single `comet_ml`
-script (`example_integration.py`), a `requirements.txt`, and a README in the house structure
-(Title → Documentation → See it → Setup → Run the example). Getting it right by hand is fiddly and
-easy to drift on. This skill copies the template and renames it, so you start from something that
-already runs.
+[`templates/integration-example/`](../../../templates/integration-example): a `uv` project
+(`pyproject.toml`), a single `comet_ml` script (`example_integration.py`), and a README in the house
+structure (Title → Documentation → See it → Setup → Run the example). Getting it right by hand is
+fiddly and easy to drift on. This skill copies the template and renames it, so you start from
+something that already runs.
 
 ## When to refuse
 
@@ -43,8 +43,7 @@ python .claude/skills/scaffold-example/scripts/scaffold.py <name> \
 names it chose and a next-steps checklist.
 
 The name is normalised: the folder and Comet project use kebab-case, the Python file uses
-snake_case (so it stays importable). The description is printed for you to paste into the README
-intro — there's no structured field for it.
+snake_case (so it stays importable). The description is written into the `pyproject.toml`.
 
 ## Step 2 — Make it real
 
@@ -53,7 +52,7 @@ The scaffold runs as-is but is generic. Fill the parts marked `TODO`:
 - **`<name>.py`** — replace the stub loop with the real instrumentation: your framework's training
   or inference, plus the `comet_ml` logging that matters (`log_parameters`, `log_metrics`,
   `log_model`, …). Keep the `comet_ml.login(...)` + `comet_ml.start()` + `experiment.end()` frame.
-- **`requirements.txt`** — add the framework dependency alongside the pinned `comet_ml`.
+- **`pyproject.toml`** — add the framework dependency alongside the pinned `comet_ml`.
 - **`README.md`** — fill the title, intro (paste the description), the docs link, and a public
   Comet project link if one exists. This is required for every example (see
   [AGENTS.md](../../../AGENTS.md)).
@@ -65,9 +64,9 @@ Keep the repo conventions: credentials from env vars only, `# WHY:`-only comment
 From the new example directory:
 
 ```bash
-python -m pip install -r requirements.txt
-python <name>.py                       # logs a real run (needs COMET_API_KEY)
-COMET_MODE=offline python <name>.py    # runs without an account, if practical
+uv sync
+uv run python <name>.py                       # logs a real run (needs COMET_API_KEY)
+COMET_MODE=offline uv run python <name>.py    # runs without an account, if practical
 ```
 
 To get the example tested, add it to the matrix in

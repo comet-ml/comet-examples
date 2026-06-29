@@ -77,7 +77,7 @@ Most examples log a real run, so they need an API key. Where it is practical, le
 without an account using Comet's offline mode — no code change required:
 
 ```bash
-COMET_MODE=offline python <example>.py
+COMET_MODE=offline uv run python <example>.py
 ```
 
 Note this in the README's run section when it works. Don't force it onto examples that genuinely
@@ -90,16 +90,14 @@ code does. Use a one-line `# WHY:` comment only when a behaviour would surprise 
 API constraint, a non-obvious ordering requirement, a known gotcha). No type-hint or docstring
 mandate — match the surrounding file.
 
-### Dependencies — a `requirements.txt` per example
+### Dependencies — new examples use `uv` + `pyproject.toml`
 
-Every example ships a `requirements.txt` **sibling to its entry point** (script or notebook
-directory). This is the single source of truth and is exactly what CI installs
-(`pip install -r requirements.txt`). Pin `comet_ml` like the rest of the repo (`comet_ml>=3.44.0`)
-plus the framework deps.
+New examples are `uv` projects: declare dependencies in `pyproject.toml` (the single source of
+truth), install with `uv sync`, and run with `uv run`. Pin `comet_ml>=3.44.0` plus the framework
+deps. Don't assume a repo-wide virtualenv is active.
 
-Richer, multi-file projects **may** use Poetry with a committed `poetry.lock` (see
-[`integrations/langgraph/`](integrations/langgraph/)). Do **not** introduce `uv`, and do **not**
-gitignore `poetry.lock` — this repo commits it for reproducibility.
+Existing examples that ship a `requirements.txt` (most of the repo) are **legacy and stay as they
+are** — don't migrate them in passing. Only new examples follow the `uv` convention.
 
 ## Coding best practices
 
@@ -118,12 +116,14 @@ gitignore `poetry.lock` — this repo commits it for reproducibility.
 ## CI
 
 Tests run via [`.github/workflows/test-examples.yml`](.github/workflows/test-examples.yml), which
-holds **explicit matrices** of notebooks and scripts — examples are not auto-discovered. To get a
-new example covered:
+holds **explicit matrices** of notebooks and scripts — examples are not auto-discovered. The
+workflow installs deps with `pip install -r requirements.txt` (it has not been migrated to `uv`).
+To get a new example covered:
 
-1. Make sure its `requirements.txt` is complete and the example runs from its own directory.
-2. Add it to the matrix — the `notebooks` list (run with `ipython`) for a `.ipynb`, or the
+1. Add it to the matrix — the `notebooks` list (run with `ipython`) for a `.ipynb`, or the
    `example` list (run with `python <script> <arg>`) for a script.
+2. Because the workflow uses pip, also include a `requirements.txt` alongside the `pyproject.toml`
+   (`uv export --no-hashes -o requirements.txt`) so the matrix can install it.
 
 An example without a matrix entry is valid but won't be tested.
 
@@ -135,8 +135,8 @@ Follow the house structure used across the repo (see
 1. **Title + intro** — what the framework is and what instrumenting it with Comet gives you
 2. **Documentation** — link to the relevant page on `comet.com/docs`
 3. **See it** — link to a public Comet project, when one exists
-4. **Setup** — `python -m pip install -r requirements.txt`
-5. **Run the example** — the exact command (and the offline variant when it applies)
+4. **Setup** — `uv sync`
+5. **Run the example** — the exact command (`uv run python <name>.py`, and the offline variant when it applies)
 
 Keep the README in sync with the code and update it before every PR.
 

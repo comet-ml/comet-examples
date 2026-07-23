@@ -1,13 +1,17 @@
 <img src="https://www.comet.com/images/logo_comet_light.png" width="350" alt="Drawing" style="width: 350px;"/>
 
 ## Comet for Machine Learning Experiment Management
-**Our Misson:** Comet is doing for ML what GitHub did for code. We allow data science teams to automagically track their datasets, code changes, experimentation history and production models creating efficiency, transparency, and reproducibility.
+**Our Mission:** Comet is the AI developer platform. We give teams experiment tracking for their datasets, code changes, experiment history, and production models, and we make [Opik](https://github.com/comet-ml/opik), the open-source LLM observability and evaluation platform.
 
 We all strive to be data driven and yet every day valuable experiment results are lost and forgotten. Comet provides a dead simple way of fixing that. It works with any workflow, any ML task, any machine, and any piece of code.
 
+## Looking for LLM or AI agent examples?
+
+Comet also makes [Opik](https://github.com/comet-ml/opik), the open-source LLM observability and evaluation platform. For LLM tracing, evaluation, and AI agent observability examples, see the [`opik/`](./opik) folder in this repo and the dedicated [opik-examples](https://github.com/comet-ml/opik-examples) repository. Full Opik documentation: https://www.comet.com/docs/opik/
+
 ## Examples Repository
 
-This repository contains examples of using Comet in many Machine Learning Python libraries, including fastai, torch, sklearn, chainer, caffe, keras, tensorflow, mxnet, Jupyter notebooks, and with just pre Python.
+This repository contains examples of using Comet in many Machine Learning Python libraries, including fastai, torch, sklearn, chainer, caffe, keras, tensorflow, mxnet, Jupyter notebooks, and with plain Python.
 
 If you don't see something you need, just let us know! See contact methods below.
 
@@ -24,6 +28,7 @@ comet-examples/
 │   ├── reinforcement-learning/
 │   ├── llm/
 │   └── data-management/
+├── opik/           # Opik (LLM observability) examples: tracing + offline evaluation
 ├── guides/         # How-to notebooks for Comet workflows
 ├── panels/         # Custom Comet panel (visualization) examples
 ├── notebooks/      # General/standalone notebooks

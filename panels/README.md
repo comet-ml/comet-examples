@@ -74,6 +74,108 @@ allows fast querying of the data (including metadata) using Python syntax.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/DataGridViewer/README.md">README.md</a>
+### CompareMaxAccuracyOverTime
+
+The `MetricsByStep` panel is used to compare the value of your metrics at a specific step across all of your experiments using bar charts.
+
+
+<table>
+<tr>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/MetricsByStep/metrics-by-step-panel.png" 
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+</tr>
+</table>
+
+
+For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/MetricsByStep/README.md">README.md</a>
+### ModelCheckpointComparison
+
+The `ModelCheckpointComparison` panel is used to compare performance of your model at each of the checkpoints logged. This is a useful tool to help determine which of your model checkpoints is best performing and should be promoted via the registry. 
+
+<table>
+<tr>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/ModelCheckpointComparison/model-comparison-panel.png"
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+</tr>
+</table>
+
+First, run your experiment, including logging the model checkpoints and metrics at each step/epoch in your training loop. Each model checkpoint should log the step or epoch to the metadata field, and be uniquely named based on step/epoch, so that the panel can later match each checkpoint to performance at that step/epoch.
+
+```python
+#Log the model checkpoint directly to Comet at each epoch
+for i in range(10):   
+    experiment.log_model(f'checkpoint_{i}', '/path/to/your/model.pkl', metadata = {'epoch': i})
+    experiment.log_metric('metric1', i, epoch=i)
+    experiment.log_metric('metric2', 50-i, epoch=i)
+
+
+#Or log a pointer to the model checkpoint at each epoch
+for i in range(10):   
+    experiment.log_remote_model(f'checkpoint_{i}', '/path/to/your/model.pkl', metadata = {'epoch': i})
+    experiment.log_metric('metric1', i, epoch=i)
+    experiment.log_metric('metric2', 50-i, epoch=i)
+```
+
+
+For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/ModelCheckpointComparison/README.md">README.md</a>
+### ncu-rep Viewer
+
+This Python Panel is a viewer for NVIDIA Nsight Compute profiler reports (.ncu-rep files) that teams have logged as experiment assets. It turns those raw GPU-kernel profiles into an interactive, Nsight-style dashboard right inside the Comet UI.
+
+<table>
+<tr>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/NcuRepViewer/ncu-rep-viewer.png"
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+</tr>
+</table>
+
+
+```python
+from comet_ml import start
+          
+experiment = start(
+  api_key="YOUR-API-KEY",
+  project_name="ncu-rep-viewer",
+  workspace="YOUR-WORKSPACE"
+)
+
+# examples:
+experiment.log_asset("manual_nvtx.ncu-rep")
+experiment.log_asset("CuVectorAddDrv.ncu-rep")
+experiment.log_asset("mergeSort.ncu-rep")
+
+experiment.end()
+```
+
+The flow:
+
+1. Discovers reports — scans the experiments currently selected in your Comet project and collects every .ncu-rep asset attached to them.
+2. Downloads on demand — when you pick a report from the sidebar dropdown, it streams that asset from Comet to local disk (cached, so re-selecting is instant) and extracts the per-kernel profiling data.
+3. Lets you drill in — you choose a specific kernel launch and can filter its metrics.
+
+What it presents, across three tabs:
+
+- Summary — a table of all kernels in the report (duration, grid/block size, memory & compute throughput, occupancy, detected issues), plus a comparison chart when there's more than one kernel.
+- Details — the Nsight-style analysis sections for the selected kernel:
+  - a device header (GPU name, compute capability, SM count, memory, cache, clocks),
+  - Speed of Light (compute vs memory throughput, bottleneck call),
+  - Roofline (achieved performance vs arithmetic intensity),
+  - Compute and Memory workload analysis, plus detailed per-unit memory tables (L1/TEX, L2, DRAM, shared),
+  - scheduler / warp-stall, instruction, launch, and occupancy statistics,
+  - NVTX ranges active at launch, and
+  - analysis & recommendations surfaced from Nsight's own rules.
+- Raw Metrics — the complete searchable metric table for the kernel.
+
+A design principle worth noting: the richer sections (Roofline, memory tables) need reports captured with a fuller metric set. When a given report wasn't profiled that deeply, those sections show a short "needs --set full" note instead of failing — so the panel works gracefully on both lightweight and detailed captures.
 ### NotebookViewer
 
 The `NotebookViewer` panel is used to render logged Notebooks, either from
@@ -216,6 +318,47 @@ Finally click on "Select Experiment with log:" in this panel.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TensorboardProfileViewer/README.md">README.md</a>
+### TensorboardTorchProfilerViewer
+
+The `TensorboardTorchProfilerViewer` panel is used to visualize Pytorch
+Profile data via Tensorboard.
+
+
+<table>
+<tr>
+<td>
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TensorboardTorchProfilerViewer/torch_profiler.png"
+     style="max-width: 300px; max-height: 300px;">
+</img>
+</td>
+</tr>
+</table>
+
+First, run your experiment, including writing and logging the
+Tensorboard logdir:
+
+```python
+# Use the PyTorch profiler with trace saving
+with torch.profiler.profile(
+    activities=[
+        torch.profiler.ProfilerActivity.CPU
+    ],
+    record_shapes=True,
+    on_trace_ready=torch.profiler.tensorboard_trace_handler("./logdir")  # Saves trace
+) as prof:
+    for _ in range(5):
+        output = model(input)
+        prof.step()  # Important: must call step() in each iteration
+
+
+#Log the folder to Comet        
+experiment.log_tensorflow_folder("./logdir")
+```
+
+Finally click on "Select Experiment with log:" in this panel.
+
+
+For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TensorboardTorchProfilerViewer/README.md">README.md</a>
 ### TotalFidelityMetricPlot
 
 The `TotalFidelityMetricPlot` panel is used to plot Total Fidelity Metrics --- metrics that are not sampled in any way.

@@ -8,3 +8,4 @@ with open("README.md", "w") as fp:
                 fp.write(f'\nFor more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/{panel_name}/README.md">README.md</a>\n')
                 break
             fp.write(line)
+        fp.write("\n<hr>\n")

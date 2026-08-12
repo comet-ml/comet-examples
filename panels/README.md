@@ -23,6 +23,8 @@ in a single experiment or across experiments. See also the built-in Audio Panel.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/AudioCompare/README.md">README.md</a>
+
+<hr>
 ### CompareMaxAccuracyOverTime
 
 The `CompareMaxAccuracyOverTime` panel is used to help track how the
@@ -43,6 +45,8 @@ over time.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/CompareMaxAccuracyOverTime/README.md">README.md</a>
+
+<hr>
 ### DataGridViewer
 
 The `DataGridViewer` panel is used to visualize Comet `DataGrids` which
@@ -74,6 +78,8 @@ allows fast querying of the data (including metadata) using Python syntax.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/DataGridViewer/README.md">README.md</a>
+
+<hr>
 ### CompareMaxAccuracyOverTime
 
 The `MetricsByStep` panel is used to compare the value of your metrics at a specific step across all of your experiments using bar charts.
@@ -91,6 +97,8 @@ The `MetricsByStep` panel is used to compare the value of your metrics at a spec
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/MetricsByStep/README.md">README.md</a>
+
+<hr>
 ### ModelCheckpointComparison
 
 The `ModelCheckpointComparison` panel is used to compare performance of your model at each of the checkpoints logged. This is a useful tool to help determine which of your model checkpoints is best performing and should be promoted via the registry. 
@@ -124,6 +132,8 @@ for i in range(10):
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/ModelCheckpointComparison/README.md">README.md</a>
+
+<hr>
 ### ncu-rep Viewer
 
 This Python Panel is a viewer for NVIDIA Nsight Compute profiler reports (.ncu-rep files) that teams have logged as experiment assets. It turns those raw GPU-kernel profiles into an interactive, Nsight-style dashboard right inside the Comet UI.
@@ -158,6 +168,8 @@ experiment.end()
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/NcuRepViewer/README.md">README.md</a>
+
+<hr>
 ### NotebookViewer
 
 The `NotebookViewer` panel is used to render logged Notebooks, either from
@@ -182,6 +194,8 @@ with images and output. For Jupyter, you can use our
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/NotebookViewer/README.md">README.md</a>
+
+<hr>
 ### OptimizerAnalysis
 
 The `OptimizerAnalysis` panel is used to explore results from an
@@ -206,6 +220,8 @@ sweep.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/OptimizerAnalysis/README.md">README.md</a>
+
+<hr>
 ### SaveModelAsArtifact
 
 This panel allows you to save a model as an artifact. Adding
@@ -226,6 +242,8 @@ or use an existing artifact name.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/SaveModelAsArtifact/README.md">README.md</a>
+
+<hr>
 ### TensorboardGroupViewer
 
 The `TensorboardGroupViewer` panel is used to visualize
@@ -260,6 +278,8 @@ Tensorboard Server" in this panel.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TensorboardGroupViewer/README.md">README.md</a>
+
+<hr>
 ### TensorboardProfileViewer
 
 The `TensorboardProfileViewer` panel is used to visualize Tensorboard
@@ -300,6 +320,8 @@ Finally click on "Select Experiment with log:" in this panel.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TensorboardProfileViewer/README.md">README.md</a>
+
+<hr>
 ### TensorboardTorchProfilerViewer
 
 The `TensorboardTorchProfilerViewer` panel is used to visualize Pytorch
@@ -341,6 +363,8 @@ Finally click on "Select Experiment with log:" in this panel.
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TensorboardTorchProfilerViewer/README.md">README.md</a>
+
+<hr>
 ### TotalFidelityMetricPlot
 
 The `TotalFidelityMetricPlot` panel is used to plot Total Fidelity Metrics --- metrics that are not sampled in any way.
@@ -364,3 +388,5 @@ You can have your Comet Adminstrator turn on "Store metrics without sampling" in
 
 
 For more information, see the panel <a href="https://github.com/comet-ml/comet-examples/blob/master/panels/TotalFidelityMetricPlot/README.md">README.md</a>
+
+<hr>

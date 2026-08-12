@@ -30,7 +30,7 @@ experiment.log_asset("mergeSort.ncu-rep")
 experiment.end()
 ```
 
-The flow:
+#### The flow
 
 1. Discovers reports — scans the experiments currently selected in your Comet project and collects every .ncu-rep asset attached to them.
 2. Downloads on demand — when you pick a report from the sidebar dropdown, it streams that asset from Comet to local disk (cached, so re-selecting is instant) and extracts the per-kernel profiling data.
@@ -50,3 +50,13 @@ What it presents, across three tabs:
 - Raw Metrics — the complete searchable metric table for the kernel.
 
 A design principle worth noting: the richer sections (Roofline, memory tables) need reports captured with a fuller metric set. When a given report wasn't profiled that deeply, those sections show a short "needs --set full" note instead of failing — so the panel works gracefully on both lightweight and detailed captures.
+
+#### Python Panel
+
+To include this panel from the github repo, use this code in a Custom Python Panel:
+
+```
+%include https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/NcuRepViewer/NcuRepViewer.py
+```
+
+Or, you can simply [copy the code](https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/NcuRepViewer/NcuRepViewer.py) into a custom Python Panel.

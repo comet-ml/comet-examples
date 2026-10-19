@@ -1,0 +1,27 @@
+{
+  "output_drift.py": {
+    "Output": "prediction_probability",
+    "Algorithm": "PSI",
+    "Draw as bars": false,
+    "Mark quiet days": true
+  },
+  "volume_and_drift.py": {
+    "Output": "prediction_probability"
+  },
+  "category_shift.py": {
+    "Feature": "feature_device",
+    "Order by size of change": true
+  },
+  "drift_demo.py": {
+    "Feature": "credit_score",
+    "Window": 21,
+    "Training range": true
+  },
+  "time_buckets.py": {
+    "Bucket": "Monthly"
+  },
+  "chart_controls.py": {
+    "Chart title": "Predictions per day",
+    "Shape": "lines"
+  }
+}

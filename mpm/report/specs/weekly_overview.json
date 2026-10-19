@@ -1,0 +1,14 @@
+{
+  "workspace": "REPLACE_ME",
+  "model": "REPLACE_ME",
+  "days": 200,
+  "interval": "W-SUN",
+  "chunk_days": 30,
+  "theme": "light",
+  "sections": [
+    {"kind": "volume"},
+    {"kind": "drift", "feature": "prediction_probability", "drift_algorithm": "EMD"},
+    {"kind": "percentiles", "feature": "prediction_probability"},
+    {"kind": "density", "feature": "prediction_probability"}
+  ]
+}

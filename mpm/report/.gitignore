@@ -1,0 +1,4 @@
+# Reports are generated, not checked in.
+*.html
+*.pdf
+showcase-out/

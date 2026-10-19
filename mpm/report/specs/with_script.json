@@ -1,0 +1,13 @@
+{
+  "workspace": "REPLACE_ME",
+  "model": "REPLACE_ME",
+  "days": 60,
+  "interval": "W-SUN",
+  "sections": [
+    {"kind": "volume"},
+    {"kind": "script", "script": "examples/report/panels/output_drift.py"}
+  ],
+  "script_params": {
+    "output_drift.py": {"Output": "prediction_probability", "Algorithm": "PSI"}
+  }
+}

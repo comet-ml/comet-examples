@@ -120,3 +120,4 @@ guides/manage_data/artifacts/
 guides/manage_data/*.pkl
 guides/manage_data/DOTA_1.0.json
 guides/manage_data/*.png
+guides/manage_data/data/

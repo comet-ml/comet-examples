@@ -15,8 +15,6 @@ jobs:
         notebooks:
           - guides/computer_vision/Computer_Vision_with_Comet.ipynb
           - guides/get-started/Comet_Quickstart.ipynb
-          - guides/manage_data/A_Guide_to_Remote_Artifacts.ipynb
-          - guides/manage_data/Introduction_to_Artifacts.ipynb
           - integrations/llm/comet-llm/notebooks/CometLLM_hello_world.ipynb
           - integrations/model-evaluation/gradio/notebooks/Gradio_and_Comet.ipynb
           - integrations/model-evaluation/gradio/notebooks/Logging_Model_Inferences_with_Comet_and_Gradio.ipynb
@@ -105,6 +103,8 @@ jobs:
         os: [ubuntu-latest]
         python-version: ["3.10"]
         example:
+          - {script: "guides/manage_data/artifacts_intro.py", arg: ""}
+          - {script: "guides/manage_data/remote_artifact_links.py", arg: ""}
           - {script: "integrations/model-evaluation/shap/shap-hello-world/shap-hello-world.py", arg: ""}
           - {script: "integrations/model-optimization/optuna/optuna-hello-world/optuna-hello-world.py", arg: ""}
           - {script: "integrations/model-training/composer/mosaicml-getting-started/mosaicml-getting-started.py", arg: ""}

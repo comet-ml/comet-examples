@@ -47,13 +47,17 @@ if __name__ == "__main__":
     # WHY: without boto3 / google-cloud-storage and cloud credentials the SDK
     # logs the bare URI as a plain link; this script refuses to pass that off
     # as a synced artifact.
+    if not artifact.assets:
+        print(
+            f"NOT synced: no objects found under {args.uri}. Check the bucket and prefix.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     assets = synced_assets(artifact)
-    fell_back = len(artifact.assets) == 1 and artifact.assets[0].link == args.uri
-    if not assets or fell_back:
+    if not assets:
         reason = (
-            artifact.assets[0]
-            .metadata.get("error_message", "no objects listed")
-            .rstrip(".")
+            artifact.assets[0].metadata.get("error_message", "sync failed").rstrip(".")
         )
         print(
             f"NOT synced: {reason}. Install boto3 (s3://) or google-cloud-storage "

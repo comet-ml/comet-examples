@@ -113,3 +113,11 @@ MagicMock/
 .ruff_cache/
 .tmp/
 *-workspace/   # skill eval scratch (e.g. skill-creator benchmarks) — never commit
+
+# guides/manage_data run outputs
+guides/manage_data/datasets/
+guides/manage_data/artifacts/
+guides/manage_data/*.pkl
+guides/manage_data/DOTA_1.0.json
+guides/manage_data/*.png
+guides/manage_data/data/

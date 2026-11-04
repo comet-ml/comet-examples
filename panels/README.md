@@ -7,13 +7,13 @@ in a single experiment or across experiments. See also the built-in Audio Panel.
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/AudioCompare/audio-compare.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/AudioCompare/audio-compare.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
 
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/AudioCompare/built-in-audio-panel.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/AudioCompare/built-in-audio-panel.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
@@ -37,7 +37,7 @@ over time.
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/CompareMaxAccuracyOverTime/compare-max-accuracy-over-time.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/CompareMaxAccuracyOverTime/compare-max-accuracy-over-time.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
@@ -61,17 +61,17 @@ allows fast querying of the data (including metadata) using Python syntax.
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/DataGridViewer/tabular-view.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/DataGridViewer/tabular-view.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/DataGridViewer/group-by.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/DataGridViewer/group-by.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/DataGridViewer/image-dialog.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/DataGridViewer/image-dialog.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
@@ -91,7 +91,7 @@ The `MetricsByStep` panel is used to compare the value of your metrics at a spec
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/MetricsByStep/metrics-by-step-panel.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/MetricsByStep/metrics-by-step-panel.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
@@ -105,7 +105,7 @@ For more information, see the panel <a href="https://github.com/comet-ml/comet-e
 
 ### ModelCheckpointComparison
 
-The `ModelCheckpointComparison` panel is used to compare performance of your model at each of the checkpoints logged. This is a useful tool to help determine which of your model checkpoints is best performing and should be promoted via the registry. 
+The `ModelCheckpointComparison` panel is used to compare performance of your model at each of the checkpoints logged. This is a useful tool to help determine which of your model checkpoints is best performing and should be promoted via the registry.
 
 <table>
 <tr>
@@ -121,14 +121,14 @@ First, run your experiment, including logging the model checkpoints and metrics 
 
 ```python
 #Log the model checkpoint directly to Comet at each epoch
-for i in range(10):   
+for i in range(10):  
     experiment.log_model(f'checkpoint_{i}', '/path/to/your/model.pkl', metadata = {'epoch': i})
     experiment.log_metric('metric1', i, epoch=i)
     experiment.log_metric('metric2', 50-i, epoch=i)
 
 
 #Or log a pointer to the model checkpoint at each epoch
-for i in range(10):   
+for i in range(10):  
     experiment.log_remote_model(f'checkpoint_{i}', '/path/to/your/model.pkl', metadata = {'epoch': i})
     experiment.log_metric('metric1', i, epoch=i)
     experiment.log_metric('metric2', 50-i, epoch=i)
@@ -156,7 +156,7 @@ This Python Panel is a viewer for NVIDIA Nsight Compute profiler reports (.ncu-r
 
 ```python
 from comet_ml import start
-          
+
 experiment = start(
   api_key="YOUR-API-KEY",
   project_name="ncu-rep-viewer",
@@ -191,7 +191,7 @@ with images and output. For Jupyter, you can use our
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/NotebookViewer/notebookviewer.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/NotebookViewer/notebookviewer.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
@@ -218,7 +218,7 @@ sweep.
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/OptimizerAnalysis/optimizer-analysis.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/OptimizerAnalysis/optimizer-analysis.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
@@ -240,7 +240,7 @@ or use an existing artifact name.
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/SaveModelAsArtifact/save-model-as-artifact.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/SaveModelAsArtifact/save-model-as-artifact.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
@@ -366,7 +366,7 @@ with torch.profiler.profile(
         prof.step()  # Important: must call step() in each iteration
 
 
-#Log the folder to Comet        
+#Log the folder to Comet  
 experiment.log_tensorflow_folder("./logdir")
 ```
 
@@ -386,12 +386,12 @@ You can have your Comet Adminstrator turn on "Store metrics without sampling" in
 <table>
 <tr>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TotalFidelityMetricPlot/totalfidelity.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TotalFidelityMetricPlot/totalfidelity.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>
 <td>
-<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TotalFidelityMetricPlot/organization-settings.png" 
+<img src="https://raw.githubusercontent.com/comet-ml/comet-examples/refs/heads/master/panels/TotalFidelityMetricPlot/organization-settings.png"
      style="max-width: 300px; max-height: 300px;">
 </img>
 </td>

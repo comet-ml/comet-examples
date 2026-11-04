@@ -83,7 +83,7 @@ For more information, see the panel <a href="https://github.com/comet-ml/comet-e
 
 <hr>
 
-### CompareMaxAccuracyOverTime
+### MetricsByStep
 
 The `MetricsByStep` panel is used to compare the value of your metrics at a specific step across all of your experiments using bar charts.
 

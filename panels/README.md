@@ -83,7 +83,7 @@ For more information, see the panel <a href="https://github.com/comet-ml/comet-e
 
 <hr>
 
-### CompareMaxAccuracyOverTime
+### MetricsByStep
 
 The `MetricsByStep` panel is used to compare the value of your metrics at a specific step across all of your experiments using bar charts.
 
@@ -403,3 +403,41 @@ For more information, see the panel <a href="https://github.com/comet-ml/comet-e
 
 <hr>
 
+## Upload panels and build dashboards from code
+
+You can also add these panels to your workspace, and attach them to
+dashboards, with the Python API in [cometx](https://www.comet.com/docs/v2/api-and-sdk/comet-extensions/overview/)
+(version 3.6.8 or later). This is useful when you want the same panels and
+dashboards in many projects or workspaces.
+
+The example below uploads the `DataGridViewer` panel code and creates a
+dashboard that contains it:
+
+```python
+from cometx import API
+
+api = API()
+
+# Upload the panel code to your workspace
+with open("DataGridViewer.py") as fp:
+    result = api.upload_panel_code("my-workspace", "DataGridViewer", fp.read())
+panel_id = result["templateId"]
+
+# Create a dashboard in a project with the panel
+dashboard = api.create_dashboard(
+    workspace="my-workspace",
+    project_name="my-project",
+    template_name="Data Grids",
+    panels=[panel_id],
+)
+```
+
+To update the panel later, call `upload_panel_code()` again with
+`template_id=panel_id`. The panel is updated in place on all dashboards
+that use it. Refresh the browser page to see the change.
+
+You can also use `upload_panel_zip()` to upload a panel zip file,
+`update_dashboard()` to rename a dashboard or change its panels, and the
+`cometx.views` module to lay out built-in charts, sections, and filters. For
+more information, see
+[Panels and Dashboards (Python API)](https://www.comet.com/docs/v2/api-and-sdk/comet-extensions/overview/#panels-and-dashboards-python-api).
